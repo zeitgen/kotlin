@@ -374,6 +374,7 @@ expect fun String.toFloatOrNull(): Float?
  * @throws IllegalArgumentException when [radix] is not a valid radix for number to string conversion.
  */
 @SinceKotlin("1.2")
+@CompileTimeCalculation
 expect fun Byte.toString(radix: Int): String
 
 /**
@@ -382,6 +383,7 @@ expect fun Byte.toString(radix: Int): String
  * @throws IllegalArgumentException when [radix] is not a valid radix for number to string conversion.
  */
 @SinceKotlin("1.2")
+@CompileTimeCalculation
 expect fun Short.toString(radix: Int): String
 
 /**
@@ -390,6 +392,7 @@ expect fun Short.toString(radix: Int): String
  * @throws IllegalArgumentException when [radix] is not a valid radix for number to string conversion.
  */
 @SinceKotlin("1.2")
+@CompileTimeCalculation
 expect fun Int.toString(radix: Int): String
 
 /**
@@ -398,6 +401,7 @@ expect fun Int.toString(radix: Int): String
  * @throws IllegalArgumentException when [radix] is not a valid radix for number to string conversion.
  */
 @SinceKotlin("1.2")
+@CompileTimeCalculation
 expect fun Long.toString(radix: Int): String
 
 @PublishedApi
