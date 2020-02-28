@@ -7,6 +7,7 @@
 
 package kotlin
 
+@CompileTimeCalculation
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline class ULongArray
@@ -73,6 +74,7 @@ internal constructor(@PublishedApi internal val storage: LongArray) : Collection
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
+@CompileTimeCalculation
 public inline fun ULongArray(size: Int, init: (Int) -> ULong): ULongArray {
     return ULongArray(LongArray(size) { index -> init(index).toLong() })
 }
@@ -80,4 +82,5 @@ public inline fun ULongArray(size: Int, init: (Int) -> ULong): ULongArray {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
+@CompileTimeCalculation
 public inline fun ulongArrayOf(vararg elements: ULong): ULongArray = elements

@@ -7,6 +7,7 @@
 
 package kotlin
 
+@CompileTimeCalculation
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline class UByteArray
@@ -73,6 +74,7 @@ internal constructor(@PublishedApi internal val storage: ByteArray) : Collection
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
+@CompileTimeCalculation
 public inline fun UByteArray(size: Int, init: (Int) -> UByte): UByteArray {
     return UByteArray(ByteArray(size) { index -> init(index).toByte() })
 }
@@ -80,4 +82,5 @@ public inline fun UByteArray(size: Int, init: (Int) -> UByte): UByteArray {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
+@CompileTimeCalculation
 public inline fun ubyteArrayOf(vararg elements: UByte): UByteArray = elements

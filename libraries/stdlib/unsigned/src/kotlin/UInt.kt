@@ -12,6 +12,7 @@ import kotlin.experimental.*
 @Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS")
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@CompileTimeCalculation
 public inline class UInt @PublishedApi internal constructor(@PublishedApi internal val data: Int) : Comparable<UInt> {
 
     companion object {
@@ -285,6 +286,7 @@ public inline class UInt @PublishedApi internal constructor(@PublishedApi intern
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
+@CompileTimeCalculation
 public inline fun Byte.toUInt(): UInt = UInt(this.toInt())
 /**
  * Converts this [Short] value to [UInt].
@@ -297,6 +299,7 @@ public inline fun Byte.toUInt(): UInt = UInt(this.toInt())
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
+@CompileTimeCalculation
 public inline fun Short.toUInt(): UInt = UInt(this.toInt())
 /**
  * Converts this [Int] value to [UInt].
@@ -308,6 +311,7 @@ public inline fun Short.toUInt(): UInt = UInt(this.toInt())
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
+@CompileTimeCalculation
 public inline fun Int.toUInt(): UInt = UInt(this)
 /**
  * Converts this [Long] value to [UInt].
@@ -320,6 +324,7 @@ public inline fun Int.toUInt(): UInt = UInt(this)
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
+@CompileTimeCalculation
 public inline fun Long.toUInt(): UInt = UInt(this.toInt())
 
 /**
@@ -331,6 +336,7 @@ public inline fun Long.toUInt(): UInt = UInt(this.toInt())
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
+@CompileTimeCalculation
 public inline fun Float.toUInt(): UInt = doubleToUInt(this.toDouble())
 /**
  * Converts this [Double] value to [UInt].
@@ -341,4 +347,5 @@ public inline fun Float.toUInt(): UInt = doubleToUInt(this.toDouble())
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
+@CompileTimeCalculation
 public inline fun Double.toUInt(): UInt = doubleToUInt(this)
