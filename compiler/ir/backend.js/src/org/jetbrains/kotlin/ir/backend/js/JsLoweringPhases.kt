@@ -702,6 +702,14 @@ private val captureStackTraceInThrowablesPhase = makeBodyLoweringPhase(
     description = "Capture stack trace in Throwable constructors"
 )
 
+val compileTimeEvaluationPhase = makeJsModulePhase(
+    ::CompileTimeCalculationLowering,
+    name = "CompileTimeEvaluation",
+    //TODO change annotation to modifier
+    description = "Evaluate calls that are marked with @CompileTimeCalculation annotation"
+    //TODO find best position
+).toModuleLowering()
+
 private val cleanupLoweringPhase = makeBodyLoweringPhase(
     { CleanupLowering() },
     name = "CleanupLowering",
@@ -741,6 +749,7 @@ private val loweringList = listOf<Lowering>(
     delegateToPrimaryConstructorLoweringPhase,
     annotationConstructorLowering,
     initializersLoweringPhase,
+    compileTimeEvaluationPhase,
     initializersCleanupLoweringPhase,
     kotlinNothingValueExceptionPhase,
     // Common prefix ends
