@@ -9,6 +9,8 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.psi.PsiElementFinder
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.ProjectScope
+import com.sun.jna.Library
+import com.sun.jna.Native
 import com.sun.management.HotSpotDiagnosticMXBean
 import org.jetbrains.kotlin.asJava.finder.JavaElementFinder
 import org.jetbrains.kotlin.cli.common.profiling.AsyncProfilerHelper
@@ -71,6 +73,20 @@ private class PerfBenchListener(val helper: PerfStat) : BenchListener() {
         helper.pause()
         statByStage.merge(stageClass, helper.retrieve()) { a, b -> a.plus(b) }
         helper.reset()
+    }
+}
+
+fun isolate(stat: PerfStat?) {
+    val isolatedList = System.getenv("DOCKER_ISOLATED_CPUSET")
+    val othersList = System.getenv("DOCKER_CPUSET")
+    println("Trying to isolate, SYS: '$othersList', ISO: '$isolatedList'")
+    if (isolatedList != null && othersList != null && stat != null) {
+        val selfPid = stat.getpid()
+        val selfTid = stat.gettid()
+        println("Will isolate, my pid: $selfPid, my tid: $selfTid")
+        ProcessBuilder().command("bash", "-c", "ps -ae -o pid= | xargs -n 1 taskset -cap $othersList ").inheritIO().start().waitFor()
+        ProcessBuilder().command("taskset", "-cp", isolatedList, "$selfTid").inheritIO().start().waitFor()
+        ProcessBuilder().command("ps", "-o", "psr $selfPid").inheritIO().start().waitFor()
     }
 }
 
@@ -321,6 +337,8 @@ class FirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
     }
 
     fun testTotalKotlin() {
+
+        isolate(perfHelper)
 
         perfHelper?.open()
 
