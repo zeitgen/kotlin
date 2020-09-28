@@ -30,10 +30,13 @@ import org.jetbrains.kotlin.fir.resolve.transformers.createAllCompilerResolvePro
 import org.jetbrains.kotlin.fir.scopes.ProcessorAction
 import org.jetbrains.kotlin.perfstat.PerfStat
 import org.jetbrains.kotlin.perfstat.StatResult
+import sun.management.ManagementFactoryHelper
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
 import java.io.PrintStream
 import java.lang.management.ManagementFactory
+import java.text.DecimalFormat
 import kotlin.reflect.KClass
 
 
@@ -59,6 +62,8 @@ private val PROFILER_SNAPSHOT_DIR = System.getProperty("fir.bench.snapshot.dir")
 
 private val USE_PERF_STAT = System.getProperty("fir.bench.use.perf.stat", "true").toBooleanLenient()!!
 private val PERF_LIB_PATH = System.getProperty("fir.bench.perf.lib")
+
+private val REPORT_PASS_EVENTS = System.getProperty("fir.bench.report.pass.events", "false").toBooleanLenient()!!
 
 private class PerfBenchListener(val helper: PerfStat) : BenchListener() {
 
@@ -86,7 +91,31 @@ fun isolate(stat: PerfStat?) {
         println("Will isolate, my pid: $selfPid, my tid: $selfTid")
         ProcessBuilder().command("bash", "-c", "ps -ae -o pid= | xargs -n 1 taskset -cap $othersList ").inheritIO().start().waitFor()
         ProcessBuilder().command("taskset", "-cp", isolatedList, "$selfTid").inheritIO().start().waitFor()
-        ProcessBuilder().command("ps", "-o", "psr $selfPid").inheritIO().start().waitFor()
+    }
+}
+
+class PassEventReporter(private val stream: PrintStream) : AutoCloseable {
+
+    private val decimalFormat = DecimalFormat().apply {
+        this.maximumFractionDigits = 3
+    }
+
+    private fun formatStamp(): String {
+        val uptime = ManagementFactoryHelper.getRuntimeMXBean().uptime
+        return decimalFormat.format(uptime.toDouble() / 1000)
+    }
+
+    fun reportPassStart(num: Int) {
+        stream.println("<pass_start num='$num' stamp='${formatStamp()}'/>")
+    }
+
+    fun reportPassEnd(num: Int) {
+        stream.println("<pass_end num='$num' stamp='${formatStamp()}'/>")
+        stream.flush()
+    }
+
+    override fun close() {
+        stream.close()
     }
 }
 
@@ -96,6 +125,8 @@ class FirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
     private lateinit var bench: FirResolveBench
     private var bestStatistics: FirResolveBench.TotalStatistics? = null
     private var bestPass: Int = 0
+
+    private var passEventReporter: PassEventReporter? = null
 
     private val perfHelper = if (USE_PERF_STAT) PerfStat().also {
         it.init(PERF_LIB_PATH)
@@ -278,6 +309,7 @@ class FirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
     override fun beforePass(pass: Int) {
         if (DUMP_FIR) dump = MultiModuleHtmlFirDump(File(FIR_HTML_DUMP_PATH))
         System.gc()
+        passEventReporter?.reportPassStart(pass)
         executeAsyncProfilerCommand(ASYNC_PROFILER_START_CMD, pass)
     }
 
@@ -301,12 +333,16 @@ class FirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
         }
 
         executeAsyncProfilerCommand(ASYNC_PROFILER_STOP_CMD, pass)
+
+        passEventReporter?.reportPassEnd(pass)
     }
 
     override fun afterAllPasses() {
         val bestStatistics = bestStatistics ?: return
         printStatistics(bestStatistics, "Best pass: $bestPass")
         printErrors(bestStatistics)
+
+        perfHelper?.close()
     }
 
     private fun saveReport(pass: Int, statistics: FirResolveBench.TotalStatistics) {
@@ -336,11 +372,20 @@ class FirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
         }
     }
 
-    fun testTotalKotlin() {
-
+    private fun beforeAllPasses() {
         isolate(perfHelper)
 
         perfHelper?.open()
+
+        if (REPORT_PASS_EVENTS) {
+            passEventReporter =
+                PassEventReporter(PrintStream(FileOutputStream(reportDir().resolve("pass-events-$reportDateStr.log"), true)))
+        }
+    }
+
+    fun testTotalKotlin() {
+
+        beforeAllPasses()
 
         for (i in 0 until PASSES) {
             println("Pass $i")
@@ -349,8 +394,6 @@ class FirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
             runTestOnce(i)
         }
         afterAllPasses()
-
-        perfHelper?.close()
     }
 
     private fun createMemoryDump(moduleData: ModuleData) {
