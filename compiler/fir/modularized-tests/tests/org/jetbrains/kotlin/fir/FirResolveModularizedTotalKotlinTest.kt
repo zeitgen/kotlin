@@ -9,8 +9,6 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.psi.PsiElementFinder
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.ProjectScope
-import com.sun.jna.Library
-import com.sun.jna.Native
 import com.sun.management.HotSpotDiagnosticMXBean
 import org.jetbrains.kotlin.asJava.finder.JavaElementFinder
 import org.jetbrains.kotlin.cli.common.profiling.AsyncProfilerHelper
@@ -33,11 +31,11 @@ import org.jetbrains.kotlin.perfstat.StatResult
 import sun.management.ManagementFactoryHelper
 import java.io.File
 import java.io.FileOutputStream
-import java.io.OutputStream
 import java.io.PrintStream
 import java.lang.management.ManagementFactory
 import java.text.DecimalFormat
 import kotlin.reflect.KClass
+import kotlin.reflect.full.memberProperties
 
 
 private const val FAIL_FAST = true
@@ -61,6 +59,7 @@ private val ASYNC_PROFILER_STOP_CMD = System.getProperty("fir.bench.use.async.pr
 private val PROFILER_SNAPSHOT_DIR = System.getProperty("fir.bench.snapshot.dir") ?: "tmp/snapshots"
 
 private val USE_PERF_STAT = System.getProperty("fir.bench.use.perf.stat", "true").toBooleanLenient()!!
+private val USE_PERF_STAT_CONFIG = System.getProperty("fir.bench.use.perf.stat.flags")
 private val PERF_LIB_PATH = System.getProperty("fir.bench.perf.lib")
 
 private val REPORT_PASS_EVENTS = System.getProperty("fir.bench.report.pass.events", "false").toBooleanLenient()!!
@@ -130,6 +129,15 @@ class FirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
 
     private val perfHelper = if (USE_PERF_STAT) PerfStat().also {
         it.init(PERF_LIB_PATH)
+
+        USE_PERF_STAT_CONFIG?.let { cfg ->
+            val args = cfg.split(',')
+            for (arg in args) {
+                val (name, valueStr) = arg.split('=')
+                val field = it::class.memberProperties.find { it.name == name } ?: error("PerfStat flag not found: $name")
+                field.call(it, valueStr.toBooleanLenient()!!)
+            }
+        }
     } else null
 
     private var perfBenchListener: PerfBenchListener? = null
