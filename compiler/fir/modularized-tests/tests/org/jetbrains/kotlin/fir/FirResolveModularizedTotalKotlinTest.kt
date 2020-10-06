@@ -59,15 +59,15 @@ private val ASYNC_PROFILER_START_CMD = System.getProperty("fir.bench.use.async.p
 private val ASYNC_PROFILER_STOP_CMD = System.getProperty("fir.bench.use.async.profiler.cmd.stop")
 private val PROFILER_SNAPSHOT_DIR = System.getProperty("fir.bench.snapshot.dir") ?: "tmp/snapshots"
 
-private val USE_PERF_STAT = System.getProperty("fir.bench.use.perf.stat", "true").toBooleanLenient()!!
-private val USE_PERF_STAT_CONFIG = System.getProperty("fir.bench.use.perf.stat.flags")
-private val PERF_LIB_PATH = System.getProperty("fir.bench.perf.lib")
+val USE_PERF_STAT = System.getProperty("fir.bench.use.perf.stat", "true").toBooleanLenient()!!
+val USE_PERF_STAT_CONFIG = System.getProperty("fir.bench.use.perf.stat.flags")
+val PERF_LIB_PATH = System.getProperty("fir.bench.perf.lib")
 
 private val REPORT_PASS_EVENTS = System.getProperty("fir.bench.report.pass.events", "false").toBooleanLenient()!!
 
-private class PerfBenchListener(val helper: PerfStat) : BenchListener() {
+class PerfBenchListener(val helper: PerfStat) : BenchListener() {
 
-    val statByStage = mutableMapOf<KClass<*>, StatResult>()
+    val statByStage = mutableMapOf<String, StatResult>()
     val total get() = statByStage.values.reduce { acc, statResult -> acc.plus(statResult) }
 
     override fun before() {
@@ -76,8 +76,47 @@ private class PerfBenchListener(val helper: PerfStat) : BenchListener() {
 
     override fun after(stageClass: KClass<*>) {
         helper.pause()
-        statByStage.merge(stageClass, helper.retrieve()) { a, b -> a.plus(b) }
+        record(stageClass.simpleName!!)
+    }
+
+    fun after(stage: String) {
+        helper.pause()
+        record(stage)
+    }
+
+    private fun record(stage: String) {
+        statByStage.merge(stage, helper.retrieve()) { a, b -> a.plus(b) }
         helper.reset()
+    }
+
+    fun buildReport(out: Appendable) {
+
+        fun RTableContext.buildRow(stageName: String, metrics: List<StatResult.Metric>) {
+            row {
+                cell(stageName, align = LEFT)
+                for (metric in metrics) {
+                    if (metric !is StatResult.LongMetric) continue
+                    cell(buildString {
+                        append(metric.value)
+                    })
+                }
+            }
+        }
+        printTable(out) {
+            row {
+                cell("Stage", align = LEFT)
+                for (metric in total.metrics) {
+                    if (metric !is StatResult.LongMetric) continue
+                    cell(metric.name)
+                }
+            }
+            separator()
+            for ((stage, result) in statByStage) {
+                buildRow(stage, result.metrics)
+            }
+            separator()
+            buildRow("Total", total.metrics)
+        }
     }
 }
 
@@ -222,40 +261,7 @@ class FirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
 
     private fun reportPerfStat(perfBenchListener: PerfBenchListener, statistics: FirResolveBench.TotalStatistics, pass: Int) {
 
-
-        fun buildReport(out: Appendable) {
-
-            fun RTableContext.buildRow(stageName: String, metrics: List<StatResult.Metric>) {
-                row {
-                    cell(stageName, align = LEFT)
-                    for (metric in metrics) {
-                        if (metric !is StatResult.LongMetric) continue
-                        cell(buildString {
-                            append(metric.value)
-                        })
-                    }
-                }
-            }
-            printTable(out) {
-                row {
-                    cell("Stage", align = LEFT)
-                    for (metric in perfBenchListener.total.metrics) {
-                        if (metric !is StatResult.LongMetric) continue
-                        cell(metric.name)
-                    }
-                }
-                separator()
-                for ((stage, result) in perfBenchListener.statByStage) {
-                    buildRow(stage.simpleName!!, result.metrics)
-                }
-                separator()
-                buildRow("Total", perfBenchListener.total.metrics)
-            }
-        }
-
-
-        buildReport(System.out)
-
+        perfBenchListener.buildReport(System.out)
         PrintStream(
             FileOutputStream(
                 reportDir().resolve("perf-$reportDateStr.log"),
@@ -264,7 +270,7 @@ class FirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
         ).use { stream ->
             stream.println("====== Pass $pass ======")
             statistics.reportTimings(stream)
-            buildReport(stream)
+            perfBenchListener.buildReport(stream)
 
             stream.println()
             stream.println()
