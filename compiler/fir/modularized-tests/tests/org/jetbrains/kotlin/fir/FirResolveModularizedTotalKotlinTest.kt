@@ -65,7 +65,7 @@ val PERF_LIB_PATH = System.getProperty("fir.bench.perf.lib")
 
 private val REPORT_PASS_EVENTS = System.getProperty("fir.bench.report.pass.events", "false").toBooleanLenient()!!
 
-class PerfBenchListener(val helper: PerfStat) : BenchListener() {
+class PerfBenchListener(private val helper: PerfStat) : BenchListener() {
 
     val statByStage = mutableMapOf<String, StatResult>()
     val total get() = statByStage.values.reduce { acc, statResult -> acc.plus(statResult) }
@@ -95,10 +95,10 @@ class PerfBenchListener(val helper: PerfStat) : BenchListener() {
             row {
                 cell(stageName, align = LEFT)
                 for (metric in metrics) {
-                    if (metric !is StatResult.LongMetric) continue
-                    cell(buildString {
-                        append(metric.value)
-                    })
+                    when (metric) {
+                        is StatResult.Metric.LongMetric -> cell(metric.value)
+                        is StatResult.Metric.CpuIdMetric -> cell(metric.value.toString())
+                    }
                 }
             }
         }
@@ -106,7 +106,6 @@ class PerfBenchListener(val helper: PerfStat) : BenchListener() {
             row {
                 cell("Stage", align = LEFT)
                 for (metric in total.metrics) {
-                    if (metric !is StatResult.LongMetric) continue
                     cell(metric.name)
                 }
             }
