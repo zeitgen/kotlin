@@ -27,6 +27,7 @@ import org.jetbrains.kotlin.fir.resolve.providers.impl.FirProviderImpl
 import org.jetbrains.kotlin.fir.resolve.transformers.createAllCompilerResolveProcessors
 import org.jetbrains.kotlin.fir.scopes.ProcessorAction
 import org.jetbrains.kotlin.perfstat.PerfStat
+import org.jetbrains.kotlin.perfstat.PerfStatUtils
 import org.jetbrains.kotlin.perfstat.StatResult
 import sun.management.ManagementFactoryHelper
 import java.io.File
@@ -166,19 +167,7 @@ class FirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
 
     private var passEventReporter: PassEventReporter? = null
 
-    private val perfHelper = if (USE_PERF_STAT) PerfStat().also {
-        it.init(PERF_LIB_PATH)
-
-        USE_PERF_STAT_CONFIG?.let { cfg ->
-            val args = cfg.split(',')
-            for (arg in args) {
-                val (name, valueStr) = arg.split('=')
-                val field = it::class.memberProperties.find { it.name == name } ?: error("PerfStat flag not found: $name")
-                @Suppress("UNCHECKED_CAST")
-                (field as KMutableProperty1<PerfStat, Boolean>).set(it, valueStr.toBooleanLenient()!!)
-            }
-        }
-    } else null
+    private var perfHelper: PerfStat? = null
 
     private var perfBenchListener: PerfBenchListener? = null
 
@@ -387,10 +376,27 @@ class FirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
         }
     }
 
-    private fun beforeAllPasses() {
-        isolate(perfHelper)
+    private fun initPerfStat() {
 
-        perfHelper?.open()
+        if (USE_PERF_STAT) {
+
+            val flags = USE_PERF_STAT_CONFIG?.let { cfg ->
+                cfg.split(',').associate { arg ->
+                    val (name, valueStr) = arg.split('=')
+                    name to valueStr.toBooleanLenient()!!
+                }
+            } ?: emptyMap()
+
+            val arguments = flags + mapOf("libPath" to PERF_LIB_PATH)
+
+            perfHelper = PerfStat(PerfStatUtils.createConfiguration(arguments))
+        }
+    }
+
+    private fun beforeAllPasses() {
+        initPerfStat()
+
+        isolate(perfHelper)
 
         if (REPORT_PASS_EVENTS) {
             passEventReporter =

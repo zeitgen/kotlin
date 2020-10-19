@@ -18,6 +18,7 @@ import org.jetbrains.kotlin.cli.jvm.compiler.KotlinToJVMBytecodeCompiler
 import org.jetbrains.kotlin.config.*
 import org.jetbrains.kotlin.fir.scopes.ProcessorAction
 import org.jetbrains.kotlin.perfstat.PerfStat
+import org.jetbrains.kotlin.perfstat.PerfStatUtils
 import java.io.FileOutputStream
 import java.io.PrintStream
 import kotlin.reflect.KMutableProperty1
@@ -34,19 +35,7 @@ class NonFirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
 
     private var perfBenchListener: PerfBenchListener? = null
 
-    private val perfHelper = if (USE_PERF_STAT) PerfStat().also {
-        it.init(PERF_LIB_PATH)
-
-        USE_PERF_STAT_CONFIG?.let { cfg ->
-            val args = cfg.split(',')
-            for (arg in args) {
-                val (name, valueStr) = arg.split('=')
-                val field = it::class.memberProperties.find { it.name == name } ?: error("PerfStat flag not found: $name")
-                @Suppress("UNCHECKED_CAST")
-                (field as KMutableProperty1<PerfStat, Boolean>).set(it, valueStr.toBooleanLenient()!!)
-            }
-        }
-    } else null
+    private var perfHelper: PerfStat? = null
 
     private val times = mutableListOf<Long>()
 
@@ -172,17 +161,34 @@ class NonFirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
 
     override fun beforePass(pass: Int) {
         measure = FirResolveBench.Measure()
-        if (perfHelper != null) perfBenchListener = PerfBenchListener(perfHelper)
+        if (perfHelper != null) perfBenchListener = perfHelper?.let { PerfBenchListener(it) }
         files = 0
         lines = 0
         totalTime = 0
     }
 
+    private fun initPerfStat() {
+
+        if (USE_PERF_STAT) {
+
+            val flags = USE_PERF_STAT_CONFIG?.let { cfg ->
+                cfg.split(',').associate { arg ->
+                    val (name, valueStr) = arg.split('=')
+                    name to valueStr.toBooleanLenient()!!
+                }
+            } ?: emptyMap()
+
+            val arguments = flags + mapOf("libPath" to PERF_LIB_PATH)
+
+            perfHelper = PerfStat(PerfStatUtils.createConfiguration(arguments))
+        }
+    }
+
     fun testTotalKotlin() {
 
-        isolate(perfHelper)
+        initPerfStat()
 
-        perfHelper?.open()
+        isolate(perfHelper)
 
         writeMessageToLog("use_ni: $USE_NI")
 
