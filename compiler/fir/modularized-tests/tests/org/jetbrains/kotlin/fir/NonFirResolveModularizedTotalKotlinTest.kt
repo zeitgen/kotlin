@@ -161,7 +161,7 @@ class NonFirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
 
     override fun beforePass(pass: Int) {
         measure = FirResolveBench.Measure()
-        if (perfHelper != null) perfBenchListener = perfHelper?.let { PerfBenchListener(it) }
+        perfBenchListener = perfHelper?.let { PerfBenchListener(it) }
         files = 0
         lines = 0
         totalTime = 0
