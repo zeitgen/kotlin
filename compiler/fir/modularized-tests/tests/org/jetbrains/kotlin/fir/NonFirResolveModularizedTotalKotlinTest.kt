@@ -169,7 +169,7 @@ class NonFirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
 
     private fun initPerfStat() {
 
-        if (USE_PERF_STAT) {
+        if (MEASURE_PERF_STAT || UTILS_PERF_STAT) {
 
             val flags = USE_PERF_STAT_CONFIG?.let { cfg ->
                 cfg.split(',').associate { arg ->
@@ -178,7 +178,7 @@ class NonFirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
                 }
             } ?: emptyMap()
 
-            val arguments = flags + mapOf("libPath" to PERF_LIB_PATH)
+            val arguments = flags + mapOf("libPath" to PERF_LIB_PATH, "utilsOnly" to UTILS_PERF_STAT)
 
             perfHelper = PerfStat(PerfStatUtils.createConfiguration(arguments))
         }
@@ -189,6 +189,7 @@ class NonFirResolveModularizedTotalKotlinTest : AbstractModularizedTest() {
         initPerfStat()
 
         isolate(perfHelper)
+        if (UTILS_PERF_STAT) perfHelper = null
 
         writeMessageToLog("use_ni: $USE_NI")
 
