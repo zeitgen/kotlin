@@ -127,11 +127,14 @@ fun isolate(stat: PerfStat?) {
     val isolatedList = System.getenv("DOCKER_ISOLATED_CPUSET")
     val othersList = System.getenv("DOCKER_CPUSET")
     println("Trying to isolate, SYS: '$othersList', ISO: '$isolatedList'")
-    if (isolatedList != null && othersList != null && stat != null) {
+    if (othersList != null) {
+        println("Will move others affinity to '$othersList'")
+        ProcessBuilder().command("bash", "-c", "ps -ae -o pid= | xargs -n 1 taskset -cap $othersList ").inheritIO().start().waitFor()
+    }
+    if (isolatedList != null && stat != null) {
         val selfPid = stat.getpid()
         val selfTid = stat.gettid()
-        println("Will isolate, my pid: $selfPid, my tid: $selfTid")
-        ProcessBuilder().command("bash", "-c", "ps -ae -o pid= | xargs -n 1 taskset -cap $othersList ").inheritIO().start().waitFor()
+        println("Will pin self affinity, my pid: $selfPid, my tid: $selfTid")
         ProcessBuilder().command("taskset", "-cp", isolatedList, "$selfTid").inheritIO().start().waitFor()
     }
 }
