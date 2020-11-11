@@ -60,6 +60,10 @@ interface IrDeclarationWithName : IrDeclaration {
     val name: Name
 }
 
+interface IrExternalDeclaration : IrDeclarationWithName {
+    var isExternal: Boolean
+}
+
 interface IrOverridableMember : IrDeclarationWithVisibility, IrDeclarationWithName, IrSymbolOwner {
     val modality: Modality
 }
