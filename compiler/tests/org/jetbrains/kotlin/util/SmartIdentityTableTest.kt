@@ -57,7 +57,7 @@ class SmartIdentityTableTest {
         table[key1] = val3
 
         // expect size to stay the same
-        Assert.assertEquals(2, table.size)
+        Assert.assertEquals(5, table.size)
 
         // values should be updated for key1 and same for other key
         Assert.assertTrue(table[key1] === val3)
