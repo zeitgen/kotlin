@@ -104,7 +104,7 @@ class KotlinVersionsTest : KtUsefulTestCase() {
 
         Assert.assertTrue(
                 "Too few (<= 10) pom.xml files found. Something must be wrong in the test or in the project structure",
-                poms.size > 10
+                poms.size <= 10
         )
 
         if (!poms.map(Pom::version).areEqual()) {
