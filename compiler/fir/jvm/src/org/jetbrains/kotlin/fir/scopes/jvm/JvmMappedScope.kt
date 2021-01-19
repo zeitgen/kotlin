@@ -28,7 +28,7 @@ class JvmMappedScope(
             processor(symbol)
         }
 
-        val declaredSignatures by lazy {
+        val declaredSignatures by lazy(LazyThreadSafetyMode.NONE) {
             declared.mapTo(mutableSetOf()) { it.fir.computeJvmDescriptorReplacingKotlinToJava() }
         }
 

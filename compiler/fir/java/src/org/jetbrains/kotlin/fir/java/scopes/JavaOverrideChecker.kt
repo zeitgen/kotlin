@@ -170,7 +170,7 @@ class JavaOverrideChecker internal constructor(
         if (overrideCandidate.valueParameters.size != baseParameterTypes.size) return false
         val substitutor = buildTypeParametersSubstitutorIfCompatible(overrideCandidate, baseDeclaration) ?: return false
 
-        val jvmDescriptor by lazy { baseDeclaration.computeJvmDescriptor() }
+        val jvmDescriptor by lazy(LazyThreadSafetyMode.NONE) { baseDeclaration.computeJvmDescriptor() }
         val mayBeSpecialBuiltIn =
             baseDeclaration.name in SpecialGenericSignatures.ERASED_VALUE_PARAMETERS_SHORT_NAMES &&
                     SpecialGenericSignatures.ERASED_VALUE_PARAMETERS_SIGNATURES.any { it.endsWith(jvmDescriptor) }

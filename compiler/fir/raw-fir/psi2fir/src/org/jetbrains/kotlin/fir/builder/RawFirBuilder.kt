@@ -1247,7 +1247,7 @@ class RawFirBuilder(
                 else -> initializer.toFirExpression("Should have initializer")
 
             }
-            val delegateExpression by lazy { delegate?.expression }
+            val delegateExpression by lazy(LazyThreadSafetyMode.NONE) { delegate?.expression }
             val propertySource = toFirSourceElement()
 
             return buildProperty {

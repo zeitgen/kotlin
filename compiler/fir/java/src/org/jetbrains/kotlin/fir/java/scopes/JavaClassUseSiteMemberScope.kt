@@ -155,7 +155,7 @@ class JavaClassUseSiteMemberScope(
         }
         val potentialPropertyNames = session.syntheticNamesProvider.possiblePropertyNamesByAccessorName(name)
         val accessors = mutableListOf<FirAccessorSymbol>()
-        val getterName by lazy { session.syntheticNamesProvider.getterNameBySetterName(name) ?: name }
+        val getterName by lazy(LazyThreadSafetyMode.NONE) { session.syntheticNamesProvider.getterNameBySetterName(name) ?: name }
         for (potentialPropertyName in potentialPropertyNames) {
             processAccessorFunctionsAndPropertiesByName(potentialPropertyName, listOf(getterName)) {
                 if (it is FirAccessorSymbol) {

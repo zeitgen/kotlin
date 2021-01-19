@@ -996,7 +996,7 @@ class ControlFlowGraphBuilder {
         if (!callCompleted || exitsFromCompletedPostponedAnonymousFunctions.isEmpty()) {
             return EdgeKind.Forward to null
         }
-        val unionNode by lazy { createUnionFunctionCallArgumentsNode(node.fir) }
+        val unionNode by lazy(LazyThreadSafetyMode.NONE) { createUnionFunctionCallArgumentsNode(node.fir) }
         var hasDirectPreviousNode = false
         var hasPostponedLambdas = false
 
