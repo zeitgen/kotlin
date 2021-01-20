@@ -70,7 +70,7 @@ object FirSessionFactory {
         init: FirSessionConfigurator.() -> Unit = {}
     ): FirJavaModuleBasedSession {
         return FirJavaModuleBasedSession(moduleInfo, sessionProvider).apply {
-            register(FirCachesFactory::class, FirThreadUnsafeCachesFactory)
+            registerThreadUnsafeCaches()
             registerCommonComponents(languageVersionSettings)
             registerResolveComponents()
             registerJavaSpecificResolveComponents()
@@ -116,7 +116,7 @@ object FirSessionFactory {
 
         val kotlinClassFinder = VirtualFileFinderFactory.getInstance(project).create(scope)
         return FirLibrarySession(moduleInfo, sessionProvider).apply {
-            register(FirCachesFactory::class, FirThreadUnsafeCachesFactory)
+            registerThreadUnsafeCaches()
             registerCommonComponents(languageVersionSettings)
 
             val javaSymbolProvider = JavaSymbolProvider(this, project, scope)
