@@ -3551,6 +3551,11 @@ public class IrCompileKotlinAgainstInlineKotlinTestGenerated extends AbstractIrC
             runTest("compiler/testData/codegen/boxInline/smap/defaultFunctionWithInlineCall.kt");
         }
 
+        @TestMetadata("for.kt")
+        public void testFor() throws Exception {
+            runTest("compiler/testData/codegen/boxInline/smap/for.kt");
+        }
+
         @TestMetadata("interleavedFiles.kt")
         public void testInterleavedFiles() throws Exception {
             runTest("compiler/testData/codegen/boxInline/smap/interleavedFiles.kt");
