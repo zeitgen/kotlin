@@ -8,12 +8,12 @@ package org.jetbrains.kotlin.idea.fir.low.level.api.fir.caches
 import org.jetbrains.kotlin.fir.caches.*
 
 object FirThreadSafeCachesFactory : FirCachesFactory() {
-    override fun <KEY : Any, VALUE> createCache(createValue: (KEY) -> VALUE): FirCache<KEY, VALUE> =
+    override fun <KEY : Any, VALUE, CONTEXT> createCache(createValue: (KEY, CONTEXT) -> VALUE): FirCache<KEY, VALUE, CONTEXT> =
         FirThreadSafeCache(createValue)
 
     override fun <KEY : Any, VALUE, CONTEXT, DATA> createCacheWithPostCompute(
         createValue: (KEY, CONTEXT) -> Pair<VALUE, DATA>,
         postCompute: (KEY, VALUE, DATA) -> Unit
-    ): FirCacheWithPostCompute<KEY, VALUE, CONTEXT, DATA> =
+    ): FirCache<KEY, VALUE, CONTEXT> =
         FirThreadSafeCacheWithPostCompute(createValue, postCompute)
 }

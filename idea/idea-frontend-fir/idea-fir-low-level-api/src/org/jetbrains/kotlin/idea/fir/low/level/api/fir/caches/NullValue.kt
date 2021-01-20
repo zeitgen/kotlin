@@ -9,17 +9,16 @@ import java.util.concurrent.ConcurrentMap
 
 internal object NullValue
 
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun Any.nullValueToNull(): Any? = when (this) {
+@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
+internal inline fun <VALUE> Any.nullValueToNull(): VALUE = when (this) {
     NullValue -> null
     else -> this
-}
+} as VALUE
 
-@Suppress("UNCHECKED_CAST")
 internal inline fun <KEY : Any, RESULT> ConcurrentMap<KEY, Any>.computeIfAbsentWithNullableValue(
     key: KEY,
     crossinline compute: (KEY) -> Any?
 ): RESULT {
     val value = computeIfAbsent(key) { k -> compute(k) ?: NullValue }
-    return value.nullValueToNull() as RESULT
+    return value.nullValueToNull()
 }

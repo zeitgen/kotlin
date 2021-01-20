@@ -5,13 +5,13 @@
 
 package org.jetbrains.kotlin.idea.fir.low.level.api.fir.caches
 
-import org.jetbrains.kotlin.fir.caches.FirCacheWithPostCompute
+import org.jetbrains.kotlin.fir.caches.FirCache
 import java.util.concurrent.ConcurrentHashMap
 
 internal class FirThreadSafeCacheWithPostCompute<KEY : Any, VALUE, CONTEXT, DATA>(
     private val createValue: (KEY, CONTEXT) -> Pair<VALUE, DATA>,
     private val postCompute: (KEY, VALUE, DATA) -> Unit
-) : FirCacheWithPostCompute<KEY, VALUE, CONTEXT, DATA> {
+) : FirCache<KEY, VALUE, CONTEXT> {
     private val map = ConcurrentHashMap<KEY, ValueWithPostCompute<KEY, VALUE, DATA>>()
 
     @Suppress("UNCHECKED_CAST")

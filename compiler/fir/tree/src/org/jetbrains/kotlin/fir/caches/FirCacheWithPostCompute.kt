@@ -5,35 +5,11 @@
 
 package org.jetbrains.kotlin.fir.caches
 
-
-interface FirCacheWithPostCompute<KEY : Any, VALUE, CONTEXT, DATA> {
+interface FirCache<KEY : Any, VALUE, CONTEXT> {
     fun getValue(key: KEY, context: CONTEXT): VALUE
     fun getValueIfComputed(key: KEY): VALUE?
 }
 
-internal class FirThreadUnsafeCacheWithPostCompute<KEY : Any, VALUE, CONTEXT, DATA>(
-    private val createValue: (KEY, CONTEXT) -> Pair<VALUE, DATA>,
-    private val postCompute: (KEY, VALUE, DATA) -> Unit
-) : FirCacheWithPostCompute<KEY, VALUE, CONTEXT, DATA> {
-    private val map = mutableMapOf<KEY, Any?>()
-
-    @Suppress("UNCHECKED_CAST")
-    override fun getValue(key: KEY, context: CONTEXT): VALUE = when (val value = map[key]) {
-        null -> {
-            val (createdValue, data) = createValue(key, context)
-            map[key] = createdValue ?: NullValue
-            postCompute(key, createdValue, data)
-            createdValue
-        }
-        NullValue -> null
-        else -> value
-    } as VALUE
-
-    @Suppress("UNCHECKED_CAST")
-    override fun getValueIfComputed(key: KEY): VALUE? {
-        return when (val value = map[key]) {
-            NullValue -> null
-            else -> value as VALUE
-        }
-    }
-}
+@Suppress("NOTHING_TO_INLINE")
+inline fun <KEY : Any, VALUE> FirCache<KEY, VALUE, Nothing?>.getValue(key: KEY): VALUE =
+    getValue(key, null)

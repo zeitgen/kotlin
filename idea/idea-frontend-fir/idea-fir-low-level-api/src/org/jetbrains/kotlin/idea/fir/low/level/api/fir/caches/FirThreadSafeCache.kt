@@ -8,9 +8,14 @@ package org.jetbrains.kotlin.idea.fir.low.level.api.fir.caches
 import org.jetbrains.kotlin.fir.caches.FirCache
 import java.util.concurrent.ConcurrentHashMap
 
-internal class FirThreadSafeCache<KEY : Any, VALUE>(private val createValue: (KEY) -> VALUE) : FirCache<KEY, VALUE> {
+internal class FirThreadSafeCache<KEY : Any, VALUE, CONTEXT>(
+    private val createValue: (KEY, CONTEXT) -> VALUE
+) : FirCache<KEY, VALUE, CONTEXT> {
     private val map = ConcurrentHashMap<KEY, Any>()
 
-    override fun getValue(key: KEY): VALUE =
-        map.computeIfAbsentWithNullableValue(key, createValue)
+    override fun getValue(key: KEY, context: CONTEXT): VALUE =
+        map.computeIfAbsentWithNullableValue(key) { createValue(it, context) }
+
+    override fun getValueIfComputed(key: KEY): VALUE? =
+        map[key]?.nullValueToNull()
 }
