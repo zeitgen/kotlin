@@ -5,27 +5,31 @@
 package org.jetbrains.kotlin.gradle
 
 import org.junit.Test
+import java.io.File
 
 public class DirtyLookupIT : BaseGradleIT() {
 
     @Test //https://youtrack.jetbrains.com/issue/KT-28233
     fun testChangeTypeAlias() {
-        val project = Project("incrementalMultiproject")
+        val project = Project("simpleNewIncremental")
         project.setupWorkingDir()
 
         project.build(":lib:build") {
             assertSuccessful()
         }
 
-        project.projectDir.resolve("src/kotlin/test/types.kt").writeText("typealias Type = Int")
-        project.projectDir.resolve("src/kotlin/test/FooImpl").writeText("package test\n" +
-                                                                                "class FooImpl : Foo {\n" +
-                                                                                "    override val values: Type\n" +
-                                                                                "        get() = 0\n" +
-                                                                                "}")
+        project.projectDir.resolve("lib/src/main/kotlin/foo/types.kt").writeText("typealias Type = Int")
+
+        project.projectDir.resolve("lib/src/main/kotlin/foo/KotlinClassToUpdate.kt")
+            .replaceText("get() = \"0\"", " get() = 0")
+
         project.build("build") {
             assertSuccessful()
         }
+    }
+
+    private fun File.replaceText(oldText: String, newText: String) {
+        writeText(readText().replace(oldText, newText))
     }
 
     @Test //https://youtrack.jetbrains.com/issue/KT-40656
@@ -54,17 +58,17 @@ public class DirtyLookupIT : BaseGradleIT() {
 
     @Test //https://youtrack.jetbrains.com/issue/KT-25455
     fun testOverrideMethod() {
-        val project = Project("incrementalMultiproject")
+        val project = Project("simpleNewIncremental")
         project.setupWorkingDir()
 
         project.build("build") {
             assertSuccessful()
         }
 
-        project.projectDir.resolve("src/kotlin/test/FooExtended")
+        project.projectDir.resolve("lib/src/main/kotlin/foo/NewKotlinOpenClass")
             .writeText(
-                "package test\n" +
-                        "class FooExtended {}"
+                "package foo\n" +
+                        "open class NewKotlinOpenClass {}"
             )
 
         project.build("build") {
@@ -74,20 +78,22 @@ public class DirtyLookupIT : BaseGradleIT() {
 
     @Test //https://youtrack.jetbrains.com/issue/KT-13677
     fun changeMemberVisibility() {
-        val project = Project("incrementalMultiproject")
+        val project = Project("simpleNewIncremental")
         project.setupWorkingDir()
 
         project.build("build") {
             assertSuccessful()
         }
 
-//        project.projectDir.resolve("app/src/kotlin/foo/AA")
-//            .replace writeText(
-//                "package test\n" +
-//                        "class FooExtended {}"
-//            )
+        project.projectDir.resolve("lib/src/main/kotlin/bar/lib.kt")
+            .appendText("fun useOverrideProtectedMethod(arg: foo.NewKotlinOpenClass) {\n" +
+                                "    arg.methodToOverride()\n" +
+                                "}")
 
-        project.build("app:build") {
+        project.projectDir.resolve("lib/src/main/kotlin/foo/KotlinOpenClass.kt")
+            .replaceText("open protected fun protectedMethod() {}", "open public fun protectedMethod() {}")
+
+        project.build("lib:build") {
             assertSuccessful()
         }
 

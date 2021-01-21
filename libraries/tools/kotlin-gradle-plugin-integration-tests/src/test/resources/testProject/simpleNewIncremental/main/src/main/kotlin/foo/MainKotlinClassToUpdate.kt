@@ -1,7 +1,7 @@
-package test
+package foo
 
 class MainKotlinClassToUpdate {
-    fun simpleMethod() = "test"
+    fun simpleMethod() = "foo"
 
     fun methodToDelete(arg: String) {}
 }
