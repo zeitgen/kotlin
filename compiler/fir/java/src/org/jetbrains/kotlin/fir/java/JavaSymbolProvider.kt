@@ -557,11 +557,8 @@ fun FqName.topLevelName() =
  * The caching is needed as we cannot directly use `parentClassSymbol.fir.javaTypeParameterStack`
  * as `parentClassSymbol.fir` is not yet initialized during nested class conversion
  */
-@Suppress("EXPERIMENTAL_FEATURE_WARNING")
-private inline class JavaTypeParameterStackCache constructor(
-    private val parentClassTypeParameterStackCache: ThreadLocal<ParentTypeParameterClassCacheEntry> =
-        ThreadLocal.withInitial { ParentTypeParameterClassCacheEntry() }
-) {
+private class JavaTypeParameterStackCache{
+    private val parentClassTypeParameterStackCache = ThreadLocal.withInitial { ParentTypeParameterClassCacheEntry() }
 
     inline fun <R> withCachedValue(
         classSymbol: FirRegularClassSymbol,
