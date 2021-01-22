@@ -100,7 +100,7 @@ class PerfBenchListener(private val helper: PerfStat) : BenchListener() {
                 cell(stageName, align = LEFT)
                 for (metric in metrics) {
                     when (metric) {
-                        is StatResult.Metric.LongMetric -> cell(metric.value)
+                        is StatResult.Metric.LongMetric -> cell(metric.value.toString())
                         is StatResult.Metric.CpuIdMetric -> cell(metric.value.toString())
                     }
                 }
