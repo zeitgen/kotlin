@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.idea.frontend.api.symbols
 
 import org.jetbrains.kotlin.idea.frontend.api.symbols.markers.*
 import org.jetbrains.kotlin.idea.frontend.api.symbols.pointers.KtSymbolPointer
+import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
@@ -35,7 +36,7 @@ abstract class KtJavaFieldSymbol :
     KtSymbolWithKind {
     final override val symbolKind: KtSymbolKind get() = KtSymbolKind.MEMBER
 
-    abstract val callableIdIfNonLocal: FqName?
+    abstract val callableIdIfNonLocal: CallableId
 
     abstract override fun createPointer(): KtSymbolPointer<KtJavaFieldSymbol>
 }

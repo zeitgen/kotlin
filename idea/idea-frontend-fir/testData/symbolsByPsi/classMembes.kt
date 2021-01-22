@@ -33,7 +33,7 @@ KtFirFunctionSymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
-  callableIdIfNonLocal: A.x
+  callableIdIfNonLocal: /A.x
   dispatchType: A
   isExtension: false
   isExternal: false

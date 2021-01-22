@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.idea.frontend.api.symbols
 
 import org.jetbrains.kotlin.idea.frontend.api.symbols.markers.*
 import org.jetbrains.kotlin.idea.frontend.api.symbols.pointers.KtSymbolPointer
+import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 
@@ -30,7 +31,7 @@ abstract class KtFunctionSymbol : KtFunctionLikeSymbol(),
     KtSymbolWithModality<KtCommonSymbolModality>,
     KtSymbolWithVisibility,
     KtAnnotatedSymbol {
-    abstract val callableIdIfNonLocal: FqName?
+    abstract val callableIdIfNonLocal: CallableId?
 
     abstract val isSuspend: Boolean
     abstract val isOperator: Boolean

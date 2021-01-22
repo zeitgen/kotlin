@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.idea.frontend.api.symbols.markers.KtCommonSymbolModa
 import org.jetbrains.kotlin.idea.frontend.api.symbols.markers.KtSymbolVisibility
 import org.jetbrains.kotlin.idea.frontend.api.symbols.markers.KtTypeAndAnnotations
 import org.jetbrains.kotlin.idea.frontend.api.symbols.pointers.KtSymbolPointer
+import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
@@ -38,10 +39,7 @@ internal class KtFirJavaFieldSymbol(
     override val isVal: Boolean get() = firRef.withFir { it.isVal }
     override val name: Name get() = firRef.withFir { it.name }
 
-    override val callableIdIfNonLocal: FqName?
-        get() = firRef.withFir { fir ->
-            fir.symbol.callableId.asFqNameForDebugInfo() // todo check if local
-        }
+    override val callableIdIfNonLocal: CallableId get() = firRef.withFir { fir -> fir.symbol.callableId }
 
     override val modality: KtCommonSymbolModality get() = getModality()
 

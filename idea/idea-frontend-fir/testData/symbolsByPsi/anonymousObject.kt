@@ -13,7 +13,7 @@ KtFirFunctionSymbol:
   annotatedType: [] kotlin/Unit
   annotationClassIds: []
   annotations: []
-  callableIdIfNonLocal: <anonymous>.run
+  callableIdIfNonLocal: /<anonymous>.run
   dispatchType: <anonymous>
   isExtension: false
   isExternal: false

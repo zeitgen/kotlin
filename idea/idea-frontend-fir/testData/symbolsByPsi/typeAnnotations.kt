@@ -126,7 +126,7 @@ KtFirFunctionSymbol:
   annotatedType: [Anno3()] I
   annotationClassIds: []
   annotations: []
-  callableIdIfNonLocal: X.f
+  callableIdIfNonLocal: /X.f
   dispatchType: X
   isExtension: false
   isExternal: false

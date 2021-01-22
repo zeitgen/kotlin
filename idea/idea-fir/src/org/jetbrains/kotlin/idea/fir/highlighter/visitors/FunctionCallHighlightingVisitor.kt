@@ -12,6 +12,9 @@ import org.jetbrains.kotlin.idea.frontend.api.calls.*
 import org.jetbrains.kotlin.idea.frontend.api.symbols.*
 import org.jetbrains.kotlin.idea.frontend.api.symbols.markers.KtSymbolKind
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.CallableId
+import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.serialization.deserialization.KOTLIN_SUSPEND_BUILT_IN_FUNCTION_FQ_NAME
 import org.jetbrains.kotlin.idea.highlighter.KotlinHighlightingColors as Colors
@@ -55,7 +58,7 @@ internal class FunctionCallHighlightingVisitor(
             is KtConstructorSymbol -> Colors.CONSTRUCTOR_CALL
             is KtAnonymousFunctionSymbol -> null
             is KtFunctionSymbol -> when {
-                function.callableIdIfNonLocal == KOTLIN_SUSPEND_BUILT_IN_FUNCTION_FQ_NAME -> Colors.KEYWORD
+                function.callableIdIfNonLocal == KOTLIN_SUSPEND_BUILT_IN_FUNCTION_CALLABLE_ID -> Colors.KEYWORD
                 function.isExtension -> Colors.EXTENSION_FUNCTION_CALL
                 function.symbolKind == KtSymbolKind.TOP_LEVEL -> Colors.PACKAGE_FUNCTION_CALL
                 else -> Colors.FUNCTION_CALL
@@ -65,5 +68,9 @@ internal class FunctionCallHighlightingVisitor(
         call is KtFunctionalTypeVariableCall -> Colors.VARIABLE_AS_FUNCTION_CALL
         call is KtVariableWithInvokeFunctionCall -> Colors.VARIABLE_AS_FUNCTION_LIKE_CALL
         else -> null
+    }
+
+    companion object {
+        private val KOTLIN_SUSPEND_BUILT_IN_FUNCTION_CALLABLE_ID = CallableId(FqName("kotlin"), Name.identifier("suspend"))
     }
 }
