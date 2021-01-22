@@ -232,7 +232,13 @@ internal tailrec fun FirCallableSymbol<*>.unwrapCallRepresentative(root: FirCall
         val originalForTypeAlias = fir.originalConstructorIfTypeAlias
         if (originalForTypeAlias != null) return originalForTypeAlias.symbol.unwrapCallRepresentative(this)
     }
-    if (fir.isIntersectionOverride) return this
+    if (fir.isIntersectionOverride) {
+        if (fir is FirCallableMemberDeclaration && fir.dispatchReceiverType is ConeIntersectionType) {
+            return fir.baseForIntersectionOverride!!.symbol.unwrapCallRepresentative(this)
+        }
+
+        return this
+    }
 
     val overriddenSymbol = fir.originalForSubstitutionOverride?.takeIf {
         it.containingClass() == root.containingClass()
