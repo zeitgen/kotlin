@@ -7,29 +7,28 @@
 
 package kotlin.js
 
-// Parameters are suffixed with `_hack` as a workaround for Namer.
 // TODO: Implemet as compiler intrinsics
 
 /**
  * Function corresponding to JavaScript's `typeof` operator
  */
-public fun jsTypeOf(value_hack: Any?): String =
-    js("typeof value_hack").unsafeCast<String>()
+public fun jsTypeOf(value: Any?): String =
+    js("typeof value").unsafeCast<String>()
 
-internal fun jsDeleteProperty(obj_hack: Any, property_hack: Any) {
-    js("delete obj_hack[property_hack]")
+internal fun jsDeleteProperty(obj: Any, property: Any) {
+    js("delete obj[property]")
 }
 
-internal fun jsBitwiseOr(lhs_hack: Any?, rhs_hack: Any?): Int =
-    js("lhs_hack | rhs_hack").unsafeCast<Int>()
+internal fun jsBitwiseOr(lhs: Any?, rhs: Any?): Int =
+    js("lhs | rhs").unsafeCast<Int>()
 
-internal fun jsBitwiseAnd(lhs_hack: Any?, rhs_hack: Any?): Int =
-    js("lhs_hack & rhs_hack").unsafeCast<Int>()
+internal fun jsBitwiseAnd(lhs: Any?, rhs: Any?): Int =
+    js("lhs & rhs").unsafeCast<Int>()
 
-internal fun jsInstanceOf(obj_hack: Any?, jsClass_hack: Any?): Boolean =
-    js("obj_hack instanceof jsClass_hack").unsafeCast<Boolean>()
+internal fun jsInstanceOf(obj: Any?, jsClass: Any?): Boolean =
+    js("obj instanceof jsClass").unsafeCast<Boolean>()
 
 // Returns true if the specified property is in the specified object or its prototype chain.
-internal fun jsIn(lhs_hack: Any?, rhs_hack: Any): Boolean =
-    js("lhs_hack in rhs_hack").unsafeCast<Boolean>()
+internal fun jsIn(lhs: Any?, rhs: Any): Boolean =
+    js("lhs in rhs").unsafeCast<Boolean>()
 
