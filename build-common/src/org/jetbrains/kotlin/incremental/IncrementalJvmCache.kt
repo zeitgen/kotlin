@@ -303,7 +303,7 @@ open class IncrementalJvmCache(
             storage[key] = newData
 
             val packageFqName = kotlinClass.className.packageFqName
-            changesCollector.collectProtoChanges(oldData?.toProtoData(packageFqName), newData.toProtoData(packageFqName))
+            changesCollector.collectProtoChanges(oldData?.toProtoData(packageFqName), newData.toProtoData(packageFqName), packageProtoKey = key)
         }
 
         operator fun contains(className: JvmClassName): Boolean =

@@ -90,10 +90,15 @@ public class DirtyLookupIT : BaseGradleIT() {
                                 "    arg.methodToOverride()\n" +
                                 "}")
 
+        project.projectDir.resolve("main/src/main/kotlin/bar/main.kt")
+            .appendText("fun useOverrideProtectedMethod(arg: foo.NewKotlinOpenClass) {\n" +
+                                "    arg.methodToOverride()\n" +
+                                "}")
+
         project.projectDir.resolve("lib/src/main/kotlin/foo/KotlinOpenClass.kt")
             .replaceText("open protected fun protectedMethod() {}", "open public fun protectedMethod() {}")
 
-        project.build("lib:build") {
+        project.build("build") {
             assertSuccessful()
         }
 

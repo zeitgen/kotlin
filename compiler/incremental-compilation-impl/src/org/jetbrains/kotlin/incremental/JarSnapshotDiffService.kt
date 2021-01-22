@@ -24,12 +24,14 @@ class JarSnapshotDiffService() {
             caches: IncrementalCacheCommon
         ) = diffCache.computeIfAbsent(Pair(snapshotJar, newJar)) { (snapshot, actual) ->
             val dirtyFqNames = mutableListOf<FqName>()
-            val symbols = mutableListOf<LookupSymbol>()
+            val dirtyLookupSymbols = mutableListOf<LookupSymbol>()
 
             for ((fqName, protoData) in snapshot.protos) {
                 val newProtoData = actual.protos[fqName]
                 if (newProtoData == null) {
-                    addProtoInfo(protoData, dirtyFqNames, fqName, symbols)
+                    val (fqNames, symbols) = addProtoInfo(protoData, fqName)
+                    dirtyFqNames.addAll(fqNames)
+                    dirtyLookupSymbols.addAll(symbols)
                 } else {
                     if (protoData is ClassProtoData && newProtoData is ClassProtoData) {
                         ProtoCompareGenerated(
@@ -46,7 +48,7 @@ class JarSnapshotDiffService() {
 
                             val scope = fqName.parent().asString()
                             val name = fqName.shortName().identifier
-                            symbols.add(LookupSymbol(name, scope))
+                            dirtyLookupSymbols.add(LookupSymbol(name, scope))
                         }
                         for (member in diff.changedMembersNames) {
                             //TODO mark dirty symbols for subclasses
@@ -54,15 +56,15 @@ class JarSnapshotDiffService() {
                             dirtyFqNames.addAll(fqNames)
 
                             for (fqName in fqNames) {
-                                symbols.add(LookupSymbol(member, fqName.asString()))
-                                symbols.add(LookupSymbol(SAM_LOOKUP_NAME.asString(), fqName.asString()))
+                                dirtyLookupSymbols.add(LookupSymbol(member, fqName.asString()))
+                                dirtyLookupSymbols.add(LookupSymbol(SAM_LOOKUP_NAME.asString(), fqName.asString()))
                             }
                         }
 
                     } else if (protoData is PackagePartProtoData && newProtoData is PackagePartProtoData) {
                         val diff = DifferenceCalculatorForPackageFacade(protoData, newProtoData).difference()
                         for (member in diff.changedMembersNames) {
-                            symbols.add(LookupSymbol(member, fqName.asString()))
+                            dirtyLookupSymbols.add(LookupSymbol(member, fqName.asString()))
                         }
                     } else {
                         //TODO is it a valid case
@@ -70,18 +72,20 @@ class JarSnapshotDiffService() {
                     }
                 }
             }
+
+
 //                fqNames.addAll(snapshot.protos.keys.removeAll(actual.protos.keys))
 
-            DirtyData(symbols, dirtyFqNames)
+            DirtyData(dirtyLookupSymbols, dirtyFqNames)
         }
 
         //TODO change to return type
         private fun addProtoInfo(
             protoData: ProtoData,
-            fqNames: MutableList<FqName>,
             fqName: FqName,
-            symbols: MutableList<LookupSymbol>
-        ) {
+        ) : Pair<List<FqName>, List<LookupSymbol>>{
+            val fqNames = ArrayList<FqName>()
+            val symbols = ArrayList<LookupSymbol>()
             when (protoData) {
                 is ClassProtoData -> {
                     fqNames.add(fqName)
@@ -95,6 +99,7 @@ class JarSnapshotDiffService() {
 
                 }
             }
+            return Pair(fqNames, symbols)
         }
 
     }

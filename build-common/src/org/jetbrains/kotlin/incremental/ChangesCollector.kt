@@ -101,7 +101,7 @@ class ChangesCollector {
         }
     }
 
-    fun collectProtoChanges(oldData: ProtoData?, newData: ProtoData?, collectAllMembersForNewClass: Boolean = false) {
+    fun collectProtoChanges(oldData: ProtoData?, newData: ProtoData?, collectAllMembersForNewClass: Boolean = false, packageProtoKey: String? = null) {
         if (oldData == null && newData == null) {
             throw IllegalStateException("Old and new value are null")
         }
@@ -115,7 +115,7 @@ class ChangesCollector {
                 is PackagePartProtoData -> {
                     //TODO fqName is not unique. It's package and can be present in both java and kotlin
                     val fqName = newData.packageFqName
-                    storage[fqName] = newData
+                    storage[packageProtoKey?.let { FqName(it) } ?: fqName] = newData
                 }
             }
         } else {
@@ -125,6 +125,7 @@ class ChangesCollector {
                 }
                 is PackagePartProtoData -> {
                     //TODO fqName is not unique. It's package and can be present in both java and kotlin
+                    removed.add(packageProtoKey?.let { FqName(it) } ?: oldData.packageFqName)
                 }
             }
         }
