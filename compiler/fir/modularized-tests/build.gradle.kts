@@ -71,9 +71,6 @@ sourceSets {
 }
 
 projectTest {
-
-    executable = getConfiguredJdks().single { it.majorVersion >= JdkMajorVersion.JDK_9 }.homeDir.resolve("bin/java").absolutePath
-
     systemProperties(project.properties.filterKeys { it.startsWith("fir.") })
     workingDir = rootDir
     jvmArgs!!.removeIf { it.contains("-Xmx") || it.contains("-Xms") || it.contains("ReservedCodeCacheSize") }
