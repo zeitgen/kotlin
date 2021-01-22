@@ -414,7 +414,7 @@ fun FirResolveBench.TotalStatistics.reportErrors(stream: PrintStream) {
     }
 }
 
-fun FirResolveBench.TotalStatistics.reportTimings(stream: PrintStream, raw: Boolean = false) {
+fun FirResolveBench.TotalStatistics.reportTimings(stream: PrintStream) {
     printTable(stream) {
         row {
             cell("Stage", LEFT)
