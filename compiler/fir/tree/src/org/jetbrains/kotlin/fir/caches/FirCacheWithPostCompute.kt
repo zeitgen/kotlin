@@ -5,7 +5,7 @@
 
 package org.jetbrains.kotlin.fir.caches
 
-interface FirCache<KEY : Any, VALUE, CONTEXT> {
+interface FirCache<in KEY : Any, out VALUE, in CONTEXT> {
     fun getValue(key: KEY, context: CONTEXT): VALUE
     fun getValueIfComputed(key: KEY): VALUE?
 }
