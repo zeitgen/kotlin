@@ -32,6 +32,19 @@ interface NewTypeSubstitutor : TypeSubstitutorMarker {
         return null
     }
 
+    private fun substituteTypeEnhancement(type: TypeWithEnhancement, keepAnnotation: Boolean, runCapturedChecks: Boolean): KotlinType? {
+        val enhancement = type.enhancement
+        val enhancementUpperBound = substitute(enhancement.upperIfFlexible(), keepAnnotation, runCapturedChecks) ?: return null
+
+        if (enhancement !is FlexibleType)
+            return enhancementUpperBound
+
+        val enhancementLowerBound = substitute(enhancement.lowerBound, keepAnnotation, runCapturedChecks) ?: return enhancementUpperBound
+
+        // todo discuss lowerIfFlexible and upperIfFlexible
+        return KotlinTypeFactory.flexibleType(enhancementLowerBound.lowerIfFlexible(), enhancementUpperBound.upperIfFlexible())
+    }
+
     private fun substitute(type: UnwrappedType, keepAnnotation: Boolean, runCapturedChecks: Boolean): UnwrappedType? =
         when (type) {
             is SimpleType -> substitute(type, keepAnnotation, runCapturedChecks)
@@ -40,6 +53,9 @@ interface NewTypeSubstitutor : TypeSubstitutorMarker {
             } else {
                 val lowerBound = substitute(type.lowerBound, keepAnnotation, runCapturedChecks)
                 val upperBound = substitute(type.upperBound, keepAnnotation, runCapturedChecks)
+                val enhancement =
+                    if (type is TypeWithEnhancement) substituteTypeEnhancement(type, keepAnnotation, runCapturedChecks) else null
+
                 if (lowerBound == null && upperBound == null) {
                     null
                 } else {
@@ -47,7 +63,7 @@ interface NewTypeSubstitutor : TypeSubstitutorMarker {
                     KotlinTypeFactory.flexibleType(
                         lowerBound?.lowerIfFlexible() ?: type.lowerBound,
                         upperBound?.upperIfFlexible() ?: type.upperBound
-                    ).inheritEnhancement(type)
+                    ).wrapEnhancement(enhancement)
                 }
             }
         }
