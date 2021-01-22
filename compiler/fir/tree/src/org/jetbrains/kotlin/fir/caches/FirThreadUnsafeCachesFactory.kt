@@ -17,8 +17,9 @@ object FirThreadUnsafeCachesFactory : FirCachesFactory() {
 }
 
 @Suppress("UNCHECKED_CAST")
-private class FirThreadUnsafeCache<KEY : Any, VALUE, CONTEXT>(private val createValue: (KEY, CONTEXT) -> VALUE) :
-    FirCache<KEY, VALUE, CONTEXT> {
+private class FirThreadUnsafeCache<KEY : Any, VALUE, CONTEXT>(
+    private val createValue: (KEY, CONTEXT) -> VALUE
+) : FirCache<KEY, VALUE, CONTEXT>() {
     private val map = NullableMap<KEY, VALUE>()
 
     override fun getValue(key: KEY, context: CONTEXT): VALUE =
@@ -36,7 +37,7 @@ private class FirThreadUnsafeCache<KEY : Any, VALUE, CONTEXT>(private val create
 private class FirThreadUnsafeCacheWithPostCompute<KEY : Any, VALUE, CONTEXT, DATA>(
     private val createValue: (KEY, CONTEXT) -> Pair<VALUE, DATA>,
     private val postCompute: (KEY, VALUE, DATA) -> Unit
-) : FirCache<KEY, VALUE, CONTEXT> {
+) : FirCache<KEY, VALUE, CONTEXT>() {
     private val map = NullableMap<KEY, VALUE>()
 
     override fun getValue(key: KEY, context: CONTEXT): VALUE =
