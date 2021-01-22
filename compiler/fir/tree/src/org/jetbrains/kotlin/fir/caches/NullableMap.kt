@@ -11,7 +11,6 @@ import org.jetbrains.kotlin.fir.PrivateForInline
  * [Map] which allows store null values
  */
 @OptIn(PrivateForInline::class)
-@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
 internal inline class NullableMap<KEY, VALUE>(private val map: MutableMap<KEY, Any> = HashMap()) {
 
     /**
@@ -19,6 +18,7 @@ internal inline class NullableMap<KEY, VALUE>(private val map: MutableMap<KEY, A
      * Execute [orElse] otherwise and return it result,
      * [orElse] can modify the map inside
      */
+    @Suppress("UNCHECKED_CAST")
     inline fun getOrElse(key: KEY, orElse: () -> VALUE): VALUE =
         when (val value = map[key]) {
             null -> orElse()
@@ -26,6 +26,7 @@ internal inline class NullableMap<KEY, VALUE>(private val map: MutableMap<KEY, A
             else -> value
         } as VALUE
 
+    @Suppress("NOTHING_TO_INLINE")
     inline operator fun set(key: KEY, value: VALUE) {
         map[key] = value ?: NullValue
     }
