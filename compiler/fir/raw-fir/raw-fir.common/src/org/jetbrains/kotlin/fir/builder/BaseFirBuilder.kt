@@ -20,8 +20,8 @@ import org.jetbrains.kotlin.fir.expressions.builder.*
 import org.jetbrains.kotlin.fir.references.FirReference
 import org.jetbrains.kotlin.fir.references.builder.*
 import org.jetbrains.kotlin.fir.references.impl.FirSimpleNamedReference
-import org.jetbrains.kotlin.fir.symbols.CallableId
-import org.jetbrains.kotlin.fir.symbols.LocalCallableIdConstructor
+import org.jetbrains.kotlin.name.CallableId
+import org.jetbrains.kotlin.name.LocalCallableIdConstructor
 import org.jetbrains.kotlin.fir.symbols.impl.*
 import org.jetbrains.kotlin.fir.types.ConeClassLikeType
 import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
@@ -118,7 +118,7 @@ abstract class BaseFirBuilder<T>(val baseSession: FirSession, val context: Conte
                         else
                             result.child(Name.identifier(firFunctionTarget.labelName!!))
                     }
-                @OptIn(LocalCallableIdConstructor::class) CallableId(name, pathFqName)
+                @OptIn(LocalCallableIdConstructor::class) (CallableId(name, pathFqName))
             }
             context.className == FqName.ROOT -> CallableId(context.packageFqName, name)
             context.className.shortName() == ANONYMOUS_OBJECT_NAME -> CallableId(ANONYMOUS_CLASS_ID, name)
