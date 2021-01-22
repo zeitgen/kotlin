@@ -1305,6 +1305,7 @@ KtFirConstructorSymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: kotlin/Int
   dispatchType: null
   isPrimary: true

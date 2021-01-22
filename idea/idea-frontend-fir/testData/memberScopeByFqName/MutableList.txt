@@ -425,7 +425,7 @@ KtFirKotlinPropertySymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
-  callableIdIfNonLocal: kotlin.collections.List.size
+  callableIdIfNonLocal: kotlin/collections/List.size
   dispatchType: kotlin/collections/MutableList<E>
   getter: null
   hasBackingField: false

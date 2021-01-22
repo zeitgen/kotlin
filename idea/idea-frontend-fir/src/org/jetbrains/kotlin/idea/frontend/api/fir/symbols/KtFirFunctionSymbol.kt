@@ -72,7 +72,7 @@ internal class KtFirFunctionSymbol(
     override val isExternal: Boolean get() = firRef.withFir { it.isExternal }
     override val isInline: Boolean get() = firRef.withFir { it.isInline }
     override val isExtension: Boolean get() = firRef.withFir { it.receiverTypeRef != null }
-    override val callableIdIfNonLocal: CallableId? get() = firRef.withFir { fir -> fir.symbol.callableId.takeUnless { fir.isLocal } }
+    override val callableIdIfNonLocal: CallableId? get() = firRef.withFir { fir -> fir.symbol.callableId.takeUnless { it.isSafe } }
 
     override val symbolKind: KtSymbolKind
         get() = firRef.withFir { fir ->

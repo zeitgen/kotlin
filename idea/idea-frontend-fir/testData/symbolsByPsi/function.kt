@@ -6,6 +6,7 @@ KtFirFunctionValueParameterSymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   hasDefaultValue: false
   isVararg: false
   name: x

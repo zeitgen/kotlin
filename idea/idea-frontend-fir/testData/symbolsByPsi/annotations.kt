@@ -15,6 +15,7 @@ KtFirFunctionValueParameterSymbol:
   annotatedType: [] kotlin/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   hasDefaultValue: false
   isVararg: false
   name: param1
@@ -25,6 +26,7 @@ KtFirFunctionValueParameterSymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   hasDefaultValue: false
   isVararg: false
   name: param2
@@ -35,6 +37,7 @@ KtFirConstructorSymbol:
   annotatedType: [] Anno
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: Anno
   dispatchType: null
   isPrimary: true

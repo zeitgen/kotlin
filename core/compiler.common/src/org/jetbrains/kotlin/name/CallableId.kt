@@ -28,6 +28,9 @@ data class CallableId(
             return field
         }
 
+    val isLocal: Boolean
+        get() = packageName == PACKAGE_FQ_NAME_FOR_LOCAL
+
     constructor(classId: ClassId, callableName: Name) : this(classId.packageFqName, classId.relativeClassName, callableName) {
         this.classId = classId
     }

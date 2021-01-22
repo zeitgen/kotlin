@@ -9,7 +9,7 @@ KtFirKotlinPropertySymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
-  callableIdIfNonLocal: A.a
+  callableIdIfNonLocal: /A.a
   dispatchType: A
   getter: KtFirPropertyGetterSymbol(<getter>)
   hasBackingField: true

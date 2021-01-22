@@ -36,7 +36,7 @@ abstract class KtJavaFieldSymbol :
     KtSymbolWithKind {
     final override val symbolKind: KtSymbolKind get() = KtSymbolKind.MEMBER
 
-    abstract val callableIdIfNonLocal: CallableId
+    abstract override val callableIdIfNonLocal: CallableId
 
     abstract override fun createPointer(): KtSymbolPointer<KtJavaFieldSymbol>
 }
@@ -54,8 +54,6 @@ sealed class KtPropertySymbol : KtVariableSymbol(),
 
     abstract val getter: KtPropertyGetterSymbol?
     abstract val setter: KtPropertySetterSymbol?
-
-    abstract val callableIdIfNonLocal: FqName?
 
     abstract val hasBackingField: Boolean
 
@@ -84,6 +82,8 @@ abstract class KtSyntheticJavaPropertySymbol : KtPropertySymbol() {
 }
 
 abstract class KtLocalVariableSymbol : KtVariableSymbol(), KtSymbolWithKind {
+    final override val callableIdIfNonLocal: CallableId? get() = null
+
     abstract override fun createPointer(): KtSymbolPointer<KtLocalVariableSymbol>
 }
 
@@ -98,6 +98,8 @@ sealed class KtParameterSymbol : KtVariableLikeSymbol(), KtSymbolWithKind, KtAnn
 abstract class KtFunctionParameterSymbol : KtParameterSymbol() {
     final override val symbolKind: KtSymbolKind get() = KtSymbolKind.NON_PROPERTY_PARAMETER
 
+    final override val callableIdIfNonLocal: CallableId? get() = null
+
     abstract override fun createPointer(): KtSymbolPointer<KtFunctionParameterSymbol>
 }
 
@@ -109,6 +111,8 @@ abstract class KtConstructorParameterSymbol : KtParameterSymbol() {
 
 abstract class KtSetterParameterSymbol : KtParameterSymbol() {
     final override val symbolKind: KtSymbolKind get() = KtSymbolKind.NON_PROPERTY_PARAMETER
+
+    final override val callableIdIfNonLocal: CallableId? get() = null
 
     abstract override fun createPointer(): KtSymbolPointer<KtSetterParameterSymbol>
 }

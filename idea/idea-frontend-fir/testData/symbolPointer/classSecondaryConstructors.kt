@@ -8,6 +8,7 @@ KtFirConstructorSymbol:
   annotatedType: [] A
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: A
   dispatchType: null
   isPrimary: true
@@ -21,6 +22,7 @@ KtFirFunctionValueParameterSymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   hasDefaultValue: false
   isVararg: false
   name: x
@@ -31,6 +33,7 @@ KtFirConstructorSymbol:
   annotatedType: [] A
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: A
   dispatchType: null
   isPrimary: false
@@ -44,6 +47,7 @@ KtFirFunctionValueParameterSymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   hasDefaultValue: false
   isVararg: false
   name: y
@@ -54,6 +58,7 @@ KtFirFunctionValueParameterSymbol:
   annotatedType: [] kotlin/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   hasDefaultValue: false
   isVararg: false
   name: z
@@ -64,6 +69,7 @@ KtFirConstructorSymbol:
   annotatedType: [] A
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: A
   dispatchType: null
   isPrimary: false

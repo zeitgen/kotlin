@@ -31,6 +31,7 @@ import org.jetbrains.kotlin.idea.frontend.api.symbols.pointers.KtPsiBasedSymbolP
 import org.jetbrains.kotlin.idea.frontend.api.symbols.pointers.KtSymbolPointer
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.idea.frontend.api.types.KtType
+import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
@@ -80,10 +81,7 @@ internal class KtFirKotlinPropertySymbol(
     override fun containsAnnotation(classId: ClassId): Boolean = firRef.containsAnnotation(classId)
     override val annotationClassIds: Collection<ClassId> by cached { firRef.getAnnotationClassIds() }
 
-    override val callableIdIfNonLocal: FqName?
-        get() = firRef.withFir { fir ->
-            fir.symbol.callableId.takeUnless { fir.isLocal }?.asFqNameForDebugInfo()
-        }
+    override val callableIdIfNonLocal: CallableId? get() = firRef.withFir { fir -> fir.symbol.callableId.takeUnless { it.isSafe } }
 
     override val getter: KtPropertyGetterSymbol? by firRef.withFirAndCache(FirResolvePhase.RAW_FIR) { property ->
         property.getter?.let { builder.buildPropertyAccessorSymbol(it) } as? KtPropertyGetterSymbol

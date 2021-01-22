@@ -6,6 +6,7 @@ KtFirConstructorSymbol:
   annotatedType: [] A
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: A
   dispatchType: null
   isPrimary: true

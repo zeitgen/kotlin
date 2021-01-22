@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.idea.frontend.api.symbols.markers.KtSymbolKind
 import org.jetbrains.kotlin.idea.frontend.api.symbols.markers.KtTypeAndAnnotations
 import org.jetbrains.kotlin.idea.frontend.api.symbols.pointers.KtPsiBasedSymbolPointer
 import org.jetbrains.kotlin.idea.frontend.api.symbols.pointers.KtSymbolPointer
+import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 
@@ -51,6 +52,8 @@ internal class KtFirConstructorValueParameterSymbol(
     override val annotations: List<KtAnnotationCall> by cached { firRef.toAnnotationsList() }
     override fun containsAnnotation(classId: ClassId): Boolean = firRef.containsAnnotation(classId)
     override val annotationClassIds: Collection<ClassId> by cached { firRef.getAnnotationClassIds() }
+
+    override val callableIdIfNonLocal: CallableId? get() = firRef.withFir { fir -> fir.symbol.callableId.takeUnless { it.isSafe } }
 
     override val constructorParameterKind: KtConstructorParameterSymbolKind
         get() = firRef.withFir { fir ->

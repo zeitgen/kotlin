@@ -77,7 +77,7 @@ KtFirKotlinPropertySymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
-  callableIdIfNonLocal: kotlin.CharSequence.length
+  callableIdIfNonLocal: kotlin/CharSequence.length
   dispatchType: kotlin/CharSequence
   getter: KtFirPropertyGetterSymbol(<getter>)
   hasBackingField: true
@@ -1275,6 +1275,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1288,6 +1289,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1301,6 +1303,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1314,6 +1317,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1327,6 +1331,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1340,6 +1345,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: [kotlin/Deprecated]
   annotations: [kotlin/Deprecated(message = Deprecated in Java)]
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1353,6 +1359,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: [kotlin/Deprecated]
   annotations: [kotlin/Deprecated(message = Deprecated in Java)]
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1366,6 +1373,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1379,6 +1387,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1392,6 +1401,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1405,6 +1415,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1418,6 +1429,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1431,6 +1443,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1444,6 +1457,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1457,6 +1471,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1470,6 +1485,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false
@@ -1483,6 +1499,7 @@ KtFirConstructorSymbol:
   annotatedType: [] java/lang/String
   annotationClassIds: [kotlin/Deprecated]
   annotations: [kotlin/Deprecated(message = Deprecated in Java)]
+  callableIdIfNonLocal: null
   containingClassIdIfNonLocal: java/lang/String
   dispatchType: null
   isPrimary: false

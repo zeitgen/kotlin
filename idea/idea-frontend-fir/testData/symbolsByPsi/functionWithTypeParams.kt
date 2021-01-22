@@ -13,6 +13,7 @@ KtFirFunctionValueParameterSymbol:
   annotatedType: [] X
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   hasDefaultValue: false
   isVararg: false
   name: x

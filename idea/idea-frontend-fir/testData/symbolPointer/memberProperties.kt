@@ -8,7 +8,7 @@ KtFirKotlinPropertySymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
-  callableIdIfNonLocal: A.x
+  callableIdIfNonLocal: /A.x
   dispatchType: A
   getter: KtFirPropertyGetterSymbol(<getter>)
   hasBackingField: true
@@ -32,6 +32,7 @@ KtFirPropertyGetterSymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
+  callableIdIfNonLocal: null
   dispatchType: null
   hasBody: true
   isDefault: false
@@ -46,7 +47,7 @@ KtFirKotlinPropertySymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
-  callableIdIfNonLocal: A.y
+  callableIdIfNonLocal: /A.y
   dispatchType: A
   getter: KtFirPropertyGetterSymbol(<getter>)
   hasBackingField: false
