@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 internal class FirThreadSafeCache<KEY : Any, VALUE, CONTEXT>(
     private val createValue: (KEY, CONTEXT) -> VALUE
-) : FirCache<KEY, VALUE, CONTEXT> {
+) : FirCache<KEY, VALUE, CONTEXT>() {
     private val map = ConcurrentHashMap<KEY, Any>()
 
     override fun getValue(key: KEY, context: CONTEXT): VALUE =

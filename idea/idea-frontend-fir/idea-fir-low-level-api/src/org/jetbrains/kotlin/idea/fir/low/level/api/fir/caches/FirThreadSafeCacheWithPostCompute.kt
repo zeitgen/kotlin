@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap
 internal class FirThreadSafeCacheWithPostCompute<KEY : Any, VALUE, CONTEXT, DATA>(
     private val createValue: (KEY, CONTEXT) -> Pair<VALUE, DATA>,
     private val postCompute: (KEY, VALUE, DATA) -> Unit
-) : FirCache<KEY, VALUE, CONTEXT> {
+) : FirCache<KEY, VALUE, CONTEXT>() {
     private val map = ConcurrentHashMap<KEY, ValueWithPostCompute<KEY, VALUE, DATA>>()
 
     @Suppress("UNCHECKED_CAST")
