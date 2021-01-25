@@ -457,6 +457,11 @@ public class JvmOldAgainstIrBoxTestGenerated extends AbstractJvmOldAgainstIrBoxT
             runTest("compiler/testData/compileKotlinAgainstKotlin/fir/IncrementalCompilerRunner.kt");
         }
 
+        @TestMetadata("IrBuiltIns.kt")
+        public void testIrBuiltIns() throws Exception {
+            runTest("compiler/testData/compileKotlinAgainstKotlin/fir/IrBuiltIns.kt");
+        }
+
         @TestMetadata("IrConstAcceptMultiModule.kt")
         public void testIrConstAcceptMultiModule() throws Exception {
             runTest("compiler/testData/compileKotlinAgainstKotlin/fir/IrConstAcceptMultiModule.kt");
