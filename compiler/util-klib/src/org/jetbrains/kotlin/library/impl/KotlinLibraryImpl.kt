@@ -230,7 +230,26 @@ open class KotlinLibraryImpl(
 ) : KotlinLibrary,
     BaseKotlinLibrary by base,
     MetadataLibrary by metadata,
-    IrLibrary by ir
+    IrLibrary by ir {
+    override fun toString(): String {
+        val sb = StringBuilder("Kotlin Library(")
+        sb.append("name: ")
+        sb.append(base.libraryName)
+        sb.append(", ")
+        sb.append("file: ")
+        sb.append(base.libraryFile.path)
+        sb.append(", ")
+        sb.append("version: ")
+        sb.append(base.versions)
+        if (isInterop) {
+            sb.append(", interop: true, ")
+            sb.append("native targets: ")
+            sb.append(nativeTargets.joinToString(", ", "{", "}") { it })
+        }
+        sb.append(")")
+        return sb.toString()
+    }
+}
 
 fun createKotlinLibrary(
     libraryFile: File,
