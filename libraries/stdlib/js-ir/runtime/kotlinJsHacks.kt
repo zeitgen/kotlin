@@ -27,5 +27,4 @@ internal fun <T : Enum<T>> enumValueOfIntrinsic(@Suppress("UNUSED_PARAMETER") na
  * Code gets inserted as is without syntax verification.
  */
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
-@Retention(AnnotationRetention.BINARY)
 internal annotation class JsFun(val code: String)
