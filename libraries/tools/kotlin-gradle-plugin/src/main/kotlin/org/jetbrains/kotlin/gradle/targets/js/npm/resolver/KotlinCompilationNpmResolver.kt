@@ -61,7 +61,7 @@ internal class KotlinCompilationNpmResolver(
 
     val npmProject = compilation.npmProject
 
-    val compilationName = compilation.name
+    val compilationDisambiguatedName = compilation.disambiguatedName
 
     val npmName by lazy {
         npmProject.name
@@ -429,7 +429,7 @@ internal class KotlinCompilationNpmResolver(
                 .filterNotNull()
 
             val toolsNpmDependencies = taskRequirements
-                .getCompilationNpmRequirements(compilationName)
+                .getCompilationNpmRequirements(compilationDisambiguatedName)
 
             val allNpmDependencies = externalNpmDependencyDeclarations + toolsNpmDependencies
 
@@ -463,7 +463,6 @@ internal class KotlinCompilationNpmResolver(
             return KotlinCompilationNpmResolution(
                 if (compilation != null) project else null,
                 npmProject,
-                resolvedInternalDependencies,
                 compositeDependencies,
                 importedExternalGradleDependencies,
                 allNpmDependencies,
