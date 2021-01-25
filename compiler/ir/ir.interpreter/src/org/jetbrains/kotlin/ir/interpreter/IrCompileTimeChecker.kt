@@ -166,8 +166,19 @@ class IrCompileTimeChecker(
         return expression.value.accept(this, data)
     }
 
+    override fun visitExpressionBody(body: IrExpressionBody, data: Nothing?): Boolean {
+        return body.expression.accept(this, data)
+    }
+
     override fun visitGetField(expression: IrGetField, data: Nothing?): Boolean {
         val owner = expression.symbol.owner
+        if (owner.origin == IrDeclarationOrigin.PROPERTY_BACKING_FIELD && owner.correspondingPropertySymbol?.owner?.isConst == true) {
+            val receiverComputable = expression.receiver?.accept(this, null) ?: true
+            val initializerComputable = owner.initializer?.accept(this, null) ?: false
+            if (receiverComputable && initializerComputable) {
+                return true
+            }
+        }
         val parent = owner.parent as IrSymbolOwner
         val isJavaPrimitiveStatic = owner.origin == IrDeclarationOrigin.IR_EXTERNAL_JAVA_DECLARATION_STUB && owner.isStatic &&
                 (owner.type.isPrimitiveType() || owner.type.isStringClassType())
