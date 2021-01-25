@@ -416,6 +416,7 @@ if (buildProperties.inJpsBuildIdeaSync) {
 
             ":include:kotlin-stdlib-common-sources",
 
+            ":kotlin-test:kotlin-test-mpp",
             ":kotlin-test:kotlin-test-js",
             ":kotlin-test:kotlin-test-js-ir",
             ":kotlin-test:kotlin-test-js:kotlin-test-js-it"
@@ -434,6 +435,7 @@ if (buildProperties.inJpsBuildIdeaSync) {
     project(':tools:binary-compatibility-validator').projectDir = "$rootDir/libraries/tools/binary-compatibility-validator" as File
     project(':tools:kotlin-stdlib-gen').projectDir = "$rootDir/libraries/tools/kotlin-stdlib-gen" as File
 
+    project(':kotlin-test:kotlin-test-mpp').projectDir = "$rootDir/libraries/kotlin.test/mpp" as File
     project(':kotlin-test:kotlin-test-js').projectDir = "$rootDir/libraries/kotlin.test/js" as File
     project(':kotlin-test:kotlin-test-js-ir').projectDir = "$rootDir/libraries/kotlin.test/js-ir" as File
     project(':kotlin-test:kotlin-test-js:kotlin-test-js-it').projectDir = "$rootDir/libraries/kotlin.test/js/it" as File
