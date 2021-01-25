@@ -65,18 +65,14 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import java.io.File
-import kotlin.io.path.*
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.createTempDirectory
+import kotlin.io.path.createTempFile
 import org.jetbrains.kotlin.konan.file.File as KonanFile
 
 @OptIn(ExperimentalPathApi::class)
 @Ignore
 class GenerateIrRuntime {
-    private val lookupTracker: LookupTracker = LookupTracker.DO_NOTHING
-    private val logger = object : LoggingContext {
-        override var inVerbosePhase = false
-        override fun log(message: () -> String) {}
-    }
-
     fun loadKlib(klibPath: String, isPacked: Boolean) = createKotlinLibrary(KonanFile("$klibPath${if (isPacked) ".klib" else ""}"))
 
     private fun buildConfiguration(environment: KotlinCoreEnvironment): CompilerConfiguration {
@@ -462,7 +458,7 @@ class GenerateIrRuntime {
 
         val irLinker = JsIrLinker(
             psi2IrContext.moduleDescriptor,
-            emptyLoggingContext,
+            IrMessageLogger.NONE,
             psi2IrContext.irBuiltIns,
             psi2IrContext.symbolTable,
             functionFactory,
@@ -482,6 +478,7 @@ class GenerateIrRuntime {
             moduleName,
             project,
             configuration,
+            IrMessageLogger.NONE,
             bindingContext,
             files,
             tmpKlibDir,
@@ -504,7 +501,7 @@ class GenerateIrRuntime {
 
 
     private fun doSerializeIrModule(module: IrModuleFragment): SerializedIrModule {
-        val serializedIr = JsIrModuleSerializer(logger, module.irBuiltins, mutableMapOf(), true).serializedIrModule(module)
+        val serializedIr = JsIrModuleSerializer(IrMessageLogger.NONE, module.irBuiltins, mutableMapOf(), true).serializedIrModule(module)
         return serializedIr
     }
 
@@ -524,7 +521,7 @@ class GenerateIrRuntime {
         val functionFactory = IrFunctionFactory(irBuiltIns, symbolTable)
         irBuiltIns.functionFactory = functionFactory
 
-        val jsLinker = JsIrLinker(moduleDescriptor, logger, irBuiltIns, symbolTable, functionFactory, null)
+        val jsLinker = JsIrLinker(moduleDescriptor, IrMessageLogger.NONE, irBuiltIns, symbolTable, functionFactory, null)
 
         val moduleFragment = jsLinker.deserializeFullModule(moduleDescriptor, moduleDescriptor.kotlinLibrary)
         jsLinker.init(null, emptyList())
@@ -554,7 +551,7 @@ class GenerateIrRuntime {
         val functionFactory = IrFunctionFactory(irBuiltIns, symbolTable)
         irBuiltIns.functionFactory = functionFactory
 
-        val jsLinker = JsIrLinker(moduleDescriptor, logger, irBuiltIns, symbolTable, functionFactory, null)
+        val jsLinker = JsIrLinker(moduleDescriptor, IrMessageLogger.NONE, irBuiltIns, symbolTable, functionFactory, null)
 
         val moduleFragment = jsLinker.deserializeFullModule(moduleDescriptor, moduleDescriptor.kotlinLibrary)
         // Create stubs
