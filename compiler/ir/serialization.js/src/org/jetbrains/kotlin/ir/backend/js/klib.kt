@@ -364,8 +364,6 @@ fun getModuleDescriptorByLibrary(current: KotlinLibrary, mapping: Map<String, Mo
     return md
 }
 
-object JsIrCompilationError : Throwable()
-
 sealed class MainModule {
     class SourceFiles(val files: List<KtFile>) : MainModule()
     class Klib(val lib: KotlinLibrary) : MainModule()
@@ -422,7 +420,7 @@ private class ModulesStructure(
         var hasErrors = false
         if (analyzer.hasErrors() || analysisResult !is JsAnalysisResult) {
             if (!errorPolicy.allowErrors)
-                throw JsIrCompilationError
+                throw AnalysisResult.CompilationErrorException()
             else hasErrors = true
         }
 

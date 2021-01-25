@@ -190,21 +190,17 @@ class K2JsIrCompiler : CLICompiler<K2JSCompilerArguments>() {
                 else
                     outputFilePath
 
-            try {
-                generateKLib(
-                    project = config.project,
-                    files = sourcesFiles,
-                    analyzer = AnalyzerWithCompilerReport(config.configuration),
-                    configuration = config.configuration,
-                    allDependencies = resolvedLibraries,
-                    friendDependencies = friendDependencies,
-                    irFactory = PersistentIrFactory,
-                    outputKlibPath = outputKlibPath,
-                    nopack = arguments.irProduceKlibDir
-                )
-            } catch (e: JsIrCompilationError) {
-                return COMPILATION_ERROR
-            }
+            generateKLib(
+                project = config.project,
+                files = sourcesFiles,
+                analyzer = AnalyzerWithCompilerReport(config.configuration),
+                configuration = config.configuration,
+                allDependencies = resolvedLibraries,
+                friendDependencies = friendDependencies,
+                irFactory = PersistentIrFactory,
+                outputKlibPath = outputKlibPath,
+                nopack = arguments.irProduceKlibDir
+            )
         }
 
         if (arguments.irProduceJs) {
@@ -250,26 +246,22 @@ class K2JsIrCompiler : CLICompiler<K2JSCompilerArguments>() {
                 return OK
             }
 
-            val compiledModule = try {
-                compile(
-                    projectJs,
-                    mainModule,
-                    AnalyzerWithCompilerReport(config.configuration),
-                    config.configuration,
-                    phaseConfig,
-                    allDependencies = resolvedLibraries,
-                    friendDependencies = friendDependencies,
-                    mainArguments = mainCallArguments,
-                    generateFullJs = !arguments.irDce,
-                    generateDceJs = arguments.irDce,
-                    dceDriven = arguments.irDceDriven,
-                    multiModule = arguments.irPerModule,
-                    relativeRequirePath = true,
-                    propertyLazyInitialization = arguments.irPropertyLazyInitialization,
-                )
-            } catch (e: JsIrCompilationError) {
-                return COMPILATION_ERROR
-            }
+            val compiledModule = compile(
+                projectJs,
+                mainModule,
+                AnalyzerWithCompilerReport(config.configuration),
+                config.configuration,
+                phaseConfig,
+                allDependencies = resolvedLibraries,
+                friendDependencies = friendDependencies,
+                mainArguments = mainCallArguments,
+                generateFullJs = !arguments.irDce,
+                generateDceJs = arguments.irDce,
+                dceDriven = arguments.irDceDriven,
+                multiModule = arguments.irPerModule,
+                relativeRequirePath = true,
+                propertyLazyInitialization = arguments.irPropertyLazyInitialization,
+            )
 
             val jsCode = if (arguments.irDce && !arguments.irDceDriven) compiledModule.dceJsCode!! else compiledModule.jsCode!!
             outputFile.writeText(jsCode.mainModule)
