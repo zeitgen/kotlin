@@ -70,9 +70,9 @@ val commonVariant by configurations.creating {
 
 dependencies {
     jvmApi(project(":kotlin-stdlib"))
-    jsApiVariant("$group:kotlin-test-mpp-js:$version")
-    commonVariant("$group:kotlin-test-mpp-common:$version")
-    commonVariant("$group:kotlin-test-mpp-annotations-common:$version")
+    jsApiVariant("$group:kotlin-test-js:$version")
+    commonVariant("$group:kotlin-test-common:$version")
+    commonVariant("$group:kotlin-test-annotations-common:$version")
 }
 
 artifacts {
@@ -113,8 +113,8 @@ val rootComponent = componentFactory.adhoc("root").apply {
 }
 
 
-val baseCapability = "$group:kotlin-test-mpp-framework:$version"
-val implCapability = "$group:kotlin-test-mpp-framework-impl:$version"
+val baseCapability = "$group:kotlin-test-framework:$version"
+val implCapability = "$group:kotlin-test-framework-impl:$version"
 
 val jvmTestFrameworks = listOf("junit", "junit5", "testng")
 
@@ -128,12 +128,12 @@ jvmTestFrameworks.forEach { framework ->
                 attribute(KotlinPlatformType.attribute, KotlinPlatformType.jvm)
             }
             outgoing.capability(baseCapability)  // C0
-            outgoing.capability("$group:kotlin-test-mpp-framework-$framework:$version") // C0
+            outgoing.capability("$group:kotlin-test-framework-$framework:$version") // C0
         }
     }
     runtimeVariant.extendsFrom(apiVariant)
     dependencies {
-        apiVariant("$group:kotlin-test-mpp-$framework:$version")
+        apiVariant("$group:kotlin-test-$framework:$version")
     }
     rootComponent.addVariantsFromConfiguration(apiVariant) { mapToOptional() }
     rootComponent.addVariantsFromConfiguration(runtimeVariant) { mapToOptional() }
@@ -146,12 +146,12 @@ jvmTestFrameworks.forEach { framework ->
                 attribute(Usage.USAGE_ATTRIBUTE, objects.named("java-$usage"))
             }
             outgoing.capability(implCapability) // CC
-            outgoing.capability("$group:kotlin-test-mpp-$framework:$version")  // CC
+            outgoing.capability("$group:kotlin-test-$framework:$version")  // CC
         }
     }
     runtimeElements.extendsFrom(apiElements)
     dependencies {
-        apiElements("$group:kotlin-test-mpp:$version")
+        apiElements("$group:kotlin-test:$version")
         when(framework) {
             "junit" -> {
                 apiElements("junit:junit:4.12")
@@ -258,23 +258,23 @@ publishing {
         }
         jvmTestFrameworks.forEach { framework ->
             create(framework, MavenPublication::class) {
-                artifactId = "kotlin-test-mpp-$framework"
+                artifactId = "kotlin-test-$framework"
                 from(components[framework])
                 artifact(tasks.getByPath(":kotlin-test:kotlin-test-$framework:sourcesJar") as Jar)
             }
         }
         create("js", MavenPublication::class) {
-            artifactId = "kotlin-test-mpp-js"
+            artifactId = "kotlin-test-js"
             from(jsComponent)
             artifact(tasks.getByPath(":kotlin-test:kotlin-test-js:sourcesJar") as Jar)
         }
         create("common", MavenPublication::class) {
-            artifactId = "kotlin-test-mpp-common"
+            artifactId = "kotlin-test-common"
             from(commonMetadataComponent)
             artifact(tasks.getByPath(":kotlin-test:kotlin-test-common:sourcesJar") as Jar)
         }
         create("annotationsCommon", MavenPublication::class) {
-            artifactId = "kotlin-test-mpp-annotations-common"
+            artifactId = "kotlin-test-annotations-common"
             from(annotationsMetadataComponent)
             artifact(tasks.getByPath(":kotlin-test:kotlin-test-annotations-common:sourcesJar") as Jar)
         }
