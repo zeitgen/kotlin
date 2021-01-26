@@ -41,10 +41,37 @@ class ResultTypeResolver(
 
         val subType = c.findSubType(variableWithConstraints)
         val superType = c.findSuperType(variableWithConstraints)
-        return if (direction == ResolveDirection.TO_SUBTYPE || direction == ResolveDirection.UNKNOWN) {
+
+        val resultType = if (direction == ResolveDirection.TO_SUBTYPE || direction == ResolveDirection.UNKNOWN) {
             c.resultType(subType, superType, variableWithConstraints)
         } else {
             c.resultType(superType, subType, variableWithConstraints)
+        }
+
+        return resultType.makeFlexibleIfNecessary(c, variableWithConstraints.constraints)
+    }
+
+    /*
+     * We propagate nullness flexibility into the result type from type variables in other constraints
+     * to prevent variable fixation into less flexible type.
+     *  Constraints:
+     *      UPPER(TypeVariable(T)..TypeVariable(T)?)
+     *      UPPER(Foo?)
+     *  Result type = makeFlexibleIfNecessary(Foo?) = Foo!
+     *
+     * We don't propagate nullness flexibility in depth as it's non-determined for now (see KT-35534):
+     *  CST(Bar<Foo>, Bar<Foo!>) = Bar<Foo!>
+     *  CST(Bar<Foo!>, Bar<Foo>) = Bar<Foo>
+     * But: CST(Foo, Foo!) = CST(Foo!, Foo) = Foo!
+     */
+    private fun KotlinTypeMarker?.makeFlexibleIfNecessary(c: Context, constraints: List<Constraint>) = with(c) {
+        when (val type = this@makeFlexibleIfNecessary) {
+            is SimpleTypeMarker -> {
+                if (constraints.any { it.type.typeConstructor().isTypeVariable() && it.type.hasFlexibleNullability() }) {
+                    createFlexibleType(type.makeSimpleTypeDefinitelyNotNullOrNotNull(), type.withNullability(true))
+                } else type
+            }
+            else -> type
         }
     }
 
