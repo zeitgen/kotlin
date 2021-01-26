@@ -20,3 +20,16 @@ Compiling files:
 End of files
 Exit code: OK
 ------------------------------------------
+
+================ Step #2 =================
+
+Cleaning output files:
+  out/production/module/META-INF/module.kotlin_module
+  out/production/module/test/FunKt.class
+End of files
+Compiling files:
+  src/fun.kt
+  src/useDefault.kt
+End of files
+Exit code: OK
+------------------------------------------
