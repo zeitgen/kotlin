@@ -290,3 +290,8 @@ publishing {
     }
 }
 
+tasks {
+    val install by creating {
+        dependsOn(publishToMavenLocal)
+    }
+}
