@@ -58,20 +58,12 @@ val nativeApiVariant by configurations.creating {
         attribute(KotlinPlatformType.attribute, KotlinPlatformType.native)
     }
 }
-val nativeRuntimeVariant by configurations.creating {
-    isCanBeConsumed = true
-    isCanBeResolved = false
-    attributes {
-        attribute(Usage.USAGE_ATTRIBUTE, objects.named("kotlin-runtime"))
-        attribute(KotlinPlatformType.attribute, KotlinPlatformType.native)
-    }
-}
 
 val commonVariant by configurations.creating {
     isCanBeConsumed = true
     isCanBeResolved = false
     attributes {
-        attribute(Usage.USAGE_ATTRIBUTE, objects.named("kotlin-metadata"))
+        attribute(Usage.USAGE_ATTRIBUTE, objects.named("kotlin-api"))
         attribute(KotlinPlatformType.attribute, KotlinPlatformType.common)
     }
 }
@@ -117,7 +109,6 @@ val rootComponent = componentFactory.adhoc("root").apply {
     addVariantsFromConfiguration(jsApiVariant) { mapToOptional() }
     addVariantsFromConfiguration(jsRuntimeVariant) { mapToOptional() }
     addVariantsFromConfiguration(nativeApiVariant) { mapToOptional() }
-    addVariantsFromConfiguration(nativeRuntimeVariant) { mapToOptional() }
     addVariantsFromConfiguration(commonVariant) { mapToOptional() }
 }
 
@@ -225,7 +216,7 @@ val commonMetadata by configurations.creating {
     isCanBeConsumed = true
     isCanBeResolved = false
     attributes {
-        attribute(Usage.USAGE_ATTRIBUTE, objects.named("kotlin-metadata"))
+        attribute(Usage.USAGE_ATTRIBUTE, objects.named("kotlin-api"))
         attribute(KotlinPlatformType.attribute, KotlinPlatformType.common)
     }
 }
@@ -233,7 +224,7 @@ val annotationsMetadata by configurations.creating {
     isCanBeConsumed = true
     isCanBeResolved = false
     attributes {
-        attribute(Usage.USAGE_ATTRIBUTE, objects.named("kotlin-metadata"))
+        attribute(Usage.USAGE_ATTRIBUTE, objects.named("kotlin-api"))
         attribute(KotlinPlatformType.attribute, KotlinPlatformType.common)
     }
 }
