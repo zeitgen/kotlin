@@ -85,6 +85,7 @@ val kotlinTestCommonSourcesJar = tasks.getByPath(":kotlin-test:kotlin-test-commo
 val kotlinTestJvmSourcesJar = tasks.getByPath(":kotlin-test:kotlin-test-jvm:sourcesJar") as Jar
 
 val combinedSourcesJar by tasks.registering(Jar::class) {
+    dependsOn(kotlinTestCommonSourcesJar, kotlinTestJvmSourcesJar)
     archiveClassifier.set("sources")
     into("common") {
         from(zipTree(kotlinTestCommonSourcesJar.archiveFile)) {
