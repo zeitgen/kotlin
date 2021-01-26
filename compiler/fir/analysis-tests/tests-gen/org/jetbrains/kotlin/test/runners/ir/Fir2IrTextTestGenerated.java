@@ -2117,6 +2117,12 @@ public class Fir2IrTextTestGenerated extends AbstractFir2IrTextTest {
         }
 
         @Test
+        @TestMetadata("FakeOverrideBuilder.kt")
+        public void testFakeOverrideBuilder() throws Exception {
+            runTest("compiler/testData/ir/irText/firProblems/FakeOverrideBuilder.kt");
+        }
+
+        @Test
         @TestMetadata("FirBuilder.kt")
         public void testFirBuilder() throws Exception {
             runTest("compiler/testData/ir/irText/firProblems/FirBuilder.kt");

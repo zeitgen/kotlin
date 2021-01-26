@@ -1,0 +1,113 @@
+// MODULE: lib
+// FILE: FakeOverrideBuilder_lib.kt
+
+class IrPropertySymbolImpl : IrBindableSymbolBase<IrProperty>, IrPropertySymbol {
+  constructor() /* primary */ {
+    super/*IrBindableSymbolBase*/<IrProperty>()
+    /* <init>() */
+
+  }
+
+}
+
+abstract class IrBindableSymbolBase<B : IrSymbolOwner> : IrBindableSymbol<B>, IrSymbolBase {
+  constructor() /* primary */ {
+    super/*IrSymbolBase*/()
+    /* <init>() */
+
+  }
+
+  private var _owner: B?
+    field = null
+    private get
+    private set
+
+  override val owner: B
+    override get(): B {
+      return { // BLOCK
+        val tmp0_elvis_lhs: B? = <this>.<get-_owner>()
+        when {
+          EQEQ(arg0 = tmp0_elvis_lhs, arg1 = null) -> throw IllegalStateException(p0 = "")
+          else -> tmp0_elvis_lhs
+        }
+      }
+    }
+
+  override fun bind(owner: B) {
+    when {
+      EQEQ(arg0 = <this>.<get-_owner>(), arg1 = null) -> { // BLOCK
+        <this>.<set-_owner>(<set-?> = owner)
+      }
+      else -> { // BLOCK
+        throw IllegalStateException(p0 = "")
+      }
+    }
+  }
+
+}
+
+abstract class IrSymbolBase : IrSymbol {
+  constructor() /* primary */ {
+    super/*Any*/()
+    /* <init>() */
+
+  }
+
+}
+
+interface IrPropertySymbol : IrBindableSymbol<IrProperty> {
+
+}
+
+interface IrBindableSymbol<B : IrSymbolOwner> : IrSymbol {
+  abstract override val owner: B
+    abstract override get
+
+  abstract fun bind(owner: B)
+
+}
+
+interface IrSymbol {
+  abstract val owner: IrSymbolOwner
+    abstract get
+
+}
+
+interface IrSymbolOwner {
+  abstract val symbol: IrSymbol
+    abstract get
+
+}
+
+class IrProperty : IrSymbolOwner {
+  constructor(symbol: IrPropertySymbol, name: String) /* primary */ {
+    super/*Any*/()
+    /* <init>() */
+
+  }
+
+  override val symbol: IrPropertySymbol
+    field = symbol
+    override get
+
+  val name: String
+    field = name
+    get
+
+}
+
+// MODULE: main
+// FILE: FakeOverrideBuilder_main.kt
+
+fun link(declaration: IrSymbolOwner) {
+  val tempSymbol: IrPropertySymbolImpl = IrPropertySymbolImpl()
+  tempSymbol.bind(owner = declaration as IrProperty)
+}
+
+fun box(): String {
+  val symbol: IrPropertySymbolImpl = IrPropertySymbolImpl()
+  val property: IrProperty = IrProperty(symbol = symbol, name = "OK")
+  symbol.bind(owner = property)
+  link(declaration = property)
+  return symbol.<get-owner>().<get-name>()
+}
