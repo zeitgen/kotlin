@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.fir.java.JavaSymbolProvider
 import org.jetbrains.kotlin.fir.java.topLevelName
 import org.jetbrains.kotlin.fir.resolve.providers.*
 import org.jetbrains.kotlin.fir.scopes.KotlinScopeProvider
+import org.jetbrains.kotlin.fir.symbols.CallableId
 import org.jetbrains.kotlin.fir.symbols.impl.*
 import org.jetbrains.kotlin.load.java.JavaClassFinder
 import org.jetbrains.kotlin.load.kotlin.*
@@ -52,6 +53,18 @@ class KotlinDeserializedJvmSymbolsProvider(
     private val annotationsLoader = AnnotationsLoader(session)
     private val typeAliasCache = session.firCachesFactory.createCache(::findAndDeserializeTypeAlias)
     private val packagePartsCache = session.firCachesFactory.createCache(::tryComputePackagePartInfos)
+
+    private val topLevelFunctionsCache = session.firCachesFactory.createCache<CallableId, List<FirNamedFunctionSymbol>> { callableId ->
+        getPackageParts(callableId.packageName).flatMap { part ->
+            loadFunctionsByName(part, callableId.callableName)
+        }
+    }
+
+    private val topLevelPropertiesCache = session.firCachesFactory.createCache<CallableId, List<FirPropertySymbol>> { callableId ->
+        getPackageParts(callableId.packageName).flatMap { part ->
+            loadPropertiesByName(part, callableId.callableName)
+        }
+    }
 
     private val classCache =
         session.firCachesFactory.createCacheWithPostCompute<ClassId, FirRegularClassSymbol?, FirDeserializationContext?, KotlinClassFinder.Result.KotlinClass?>(
@@ -242,23 +255,18 @@ class KotlinDeserializedJvmSymbolsProvider(
 
     @FirSymbolProviderInternals
     override fun getTopLevelCallableSymbolsTo(destination: MutableList<FirCallableSymbol<*>>, packageFqName: FqName, name: Name) {
-        getPackageParts(packageFqName).flatMapTo(destination) { part ->
-            loadFunctionsByName(part, name) + loadPropertiesByName(part, name)
-        }
+        destination += topLevelFunctionsCache.getValue(CallableId(packageFqName, name))
+        destination += topLevelPropertiesCache.getValue(CallableId(packageFqName, name))
     }
 
     @FirSymbolProviderInternals
     override fun getTopLevelFunctionSymbolsTo(destination: MutableList<FirNamedFunctionSymbol>, packageFqName: FqName, name: Name) {
-        getPackageParts(packageFqName).flatMapTo(destination) { part ->
-            loadFunctionsByName(part, name)
-        }
+        destination += topLevelFunctionsCache.getValue(CallableId(packageFqName, name))
     }
 
     @FirSymbolProviderInternals
     override fun getTopLevelPropertySymbolsTo(destination: MutableList<FirPropertySymbol>, packageFqName: FqName, name: Name) {
-        getPackageParts(packageFqName).flatMapTo(destination) { part ->
-            loadPropertiesByName(part, name)
-        }
+        destination += topLevelPropertiesCache.getValue(CallableId(packageFqName, name))
     }
 
     private fun getPackageParts(packageFqName: FqName): Collection<PackagePartsCacheData> {
