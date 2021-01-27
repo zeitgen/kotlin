@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.idea.frontend.api.calls.KtCall
 import org.jetbrains.kotlin.idea.frontend.api.components.*
 import org.jetbrains.kotlin.idea.frontend.api.diagnostics.KtDiagnostic
+import org.jetbrains.kotlin.idea.frontend.api.diagnostics.KtDiagnosticWithPsi
 import org.jetbrains.kotlin.idea.frontend.api.scopes.*
 import org.jetbrains.kotlin.idea.frontend.api.symbols.*
 import org.jetbrains.kotlin.idea.frontend.api.symbols.markers.KtSymbolWithDeclarations
@@ -82,7 +83,7 @@ abstract class KtAnalysisSession(final override val token: ValidityToken) : Vali
 
     fun KtElement.getDiagnostics(): Collection<KtDiagnostic> = diagnosticProvider.getDiagnosticsForElement(this)
 
-    fun KtFile.collectDiagnosticsForFile(): Collection<KtDiagnostic> = diagnosticProvider.collectDiagnosticsForFile(this)
+    fun KtFile.collectDiagnosticsForFile(): Collection<KtDiagnosticWithPsi> = diagnosticProvider.collectDiagnosticsForFile(this)
 
     fun KtSymbolWithKind.getContainingSymbol(): KtSymbolWithKind? = containingDeclarationProvider.getContainingDeclaration(this)
 
