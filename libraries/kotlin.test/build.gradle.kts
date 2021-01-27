@@ -302,3 +302,7 @@ publishing {
         }
     }
 }
+
+tasks.withType<GenerateModuleMetadata> {
+    enabled = "common" !in (publication.get() as MavenPublication).artifactId
+}
