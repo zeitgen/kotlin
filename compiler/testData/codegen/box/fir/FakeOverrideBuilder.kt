@@ -1,3 +1,4 @@
+// TARGET_BACKEND: JVM
 // MODULE: lib
 // FILE: FakeOverrideBuilder_lib.kt
 
