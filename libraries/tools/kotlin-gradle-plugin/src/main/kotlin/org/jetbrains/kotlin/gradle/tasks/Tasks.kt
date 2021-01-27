@@ -44,6 +44,9 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.associateWithTransitiveClosure
 import org.jetbrains.kotlin.gradle.plugin.mpp.ownModuleName
 import org.jetbrains.kotlin.gradle.report.ReportingSettings
 import org.jetbrains.kotlin.gradle.utils.*
+import org.jetbrains.kotlin.gradle.utils.isParentOf
+import org.jetbrains.kotlin.gradle.utils.pathsAsStringRelativeTo
+import org.jetbrains.kotlin.gradle.utils.toSortedPathsArray
 import org.jetbrains.kotlin.incremental.ChangedFiles
 import org.jetbrains.kotlin.library.impl.isKotlinLibrary
 import org.jetbrains.kotlin.utils.JsLibraryUtils
@@ -633,24 +636,10 @@ open class Kotlin2JsCompile : AbstractKotlinCompile<K2JSCompilerArguments>(), Ko
             else -> incremental
         }
 
-    @get:Internal
-    val outputFile: File
-        get() = outputFilePath?.let(::File) ?: defaultOutputFile
-
+    @Suppress("unused")
     @get:OutputFile
-    @get:Optional
-    val outputFileOrNull: File?
-        get() = outputFile.let { file ->
-            if (file.isFile) {
-                file
-            } else {
-                null
-            }
-        }
-
-    @get:Input
-    val outputFilePath: String?
-        get() = kotlinOptions.outputFile
+    val outputFile: File
+        get() = kotlinOptions.outputFile?.let(::File) ?: defaultOutputFile
 
     override fun findKotlinCompilerClasspath(project: Project): List<File> =
         findKotlinJsCompilerClasspath(project)
