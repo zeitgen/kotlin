@@ -253,6 +253,9 @@ val annotationsMetadataComponent = componentFactory.adhoc("annotations-common").
     }
 }
 
+val emptyJavadocJar by tasks.creating(Jar::class) {
+    archiveClassifier.set("javadoc")
+}
 
 configureDefaultPublishing()
 
@@ -299,6 +302,7 @@ publishing {
         }
         withType<MavenPublication> {
             suppressAllPomMetadataWarnings()
+            artifact(emptyJavadocJar)
         }
     }
 }
