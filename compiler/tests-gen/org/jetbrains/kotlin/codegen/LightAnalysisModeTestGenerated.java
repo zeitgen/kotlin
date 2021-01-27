@@ -12056,6 +12056,11 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
         public void testIrBuiltIns() throws Exception {
             runTest("compiler/testData/codegen/box/fir/IrBuiltIns.kt");
         }
+
+        @TestMetadata("IrOverridingUtil.kt")
+        public void testIrOverridingUtil() throws Exception {
+            runTest("compiler/testData/codegen/box/fir/IrOverridingUtil.kt");
+        }
     }
 
     @TestMetadata("compiler/testData/codegen/box/fullJdk")

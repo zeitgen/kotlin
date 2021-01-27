@@ -13719,6 +13719,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
         }
 
         @Test
+        @TestMetadata("IrOverridingUtil.kt")
+        public void testIrOverridingUtil() throws Exception {
+            runTest("compiler/testData/codegen/box/fir/IrOverridingUtil.kt");
+        }
+
+        @Test
         @TestMetadata("SuspendExtension.kt")
         public void testSuspendExtension() throws Exception {
             runTest("compiler/testData/codegen/box/fir/SuspendExtension.kt");
