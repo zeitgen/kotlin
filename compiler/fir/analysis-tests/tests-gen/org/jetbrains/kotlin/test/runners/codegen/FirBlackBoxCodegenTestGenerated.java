@@ -33309,6 +33309,12 @@ public class FirBlackBoxCodegenTestGenerated extends AbstractFirBlackBoxCodegenT
         }
 
         @Test
+        @TestMetadata("approximationForDefinitelyNotNull.kt")
+        public void testApproximationForDefinitelyNotNull() throws Exception {
+            runTest("compiler/testData/codegen/box/regressions/approximationForDefinitelyNotNull.kt");
+        }
+
+        @Test
         @TestMetadata("arrayLengthNPE.kt")
         public void testArrayLengthNPE() throws Exception {
             runTest("compiler/testData/codegen/box/regressions/arrayLengthNPE.kt");
