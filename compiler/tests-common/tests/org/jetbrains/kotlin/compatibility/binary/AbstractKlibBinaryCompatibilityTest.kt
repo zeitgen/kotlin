@@ -5,7 +5,6 @@
 
 package org.jetbrains.kotlin.compatibility.binary
 
-import org.jetbrains.kotlin.TestWithWorkingDir
 import org.jetbrains.kotlin.test.*
 import org.jetbrains.kotlin.test.util.KtTestUtil
 import org.jetbrains.kotlin.utils.DFS
@@ -27,7 +26,7 @@ class TestModule(name: String, dependenciesSymbols: List<String>, friends: List<
     fun versionFiles(version: Int) = files.filter { it.version == null || it.version == version }
 }
 
-abstract class AbstractKlibBinaryCompatibilityTest : KotlinTestWithEnvironment() { //TestWithWorkingDir() {
+abstract class AbstractKlibBinaryCompatibilityTest : KotlinTestWithEnvironment() {
 
     private val pathToRootOutputDir = System.getProperty("kotlin.js.test.root.out.dir") ?: error("'kotlin.js.test.root.out.dir' is not set")
     private val testGroupSuffix = "binaryCompatibility/"
