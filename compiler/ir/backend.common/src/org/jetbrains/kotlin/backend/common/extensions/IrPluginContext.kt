@@ -37,6 +37,12 @@ interface IrPluginContext : IrGeneratorContext {
 
     val platform: TargetPlatform?
 
+    /**
+     * Returns a logger instance to post diagnostic messages from plugin
+     *
+     * @param pluginId the uniq plugin ID to make it easy to distinguish in log
+     * @return         the logger associated with specified ID
+     */
     fun createDiagnosticReporter(pluginId: String): IrMessageLogger
 
     // The following API is experimental
