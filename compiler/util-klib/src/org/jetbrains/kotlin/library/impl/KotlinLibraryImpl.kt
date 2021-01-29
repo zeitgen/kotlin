@@ -17,9 +17,9 @@
 package org.jetbrains.kotlin.library.impl
 
 import org.jetbrains.kotlin.konan.file.File
-import org.jetbrains.kotlin.library.*
 import org.jetbrains.kotlin.konan.properties.Properties
 import org.jetbrains.kotlin.konan.properties.loadProperties
+import org.jetbrains.kotlin.library.*
 
 open class BaseKotlinLibraryImpl(
     val access: BaseLibraryAccess<KotlinLibraryLayout>,
@@ -231,23 +231,21 @@ open class KotlinLibraryImpl(
     BaseKotlinLibrary by base,
     MetadataLibrary by metadata,
     IrLibrary by ir {
-    override fun toString(): String {
-        val sb = StringBuilder("Kotlin Library(")
-        sb.append("name: ")
-        sb.append(base.libraryName)
-        sb.append(", ")
-        sb.append("file: ")
-        sb.append(base.libraryFile.path)
-        sb.append(", ")
-        sb.append("version: ")
-        sb.append(base.versions)
+    override fun toString(): String = buildString {
+        append("name ")
+        append(base.libraryName)
+        append(", ")
+        append("file: ")
+        append(base.libraryFile.path)
+        append(", ")
+        append("version: ")
+        append(base.versions)
         if (isInterop) {
-            sb.append(", interop: true, ")
-            sb.append("native targets: ")
-            sb.append(nativeTargets.joinToString(", ", "{", "}") { it })
+            append(", interop: true, ")
+            append("native targets: ")
+            nativeTargets.joinTo(this, ", ", "{", "}")
         }
-        sb.append(")")
-        return sb.toString()
+        append(')')
     }
 }
 
