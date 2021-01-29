@@ -477,7 +477,7 @@ abstract class KotlinIrLinker(
     protected open fun handleNoModuleDeserializerFound(idSignature: IdSignature, currentModule: ModuleDescriptor, dependencies: Collection<IrModuleDeserializer>): IrModuleDeserializer {
         val message = buildString {
             append("Module $currentModule has reference $idSignature, unfortunately neither itself nor its dependencies ")
-            dependencies.joinTo(this, ", ", "[", "]")
+            dependencies.joinTo(this, "\n\t", "[\n\t", "\n]")
             append(" contain this declaration")
             append("\n")
             append("Please check that project configuration is correct and has required dependencies.")
