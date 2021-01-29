@@ -44,7 +44,7 @@ internal class TypeHighlightingVisitor(
     private fun computeHighlightingRangeForUsage(expression: KtSimpleNameExpression, target: PsiElement): TextRange {
         val expressionRange = expression.textRange
 
-        if (!target.isAnnotationClass()) return expressionRange
+        if (target !is KtPrimaryConstructor || !target.parent.isAnnotationClass()) return expressionRange
 
         // include '@' symbol if the reference is the first segment of KtAnnotationEntry
         // if "Deprecated" is highlighted then '@' should be highlighted too in "@Deprecated"
