@@ -20,7 +20,6 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.junit.JUnitOptions
 import org.gradle.api.tasks.testing.junitplatform.JUnitPlatformOptions
 import org.gradle.api.tasks.testing.testng.TestNGOptions
-import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -37,6 +36,7 @@ import org.jetbrains.kotlin.gradle.targets.jvm.JvmCompilationsTestRunSource
 import org.jetbrains.kotlin.gradle.tasks.KOTLIN_MODULE_GROUP
 import org.jetbrains.kotlin.gradle.tasks.locateTask
 import org.jetbrains.kotlin.gradle.testing.KotlinTaskTestRun
+import org.jetbrains.kotlin.gradle.utils.isGradleVersionAtLeast
 import org.jetbrains.kotlin.gradle.utils.lowerCamelCaseName
 
 internal fun customizeKotlinDependencies(project: Project) {
@@ -182,7 +182,7 @@ private fun stdlibModuleForJvmCompilations(compilations: Iterable<KotlinCompilat
 
 //region kotlin-test
 internal fun configureKotlinTestDependency(project: Project) {
-    if (GradleVersion.version(project.gradle.gradleVersion) < GradleVersion.version("6.0"))
+    if (!isGradleVersionAtLeast(6, 0))
         return
     if (!PropertiesProvider(project).kotlinTestInferJvmVariant)
         return
