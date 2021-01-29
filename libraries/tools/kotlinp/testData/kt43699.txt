@@ -1,0 +1,62 @@
+// Kt43699Kt.class
+// ------------------------------------------
+package {
+
+  // signature: extensionFunctionA(LSomeClass;)V
+  public final fun SomeClass.extensionFunctionA(): kotlin/Unit
+
+  // signature: extensionFunctionB(LSomeClassWithGenerics;)V
+  public final fun <T#0 /* ValueType */> SomeClassWithGenerics<T#0>.extensionFunctionB(): kotlin/Unit
+
+  // signature: extensionFunctionC(LSomeClassWithGenericsTypeAliasesOtherFile;)V
+  public final fun <T#0 /* ValueType */> SomeClassWithGenericsTypeAliasesOtherFile<T#0>.extensionFunctionC(): kotlin/Unit
+
+  public typealias SomeClassObserver = kotlin/Function1<SomeClass, kotlin/Unit> /* = kotlin/Function1<SomeClass, kotlin/Unit> */
+
+  public typealias SomeClassWithGenericsObserver<T#0 /* ValueType */> = kotlin/Function1<SomeClassWithGenerics<T#0>, kotlin/Unit> /* = kotlin/Function1<SomeClassWithGenerics<T#0>, kotlin/Unit> */
+
+  public typealias SomeClassWithGenericsTypeAliasesOtherFileObserver<T#0 /* ValueType */> = kotlin/Function1<SomeClassWithGenericsTypeAliasesOtherFile<T#0>, kotlin/Unit> /* = kotlin/Function1<SomeClassWithGenericsTypeAliasesOtherFile<T#0>, kotlin/Unit> */
+}
+// SomeClass.class
+// ------------------------------------------
+public final class SomeClass : kotlin/Any {
+
+  // signature: <init>()V
+  public constructor()
+
+  // signature: a()V
+  public final fun a(): kotlin/Unit
+
+  // module name: test-module
+}
+// SomeClassWithGenerics.class
+// ------------------------------------------
+public final class SomeClassWithGenerics<T#0 /* ValueType */> : kotlin/Any {
+
+  // signature: <init>()V
+  public constructor()
+
+  // signature: b()V
+  public final fun b(): kotlin/Unit
+
+  // module name: test-module
+}
+// SomeClassWithGenericsTypeAliasesOtherFile.class
+// ------------------------------------------
+public final class SomeClassWithGenericsTypeAliasesOtherFile<T#0 /* ValueType */> : kotlin/Any {
+
+  // signature: <init>()V
+  public constructor()
+
+  // signature: c()V
+  public final fun c(): kotlin/Unit
+
+  // module name: test-module
+}
+// META-INF/test-module.kotlin_module
+// ------------------------------------------
+module {
+  package <root> {
+    Kt43699Kt
+  }
+}

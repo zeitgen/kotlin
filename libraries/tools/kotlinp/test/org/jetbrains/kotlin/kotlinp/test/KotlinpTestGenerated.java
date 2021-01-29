@@ -49,6 +49,11 @@ public class KotlinpTestGenerated extends AbstractKotlinpTest {
         runTest("libraries/tools/kotlinp/testData/IntersectionTypeInLambdaLiteralAndDelegatedProperty.kt");
     }
 
+    @TestMetadata("kt43699.kt")
+    public void testKt43699() throws Exception {
+        runTest("libraries/tools/kotlinp/testData/kt43699.kt");
+    }
+
     @TestMetadata("Lambda.kt")
     public void testLambda() throws Exception {
         runTest("libraries/tools/kotlinp/testData/Lambda.kt");
