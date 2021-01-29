@@ -52,12 +52,12 @@ abstract class AbstractJsKlibBinaryCompatibilityTest : AbstractKlibBinaryCompati
     override fun produceKlib(module: TestModule, version: Int) {
         val args = K2JSCompilerArguments().apply {
             freeArgs = createFiles(module.versionFiles(version))
-            libraries = module.dependenciesToLibrariesArg(version = 1)
+            libraries = module.dependenciesToLibrariesArg(version = version)
             outputFile = File(workingDir, "${module.name(version)}.$KLIB_FILE_EXTENSION").absolutePath
             irProduceKlibFile = true
             irOnly = true
             irModuleName = module.name
-            repositries = "$workingDir${File.pathSeparator}$workingDir/version1"
+            repositries = "$workingDir${File.pathSeparator}$workingDir/version$version"
         }
         K2JSCompiler().exec(TestMessageCollector(), Services.EMPTY, args)
     }
