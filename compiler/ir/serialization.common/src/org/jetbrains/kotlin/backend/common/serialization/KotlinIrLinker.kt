@@ -482,7 +482,7 @@ abstract class KotlinIrLinker(
             append("\n")
             append("Please check that project configuration is correct and has required dependencies.")
         }
-        messageLogger.report(IrMessageLogger.Severity.EXCEPTION, message, null)
+        messageLogger.report(IrMessageLogger.Severity.ERROR, message, null)
 
         throw KotlinIrLinkerInternalException
     }
@@ -497,7 +497,7 @@ abstract class KotlinIrLinker(
                     append(it)
                 }
             }
-            messageLogger.report(IrMessageLogger.Severity.EXCEPTION, message, null)
+            messageLogger.report(IrMessageLogger.Severity.ERROR, message, null)
 
             throw KotlinIrLinkerInternalException
         }

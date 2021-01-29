@@ -18,7 +18,6 @@ class IrMessageCollector(private val messageCollector: MessageCollector) : IrMes
                 IrMessageLogger.Severity.INFO -> CompilerMessageSeverity.INFO
                 IrMessageLogger.Severity.WARNING -> CompilerMessageSeverity.WARNING
                 IrMessageLogger.Severity.ERROR -> CompilerMessageSeverity.ERROR
-                IrMessageLogger.Severity.EXCEPTION -> CompilerMessageSeverity.EXCEPTION
             }
         }
 
