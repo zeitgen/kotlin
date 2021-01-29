@@ -33,7 +33,7 @@ class JsScriptDependencyCompiler(
     fun compile(dependencies: List<ModuleDescriptor>): String {
         val builtIns: KotlinBuiltIns = dependencies.single { it.allDependencyModules.isEmpty() }.builtIns
         val languageVersionSettings = LanguageVersionSettingsImpl.DEFAULT
-        val messageLogger = configuration[IrMessageLogger.IR_MESSAGE_LOGGER] ?: IrMessageLogger.NONE
+        val messageLogger = configuration[IrMessageLogger.IR_MESSAGE_LOGGER] ?: IrMessageLogger.None
         val moduleName = Name.special("<script-dependencies>")
         val storageManager = LockBasedStorageManager.NO_LOCKS
         val moduleDescriptor = ModuleDescriptorImpl(moduleName, storageManager, builtIns, null).also {

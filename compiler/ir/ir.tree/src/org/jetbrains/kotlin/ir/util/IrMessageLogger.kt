@@ -17,7 +17,7 @@ interface IrMessageLogger {
 
     fun report(severity: Severity, message: String, location: Location?)
 
-    object NONE : IrMessageLogger {
+    object None : IrMessageLogger {
         override fun report(severity: Severity, message: String, location: Location?) {}
     }
 
