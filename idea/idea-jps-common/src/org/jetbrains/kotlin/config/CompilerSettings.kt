@@ -27,7 +27,7 @@ class CompilerSettings : Freezable() {
     var outputDirectoryForJsLibraryFiles: String by FreezableVar(DEFAULT_OUTPUT_DIRECTORY)
 
     companion object {
-        val DEFAULT_ADDITIONAL_ARGUMENTS = "-version"
+        val DEFAULT_ADDITIONAL_ARGUMENTS = "-version -XXLanguage:+CompileTimeCalculations -Xuse-ir -Xir-binary-with-stable-abi"
         private val DEFAULT_OUTPUT_DIRECTORY = "lib"
     }
 }

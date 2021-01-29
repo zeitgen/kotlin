@@ -160,7 +160,7 @@ class JvmBackendContext(
         val severity = if (isError) "EXCEPTION" else "INFO"
         val textInTheMiddle = if (isError) "will produce exception:" else "will be replaced on:"
         //messageCollector.report(severity, "$elementInfo $textInTheMiddle $message")
-        psiErrorBuilder.at(element!!, irFile!!).report(Errors.NEW_INFERENCE_DIAGNOSTIC, "$severity: $elementInfo $textInTheMiddle $message")
+        psiErrorBuilder.at(element!!, irFile!!).report(Errors.COMPILE_TIME, "$severity: $elementInfo $textInTheMiddle $message")
         print(message)
     }
 

@@ -603,6 +603,12 @@ gradle.taskGraph.whenReady {
 
 val dist = tasks.register("dist") {
     dependsOn(":kotlin-compiler:dist")
+    finalizedBy(copyKLibToCompiler)
+}
+
+val copyKLibToCompiler by task<Copy> {
+    into("$rootDir/dist/kotlinc/lib/klib")
+    from("$rootDir/build/js-ir-runtime/klib")
 }
 
 val syncMutedTests = tasks.register("syncMutedTests") {

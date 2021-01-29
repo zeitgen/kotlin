@@ -64,6 +64,7 @@ public class DefaultErrorMessages {
     }
 
     static {
+        MAP.put(COMPILE_TIME, "{0}", STRING);
         MAP.put(UNRESOLVED_REFERENCE, "Unresolved reference: {0}", ELEMENT_TEXT);
 
         MAP.put(INVISIBLE_REFERENCE, "Cannot access ''{0}'': it is {1} in {2}", NAME, VISIBILITY, NAME_OF_CONTAINING_DECLARATION_OR_FILE);

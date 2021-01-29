@@ -43,6 +43,8 @@ import org.jetbrains.kotlin.psi2ir.PsiSourceManager
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.CleanableBindingContext
 import org.jetbrains.kotlin.util.DummyLogger
+import org.jetbrains.kotlin.utils.PathUtil
+import java.io.File
 
 class JvmIrCodegenFactory(private val phaseConfig: PhaseConfig) : CodegenFactory {
     data class JvmIrBackendInput(
@@ -96,10 +98,10 @@ class JvmIrCodegenFactory(private val phaseConfig: PhaseConfig) : CodegenFactory
             stubGenerator,
             mangler
         ).apply {
-            state.configuration.get(JVMConfigurationKeys.KLIB_PATH_FOR_COMPILE_TIME)?.let {
-                val klibForCompileTimeCalculations = jvmResolveLibraries(listOf(it), DummyLogger).getFullList().single()
-                addDeserializerForCompileTimeDeclarations(psi2irContext.moduleDescriptor, klibForCompileTimeCalculations)
-            }
+            val kotlinPluginPath = JvmIrCodegenFactory::class.java.protectionDomain.codeSource.location.path
+            val klibPath = kotlinPluginPath.replaceAfterLast('/', "") + "klib"
+            val klibForCompileTimeCalculations = jvmResolveLibraries(listOf(klibPath), DummyLogger).getFullList().single()
+            addDeserializerForCompileTimeDeclarations(psi2irContext.moduleDescriptor, klibForCompileTimeCalculations)
         }
 
         val pluginContext by lazy {

@@ -1,0 +1,24 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Build js klib" type="JUnit" factoryName="JUnit" folderName="Interpreter">
+    <module name="kotlin.js.js.tests.test" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.jetbrains.kotlin.benchmarks.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="org.jetbrains.kotlin.benchmarks" />
+    <option name="MAIN_CLASS_NAME" value="org.jetbrains.kotlin.benchmarks.GenerateIrRuntime" />
+    <option name="METHOD_NAME" value="buildKlib" />
+    <option name="TEST_OBJECT" value="method" />
+    <option name="VM_PARAMETERS" value="-ea -XX:+HeapDumpOnOutOfMemoryError -Xmx1600m -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=128m -Djna.nosys=true -Didea.platform.prefix=Idea -Didea.is.unit.test=true -Didea.ignore.disabled.plugins=true -Didea.home.path=$USER_HOME$/.gradle/kotlin-build-dependencies/repo/kotlin.build/ideaIC/202.7660.26/artifacts -Djps.kotlin.home=$PROJECT_DIR$/dist/artifacts/ideaPlugin/Kotlin -Dkotlin.ni=false -Duse.jps=true -Djava.awt.headless=true" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <envs>
+      <env name="PROJECT_CLASSES_DIRS" value="out/test/org.jetbrains.kotlin.compiler.test" />
+      <env name="NO_FS_ROOTS_ACCESS_CHECK" value="true" />
+    </envs>
+    <method v="2">
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="compileKotlinJs" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
+    </method>
+  </configuration>
+</component>
