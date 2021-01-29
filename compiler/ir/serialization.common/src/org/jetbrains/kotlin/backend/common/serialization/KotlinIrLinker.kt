@@ -568,7 +568,7 @@ abstract class KotlinIrLinker(
 
         val descriptor = symbol.descriptor
 
-        val moduleDeserializer = resolveModuleDeserializer(descriptor.module, symbol.run { if (isPublicApi) signature else null} )
+        val moduleDeserializer = resolveModuleDeserializer(descriptor.module, symbol.signature)
 
 //        moduleDeserializer.deserializeIrSymbol(signature, symbol.kind())
         moduleDeserializer.declareIrSymbol(symbol)
