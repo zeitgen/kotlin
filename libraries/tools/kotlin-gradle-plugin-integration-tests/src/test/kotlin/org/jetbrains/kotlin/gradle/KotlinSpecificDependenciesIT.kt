@@ -243,14 +243,14 @@ class KotlinSpecificDependenciesIT : BaseGradleIT() {
             kotlin.coreLibrariesVersion = "$customVersion"
             dependencies {
                 testImplementation("org.jetbrains.kotlin:kotlin-reflect")
-                testImplementation("org.jetbrains.kotlin:kotlin-test-multiplatform")
+                testImplementation("org.jetbrains.kotlin:kotlin-test")
             }
             test.useJUnit()
         """.trimIndent()
         )
         checkTaskCompileClasspath(
             "compileTestKotlin",
-            listOf("kotlin-stdlib-", "kotlin-reflect-", "kotlin-test-junit-").map { it + customVersion }
+            listOf("kotlin-stdlib-", "kotlin-reflect-", "kotlin-test-").map { it + customVersion }
         )
     }
 

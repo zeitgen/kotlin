@@ -20,6 +20,7 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.junit.JUnitOptions
 import org.gradle.api.tasks.testing.junitplatform.JUnitPlatformOptions
 import org.gradle.api.tasks.testing.testng.TestNGOptions
+import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -181,11 +182,20 @@ private fun stdlibModuleForJvmCompilations(compilations: Iterable<KotlinCompilat
 
 //region kotlin-test
 internal fun configureKotlinTestDependency(project: Project) {
+    if (GradleVersion.version(project.gradle.gradleVersion) < GradleVersion.version("6.0"))
+        return
     if (!PropertiesProvider(project).kotlinTestInferJvmVariant)
         return
 
     fun isKotlinTestRootDependency(dependency: Dependency) =
         dependency.group == KOTLIN_MODULE_GROUP && dependency.name == KOTLIN_TEST_ROOT_MODULE_NAME
+
+    val versionPrefixRegex = Regex("""^(\d+)\.(\d+)""")
+    fun isAtLeast1_5(version: String) = versionPrefixRegex.find(version)?.let {
+        val c1 = it.groupValues[1].toInt()
+        val c2 = it.groupValues[2].toInt()
+        c1 > 1 || c1 == 1 && c2 >= 5
+    } ?: false
 
     KotlinDependencyScope.values().forEach { scope ->
         val versionOrNullBySourceSet = mutableMapOf<KotlinSourceSet, String?>()
@@ -211,29 +221,27 @@ internal fun configureKotlinTestDependency(project: Project) {
 
                 finalizingDependencies = true
 
-                parentOrOwnVersions.distinct().forEach { version -> // add dependencies with each version and let Gradle disambiguate them
-
-                    val clarifyCapability = kotlinTestCapabilityForJvmSourceSet(project, kotlinSourceSet, version)
-                    if (clarifyCapability != null) {
-//                        println("$configuration - $version - $clarifyCapability")
-                        val clarifiedDependency =
-                            (project.kotlinDependency(KOTLIN_TEST_ROOT_MODULE_NAME, version) as ExternalDependency).apply {
-                                if (version == null) {
-                                    version { constraint -> constraint.require(project.kotlinExtension.coreLibrariesVersion) }
-                                }
-                                capabilities {
-                                    it.requireCapability(clarifyCapability)
-                                }
+                for (version in parentOrOwnVersions.distinct()) {  // add dependencies with each version and let Gradle disambiguate them
+                    val effectiveVersion = version ?: project.kotlinExtension.coreLibrariesVersion
+                    if (!isAtLeast1_5(effectiveVersion)) continue
+                    val clarifyCapability = kotlinTestCapabilityForJvmSourceSet(project, kotlinSourceSet) ?: continue
+                    val clarifiedDependency =
+                        (project.kotlinDependency(KOTLIN_TEST_ROOT_MODULE_NAME, version) as ExternalDependency).apply {
+                            if (version == null) {
+                                version { constraint -> constraint.require(project.kotlinExtension.coreLibrariesVersion) }
                             }
-                        dependencies.add(clarifiedDependency)
-                    }
+                            capabilities {
+                                it.requireCapability(clarifyCapability)
+                            }
+                        }
+                    dependencies.add(clarifiedDependency)
                 }
             }
         }
     }
 }
 
-private fun kotlinTestCapabilityForJvmSourceSet(project: Project, kotlinSourceSet: KotlinSourceSet, version: String?): String? {
+private fun kotlinTestCapabilityForJvmSourceSet(project: Project, kotlinSourceSet: KotlinSourceSet): String? {
     val compilations = CompilationSourceSetUtil.compilationsBySourceSets(project).getValue(kotlinSourceSet)
         .filter { it.target !is KotlinMetadataTarget }
 
