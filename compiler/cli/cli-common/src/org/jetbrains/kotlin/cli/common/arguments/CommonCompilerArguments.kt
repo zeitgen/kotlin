@@ -351,6 +351,9 @@ abstract class CommonCompilerArguments : CommonToolArguments() {
     )
     var inferenceCompatibility: Boolean by FreezableVar(false)
 
+    @Argument(value = "-full-constexpr", description = "Enables full mode for compile time calculations")
+    var fullConstexpr: Boolean by FreezableVar(false)
+
     open fun configureAnalysisFlags(collector: MessageCollector): MutableMap<AnalysisFlag<*>, Any> {
         return HashMap<AnalysisFlag<*>, Any>().apply {
             put(AnalysisFlags.skipMetadataVersionCheck, skipMetadataVersionCheck)

@@ -10,12 +10,14 @@ import org.jetbrains.kotlin.backend.common.FileLoweringPass
 import org.jetbrains.kotlin.ir.interpreter.checker.IrCompileTimeChecker
 import org.jetbrains.kotlin.ir.interpreter.*
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
+import org.jetbrains.kotlin.config.CompilerConfigurationKey
 import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.config.languageVersionSettings
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.expressions.impl.IrCallImpl
+import org.jetbrains.kotlin.ir.interpreter.checker.EvaluationMode
 import org.jetbrains.kotlin.ir.util.IdSignature
 import org.jetbrains.kotlin.ir.util.copyTypeAndValueArgumentsFrom
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
@@ -29,10 +31,11 @@ class CompileTimeCalculationLowering(val context: CommonBackendContext) : FileLo
     override fun lower(irFile: IrFile) {
         if (!context.configuration.languageVersionSettings.supportsFeature(LanguageFeature.CompileTimeCalculations)) return
         if (irFile.fileEntry.name.contains("/kotlin/libraries/")) return
-        irFile.transformChildren(Transformer(irFile), null)
+        val mode = if (context.configuration[CommonConfigurationKeys.FULL_CONSTEXPR] == true) EvaluationMode.FULL else EvaluationMode.WITH_ANNOTATIONS
+        irFile.transformChildren(Transformer(irFile, mode), null)
     }
 
-    private inner class Transformer(private val irFile: IrFile) : IrElementTransformerVoid() {
+    private inner class Transformer(private val irFile: IrFile, private val mode: EvaluationMode = EvaluationMode.WITH_ANNOTATIONS) : IrElementTransformerVoid() {
         private fun IrExpression.report(original: IrExpression): IrExpression {
             if (this == original) return this
             val isError = this is IrErrorExpression && isTest
@@ -55,14 +58,14 @@ class CompileTimeCalculationLowering(val context: CommonBackendContext) : FileLo
                         default.typeArgumentsCount, default.valueArgumentsCount, default.origin, default.superQualifierSymbol
                     )
                     withNewOffsets.copyTypeAndValueArgumentsFrom(default)
-                    if (withNewOffsets.accept(IrCompileTimeChecker(), null)) {
+                    if (withNewOffsets.accept(IrCompileTimeChecker(mode = mode), null)) {
                         interpreter.interpret(withNewOffsets, irFile)
                             .report(withNewOffsets)
                             .takeIf { it != withNewOffsets }
                             ?.apply { expression.putArgument(parameter, this) }
                     }
                 }
-            if (expression.accept(IrCompileTimeChecker(), null)) {
+            if (expression.accept(IrCompileTimeChecker(mode = mode), null)) {
                 return interpreter.interpret(expression, irFile).report(expression)
             }
             return super.visitCall(expression)
@@ -73,7 +76,7 @@ class CompileTimeCalculationLowering(val context: CommonBackendContext) : FileLo
             val expression = initializer?.expression ?: return declaration
             if (expression is IrConst<*>) return declaration
             // must pass declaration symbol as initial containing declaration because of complex constructions such as try block or safe call
-            val isCompileTimeComputable = expression.accept(IrCompileTimeChecker(declaration), null)
+            val isCompileTimeComputable = expression.accept(IrCompileTimeChecker(declaration, mode = mode), null)
             val isConst = declaration.correspondingPropertySymbol?.owner?.isConst == true
             if (isConst && !isCompileTimeComputable) {
                 context.report(expression, irFile, "Const property is used only with functions annotated as CompileTimeCalculation", true)

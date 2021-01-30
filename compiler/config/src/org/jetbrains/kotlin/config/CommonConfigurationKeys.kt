@@ -53,6 +53,9 @@ object CommonConfigurationKeys {
 
     @JvmField
     val USE_FIR_EXTENDED_CHECKERS = CompilerConfigurationKey.create<Boolean>("fir extended checkers")
+
+    @JvmField
+    val FULL_CONSTEXPR = CompilerConfigurationKey.create<Boolean>("Enables full mode for compile time calculations")
 }
 
 var CompilerConfiguration.languageVersionSettings: LanguageVersionSettings
