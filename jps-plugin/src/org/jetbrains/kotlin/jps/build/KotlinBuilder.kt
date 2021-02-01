@@ -549,7 +549,7 @@ class KotlinBuilder : ModuleLevelBuilder(BuilderCategory.SOURCE_PROCESSOR) {
                     }
                     fsOperations.markFilesForCurrentRound(jpsTarget, complementaryFiles + dirtyMultifileClassFiles)
 
-                    cache.markDirty(dirtyFiles)
+                    cache.markDirty(targetDirtyFiles.dirty.keys + targetDirtyFiles.removed)
                 }
             }
         }
