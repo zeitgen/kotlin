@@ -9,18 +9,18 @@ import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.visitors.acceptVoid
 
-fun <T : IrElement> T.deepCopyForParallelLowering(
+fun <T : IrElement> T.deepCopySavingMetadata(
     initialParent: IrDeclarationParent? = null,
     symbolRemapper: DeepCopySymbolRemapper = DeepCopySymbolRemapper()
 ): T {
     acceptVoid(symbolRemapper)
     val typeRemapper = DeepCopyTypeRemapper(symbolRemapper)
     @Suppress("UNCHECKED_CAST")
-    return transform(DeepCopyIrTreeForParallelLowering(symbolRemapper, typeRemapper, SymbolRenamer.DEFAULT), null)
+    return transform(DeepCopySavingMetadata(symbolRemapper, typeRemapper, SymbolRenamer.DEFAULT), null)
         .patchDeclarationParents(initialParent) as T
 }
 
-private class DeepCopyIrTreeForParallelLowering(
+private class DeepCopySavingMetadata(
     symbolRemapper: SymbolRemapper,
     typeRemapper: TypeRemapper,
     symbolRenamer: SymbolRenamer

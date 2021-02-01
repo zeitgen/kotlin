@@ -23,7 +23,7 @@ import org.jetbrains.kotlin.ir.symbols.IrFileSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.util.DeepCopySymbolRemapper
 import org.jetbrains.kotlin.ir.util.copyTypeAndValueArgumentsFrom
-import org.jetbrains.kotlin.ir.util.deepCopyForParallelLowering
+import org.jetbrains.kotlin.ir.util.deepCopySavingMetadata
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 import java.util.concurrent.Executors
@@ -292,7 +292,7 @@ fun IrFile.copySavingMappings(
 ): IrFile {
     val symbolRemapper = DeepCopySymbolRemapperSavingFunctions()
 
-    val newIrFile = deepCopyForParallelLowering(symbolRemapper = symbolRemapper)
+    val newIrFile = deepCopySavingMetadata(symbolRemapper = symbolRemapper)
 
     for (function in symbolRemapper.declaredFunctions) {
         remappedFunctions[function] = symbolRemapper.getReferencedSimpleFunction(function)
