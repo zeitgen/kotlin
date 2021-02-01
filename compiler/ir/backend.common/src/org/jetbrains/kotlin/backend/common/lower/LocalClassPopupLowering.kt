@@ -78,23 +78,12 @@ open class LocalClassPopupLowering(val context: BackendContext) : BodyLoweringPa
                 }
                 else -> error("Inexpected container type $newContainer")
             }
-
-            local.acceptVoid(object : IrElementVisitorVoid {
-                override fun visitElement(element: IrElement) {
-                    element.acceptChildrenVoid(this)
-                }
-
-                override fun visitBody(body: IrBody) {
-                }
-
-                override fun visitClass(declaration: IrClass) {
-                    super.visitClass(declaration)
-                    context.extractedLocalClasses += declaration
-                }
-            })
+            recordExtractedLocalClasses(local)
         }
     }
 
     protected open fun shouldPopUp(klass: IrClass, currentScope: ScopeWithIr?): Boolean =
         klass.isLocalNotInner()
+
+    protected open fun recordExtractedLocalClasses(irClass: IrClass) {}
 }

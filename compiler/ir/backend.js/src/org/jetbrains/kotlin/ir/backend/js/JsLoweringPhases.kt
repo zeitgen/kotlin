@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.ir.backend.js.lower.calls.CallsLowering
 import org.jetbrains.kotlin.ir.backend.js.lower.cleanup.CleanupLowering
 import org.jetbrains.kotlin.ir.backend.js.lower.coroutines.JsSuspendFunctionsLowering
 import org.jetbrains.kotlin.ir.backend.js.lower.inline.CopyInlineFunctionBodyLowering
+import org.jetbrains.kotlin.ir.backend.js.lower.inline.JsLocalClassesExtractionFromInlineFunctionsLowering
 import org.jetbrains.kotlin.ir.backend.js.lower.inline.RemoveInlineDeclarationsWithReifiedTypeParametersLowering
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
@@ -211,7 +212,7 @@ private val localClassesInInlineFunctionsPhase = makeBodyLoweringPhase(
 )
 
 private val localClassesExtractionFromInlineFunctionsPhase = makeBodyLoweringPhase(
-    ::LocalClassesExtractionFromInlineFunctionsLowering,
+    ::JsLocalClassesExtractionFromInlineFunctionsLowering,
     name = "localClassesExtractionFromInlineFunctionsPhase",
     description = "Move local classes from inline functions into nearest declaration container",
     prerequisite = setOf(localClassesInInlineFunctionsPhase)
