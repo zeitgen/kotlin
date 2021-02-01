@@ -259,11 +259,13 @@ class K2JsIrCompiler : CLICompiler<K2JSCompilerArguments>() {
                 mainArguments = mainCallArguments,
                 generateFullJs = !arguments.irDce,
                 generateDceJs = arguments.irDce,
-                dceDriven = arguments.irDceDriven,
-                multiModule = arguments.irPerModule,
-                relativeRequirePath = true,
-                propertyLazyInitialization = arguments.irPropertyLazyInitialization,
-            )
+                dceMode = DceMode.resolvePolicy(arguments.irDceMode),
+                    dceDriven = arguments.irDceDriven,
+                    multiModule = arguments.irPerModule,
+                    relativeRequirePath = true,
+                    propertyLazyInitialization = arguments.irPropertyLazyInitialization,
+                )
+
 
             val jsCode = if (arguments.irDce && !arguments.irDceDriven) compiledModule.dceJsCode!! else compiledModule.jsCode!!
             outputFile.writeText(jsCode.mainModule)
