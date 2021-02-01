@@ -545,6 +545,7 @@ class KotlinBuilder : ModuleLevelBuilder(BuilderCategory.SOURCE_PROCESSOR) {
                             .flatMap { cache.getAllPartsOfMultifileFacade(it).orEmpty() }
                             .flatMap { cache.sourcesByInternalName(it) }
                             .distinct()
+                            .filter { !dirtyFiles.contains(it) }
                     }
                     fsOperations.markFilesForCurrentRound(jpsTarget, complementaryFiles + dirtyMultifileClassFiles)
 
