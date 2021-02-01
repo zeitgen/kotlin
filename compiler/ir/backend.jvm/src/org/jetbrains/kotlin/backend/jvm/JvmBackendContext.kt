@@ -93,10 +93,11 @@ class JvmBackendContext(
 
     val localDelegatedProperties = ConcurrentHashMap<IrAttributeContainer, List<IrLocalDelegatedPropertySymbol>>()
 
-    internal val multifileFacadesToAdd = ConcurrentHashMap<JvmClassName, MutableList<IrClass>>()
-    val multifileFacadeForPart = ConcurrentHashMap<IrClass, JvmClassName>()
-    internal val multifileFacadeClassForPart = ConcurrentHashMap<IrClass, IrClass>()
-    internal val multifileFacadeMemberToPartMember = ConcurrentHashMap<IrSimpleFunction, IrSimpleFunction>()
+    // Not used in by-file lowerings.
+    internal val multifileFacadesToAdd = mutableMapOf<JvmClassName, MutableList<IrClass>>()
+    val multifileFacadeForPart = mutableMapOf<IrClass, JvmClassName>()
+    internal val multifileFacadeClassForPart = mutableMapOf<IrClass, IrClass>()
+    internal val multifileFacadeMemberToPartMember = mutableMapOf<IrSimpleFunction, IrSimpleFunction>()
 
     internal val hiddenConstructors = ConcurrentHashMap<IrConstructor, IrConstructor>()
 
