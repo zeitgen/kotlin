@@ -1,6 +1,6 @@
 // WITH_RUNTIME
 // WITH_COROUTINES
-// IGNORE_BACKEND: JVM
+// IGNORE_BACKEND: JVM, JS_IR
 // IGNORE_LIGHT_ANALYSIS
 // LANGUAGE: +SuspendFunctionsInFunInterfaces, +JvmIrEnabledByDefault
 
