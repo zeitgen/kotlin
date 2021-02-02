@@ -166,7 +166,7 @@ fun IrDeclarationWithVisibility.getVisibilityAccessFlag(kind: OwnerKind? = null)
         DescriptorVisibilities.INTERNAL -> Opcodes.ACC_PUBLIC
         DescriptorVisibilities.LOCAL -> NO_FLAG_LOCAL
         JavaDescriptorVisibilities.PACKAGE_VISIBILITY -> AsmUtil.NO_FLAG_PACKAGE_PRIVATE
-        else -> throw IllegalStateException("$visibility is not a valid visibility in backend for ${ir2string(this)}")
+        else -> throw IllegalStateException("$visibility is not a valid visibility in backend for ${ir2string(this as IrDeclaration)}")
     }
 }
 
@@ -228,17 +228,17 @@ private tailrec fun isInlineOrContainedInInline(declaration: IrDeclaration?): Bo
 
 /* Borrowed from inlineOnly.kt */
 
-fun IrDeclarationWithVisibility.isInlineOnlyOrReifiable(): Boolean =
-    this is IrFunction && (isReifiable() || isInlineOnly())
+private fun IrFunction.isInlineOnlyOrReifiable(): Boolean =
+    isReifiable() || isInlineOnly()
 
-fun IrDeclarationWithVisibility.isEffectivelyInlineOnly(): Boolean =
+fun IrFunction.isEffectivelyInlineOnly(): Boolean =
     isInlineOnlyOrReifiable() || isInlineOnlyPrivateInBytecode() || isInlineOnlyPropertyAccessor()
 
-fun IrDeclarationWithVisibility.isInlineOnlyPrivateInBytecode(): Boolean =
-    (this is IrFunction && isInlineOnly()) || isPrivateInlineSuspend()
+private fun IrDeclarationWithVisibility.isInlineOnlyPrivateInBytecode(): Boolean =
+    this is IrFunction && (isInlineOnly() || isPrivateInlineSuspend())
 
-private fun IrDeclarationWithVisibility.isPrivateInlineSuspend(): Boolean =
-    this is IrFunction && isSuspend && isInline && visibility == DescriptorVisibilities.PRIVATE
+private fun IrFunction.isPrivateInlineSuspend(): Boolean =
+    isSuspend && isInline && visibility == DescriptorVisibilities.PRIVATE
 
 private fun IrDeclarationWithVisibility.isInlineOnlyPropertyAccessor(): Boolean {
     if (this !is IrSimpleFunction) return false
