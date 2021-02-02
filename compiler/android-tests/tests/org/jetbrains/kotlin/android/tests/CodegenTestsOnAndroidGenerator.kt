@@ -156,8 +156,6 @@ class CodegenTestsOnAndroidGenerator private constructor(private val pathManager
 
         COMMON.printStatistics()
         REFLECT.printStatistics()
-        JVM8.printStatistics()
-        JVM8REFLECT.printStatistics()
     }
 
     internal inner class FilesWriter(
@@ -282,12 +280,13 @@ class CodegenTestsOnAndroidGenerator private constructor(private val pathManager
                 if (fullFileText.contains("// KOTLIN_CONFIGURATION_FLAGS: ASSERTIONS_MODE=jvm")) continue
                 if (fullFileText.contains("// ASSERTIONS_MODE: jvm")) continue
                 val targets = InTextDirectivesUtils.findLinesWithPrefixesRemoved(fullFileText, "// JVM_TARGET:")
-                    .also { it.remove(JvmTarget.JVM_1_6.description) }
 
-                val isJvm8Target =
-                    if (targets.isEmpty()) false
-                    else if (targets.contains(JvmTarget.JVM_1_8.description) && targets.size == 1) true
-                    else continue //TODO: support other targets on Android
+                val isAtLeastJvm8Target = !targets.contains(JvmTarget.JVM_1_6.description)
+
+                if (isAtLeastJvm8Target && fullFileText.contains("@Target(AnnotationTarget.TYPE)")) {
+                    //TODO: type annotations supported on sdk 26 emulator
+                    continue
+                }
 
                 // TODO: support SKIP_JDK6 on new platforms
                 if (fullFileText.contains("// SKIP_JDK6")) continue
@@ -300,9 +299,7 @@ class CodegenTestsOnAndroidGenerator private constructor(private val pathManager
                     KotlinBaseTest.updateConfigurationByDirectivesInTestFiles(testFiles, keyConfiguration)
 
                     val key = ConfigurationKey(kind, jdkKind, keyConfiguration.toString())
-                    val compiler = if (isJvm8Target) {
-                        if (kind.withReflection) JVM8REFLECT else JVM8
-                    } else if (kind.withReflection) REFLECT else COMMON
+                    val compiler = if (kind.withReflection) REFLECT else COMMON
                     val filesHolder = holders.getOrPut(key) {
                         FilesWriter(compiler, KotlinTestUtils.newConfiguration(kind, jdkKind,
                                                                                KtTestUtil.getAnnotationsJar()
