@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.gradle.plugin.sources.KotlinDependencyScope
 import org.jetbrains.kotlin.gradle.plugin.sources.sourceSetDependencyConfigurationByScope
 import org.jetbrains.kotlin.gradle.plugin.whenEvaluated
 import org.jetbrains.kotlin.gradle.targets.metadata.isKotlinGranularMetadataEnabled
+import org.jetbrains.kotlin.gradle.tooling.BuildKotlinToolingMetadataTask
 
 internal fun configurePublishingWithMavenPublish(project: Project) = project.pluginManager.withPlugin("maven-publish") {
     project.extensions.configure(PublishingExtension::class.java) { publishing ->
@@ -43,7 +44,21 @@ private fun createRootPublication(project: Project, publishing: PublishingExtens
         kotlinSoftwareComponent.sourcesArtifacts.forEach { sourceArtifact ->
             artifact(sourceArtifact)
         }
+
+        addKotlinToolingMetadataArtifactIfNeeded(project)
     }
+}
+
+private fun MavenPublication.addKotlinToolingMetadataArtifactIfNeeded(project: Project) {
+    if (!PropertiesProvider(project).enableKotlinToolingMetadataArtifact) return
+    val buildKotlinToolingMetadataTask = project.tasks.withType(BuildKotlinToolingMetadataTask::class.java)
+        .named(BuildKotlinToolingMetadataTask.defaultTaskName) ?: return
+
+    /*
+    artifact(buildKotlinToolingMetadataTask.flatMap { it.outputFile }) { artifact ->
+        artifact.classifier = "tooling-metadata"
+        artifact.builtBy(buildKotlinToolingMetadataTask)
+    }*/
 }
 
 private fun createTargetPublications(project: Project, publishing: PublishingExtension) {
