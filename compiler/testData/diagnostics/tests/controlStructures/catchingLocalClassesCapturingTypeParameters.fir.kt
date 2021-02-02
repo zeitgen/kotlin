@@ -4,7 +4,7 @@ package test
 var global: Throwable? = null
 
 fun <T> foo(x: Throwable, z: T, b: (T) -> Unit) {
-    class A(val y : T) : Exception()
+    <!INNER_CLASS_OF_GENERIC_THROWABLE_SUBCLASS!>class A(val y : T) : Exception()<!>
 
     try {
         throw x
