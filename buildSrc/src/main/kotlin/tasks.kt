@@ -49,6 +49,7 @@ fun Task.dependsOnKotlinPluginInstall() {
         ":kotlin-gradle-plugin-api:install",
         ":kotlin-gradle-plugin:install",
         ":kotlin-gradle-plugin-model:install",
+        ":kotlin-tooling-metadata:install",
         ":kotlin-reflect:install",
         ":kotlin-annotation-processing-gradle:install",
         ":kotlin-test:kotlin-test-common:install",
