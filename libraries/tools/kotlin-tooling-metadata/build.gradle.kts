@@ -4,8 +4,9 @@ plugins {
     id("jps-compatible")
 }
 
+publish()
 sourcesJar()
-
+javadocJar()
 
 dependencies {
     implementation(kotlinStdlib())

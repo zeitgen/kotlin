@@ -54,11 +54,11 @@ private fun MavenPublication.addKotlinToolingMetadataArtifactIfNeeded(project: P
     val buildKotlinToolingMetadataTask = project.tasks.withType(BuildKotlinToolingMetadataTask::class.java)
         .named(BuildKotlinToolingMetadataTask.defaultTaskName) ?: return
 
-    /*
+
     artifact(buildKotlinToolingMetadataTask.flatMap { it.outputFile }) { artifact ->
         artifact.classifier = "tooling-metadata"
         artifact.builtBy(buildKotlinToolingMetadataTask)
-    }*/
+    }
 }
 
 private fun createTargetPublications(project: Project, publishing: PublishingExtension) {

@@ -41,7 +41,7 @@ open class BuildKotlinToolingMetadataTask : DefaultTask() {
 
     @get:OutputFile
     val outputFile: Property<File> = project.objects.property(File::class.java)
-        .convention(project.buildDir.resolve("tooling").resolve("ToolingMetadata.json"))
+        .convention(project.buildDir.resolve("kotlinToolingMetadata").resolve("kotlin-tooling-metadata.json"))
 
 
     fun buildKotlinToolingMetadata(): KotlinToolingMetadata {
