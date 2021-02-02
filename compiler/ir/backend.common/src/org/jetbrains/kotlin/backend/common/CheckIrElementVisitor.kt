@@ -307,7 +307,7 @@ class CheckIrElementVisitor(
 
         for (overriddenSymbol in declaration.overriddenSymbols) {
             val overriddenDeclaration = overriddenSymbol.owner
-            if (overriddenDeclaration.visibility == DescriptorVisibilities.PRIVATE) {
+            if (DescriptorVisibilities.isPrivate(overriddenDeclaration.visibility)) {
                 reportError(declaration, "Overrides private declaration $overriddenDeclaration")
             }
         }
