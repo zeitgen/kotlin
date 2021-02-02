@@ -302,15 +302,13 @@ class CheckIrElementVisitor(
         expression.symbol.ensureBound(expression)
     }
 
-    override fun visitDeclaration(declaration: IrDeclarationBase) {
-        super.visitDeclaration(declaration)
+    override fun visitSimpleFunction(declaration: IrSimpleFunction) {
+        super.visitSimpleFunction(declaration)
 
-        if (declaration is IrOverridableDeclaration<*>) {
-            for (overriddenSymbol in declaration.overriddenSymbols) {
-                val overriddenDeclaration = overriddenSymbol.owner as? IrDeclarationWithVisibility ?: continue
-                if (overriddenDeclaration.visibility == DescriptorVisibilities.PRIVATE) {
-                    reportError(declaration, "Overrides private declaration $overriddenDeclaration")
-                }
+        for (overriddenSymbol in declaration.overriddenSymbols) {
+            val overriddenDeclaration = overriddenSymbol.owner
+            if (overriddenDeclaration.visibility == DescriptorVisibilities.PRIVATE) {
+                reportError(declaration, "Overrides private declaration $overriddenDeclaration")
             }
         }
     }

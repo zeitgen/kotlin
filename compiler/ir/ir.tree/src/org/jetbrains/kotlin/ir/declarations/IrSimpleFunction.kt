@@ -9,13 +9,10 @@ import org.jetbrains.kotlin.ir.symbols.IrPropertySymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitor
 
-abstract class IrSimpleFunction :
-    IrFunction(),
-    IrOverridableDeclaration<IrSimpleFunctionSymbol>,
-    IrOverridableMember,
-    IrAttributeContainer {
-
+abstract class IrSimpleFunction : IrFunction(), IrOverridableMember, IrAttributeContainer {
     abstract override val symbol: IrSimpleFunctionSymbol
+
+    abstract var overriddenSymbols: List<IrSimpleFunctionSymbol>
 
     abstract val isTailrec: Boolean
     abstract val isSuspend: Boolean
