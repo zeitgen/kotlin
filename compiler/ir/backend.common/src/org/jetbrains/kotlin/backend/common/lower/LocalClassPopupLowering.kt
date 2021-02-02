@@ -8,18 +8,17 @@ package org.jetbrains.kotlin.backend.common.lower
 import org.jetbrains.kotlin.backend.common.*
 import org.jetbrains.kotlin.backend.common.ir.addChild
 import org.jetbrains.kotlin.backend.common.ir.setDeclarationsParent
-import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.expressions.IrStatementContainer
 import org.jetbrains.kotlin.ir.expressions.impl.IrCompositeImpl
-import org.jetbrains.kotlin.ir.visitors.IrElementVisitorVoid
-import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
-import org.jetbrains.kotlin.ir.visitors.acceptVoid
 
 //This lower takes part of old LocalDeclarationLowering job to pop up local classes from functions
-open class LocalClassPopupLowering(val context: BackendContext) : BodyLoweringPass {
+open class LocalClassPopupLowering(
+    val context: BackendContext,
+    val recordExtractedLocalClasses: BackendContext.(IrClass) -> Unit = {},
+) : BodyLoweringPass {
     override fun lower(irFile: IrFile) {
         runOnFilePostfix(irFile, withLocalDeclarations = true, allowDeclarationModification = true)
     }
@@ -78,12 +77,10 @@ open class LocalClassPopupLowering(val context: BackendContext) : BodyLoweringPa
                 }
                 else -> error("Inexpected container type $newContainer")
             }
-            recordExtractedLocalClasses(local)
+            context.recordExtractedLocalClasses(local)
         }
     }
 
     protected open fun shouldPopUp(klass: IrClass, currentScope: ScopeWithIr?): Boolean =
         klass.isLocalNotInner()
-
-    protected open fun recordExtractedLocalClasses(irClass: IrClass) {}
 }
