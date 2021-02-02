@@ -34366,6 +34366,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
+            @TestMetadata("checkEnhancedUpperBoundsWithEnabledImprovements.kt")
+            public void testCheckEnhancedUpperBoundsWithEnabledImprovements() throws Exception {
+                runTest("compiler/testData/diagnostics/testsWithStdLib/java/checkEnhancedUpperBoundsWithEnabledImprovements.kt");
+            }
+
+            @Test
             @TestMetadata("concurrentHashMapContains.kt")
             public void testConcurrentHashMapContains() throws Exception {
                 runTest("compiler/testData/diagnostics/testsWithStdLib/java/concurrentHashMapContains.kt");
