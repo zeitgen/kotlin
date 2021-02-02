@@ -70,7 +70,12 @@ open class KotlinMetadataTarget @Inject constructor(project: Project) :
                 }
 
             val sourcesJarTask =
-                sourcesJarTask(project, lazy { project.kotlinExtension.sourceSets.toSet() }, null, targetName.toLowerCase())
+                sourcesJarTask(
+                    project,
+                    lazy { project.kotlinExtension.sourceSets.associate { it.name to it.kotlin } },
+                    null,
+                    targetName.toLowerCase()
+                )
 
             component.sourcesArtifacts = setOf(
                 project.artifacts.add(Dependency.ARCHIVES_CONFIGURATION, sourcesJarTask).apply {
