@@ -313,7 +313,7 @@ object FirOverrideChecker : FirRegularClassChecker() {
         overridden: FirMemberDeclaration,
         context: CheckerContext
     ) {
-        reportOn(overriding.source, FirErrors.PROPERTY_TYPE_MISMATCH_ON_OVERRIDE, overriding, overridden, context)
+        //reportOn(overriding.source, FirErrors.PROPERTY_TYPE_MISMATCH_ON_OVERRIDE, overriding, overridden, context)
     }
 
     private fun DiagnosticReporter.reportTypeMismatchOnVariable(
