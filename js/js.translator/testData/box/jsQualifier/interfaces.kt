@@ -1,4 +1,3 @@
-// KJS_WITH_FULL_RUNTIME
 // EXPECTED_REACHABLE_NODES: 1238
 // FILE: bar.kt
 @file:JsQualifier("foo")
