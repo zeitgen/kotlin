@@ -380,10 +380,10 @@ fun Char.isES5IdentifierStart(): Boolean {
 }
 
 // See ES 5.1 spec: https://www.ecma-international.org/ecma-262/5.1/#sec-7.6
-fun Char.isES5IdentifierStartFull() =
+private fun Char.isES5IdentifierStartFull() =
     Character.isLetter(this) ||   // Lu | Ll | Lt | Lm | Lo
+            // Nl which is missing in Character.isLetter, but present in UnicodeLetter in spec
             Character.getType(this).toByte() == Character.LETTER_NUMBER
-// Nl which is missing in Character.isLetter, but present in UnicodeLetter in spec
 
 
 fun Char.isES5IdentifierPart(): Boolean {
@@ -399,6 +399,7 @@ fun Char.isES5IdentifierPart(): Boolean {
                 Character.CONNECTOR_PUNCTUATION -> true
                 else -> false
             } ||
+            // Nl which is missing in Character.isLetter, but present in UnicodeLetter in spec
             this == '\u200C' ||   // Zero-width non-joiner
             this == '\u200D'      // Zero-width joiner
 }
