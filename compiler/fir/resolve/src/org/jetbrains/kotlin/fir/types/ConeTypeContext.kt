@@ -156,10 +156,7 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
 
     override fun KotlinTypeMarker.getArgument(index: Int): TypeArgumentMarker {
         require(this is ConeKotlinType)
-        if (index >= typeArguments.size) {
-            val x = 1
-        }
-        return this.typeArguments[index]
+        return this.typeArguments.getOrNull(index) ?: ConeStarProjection
     }
 
     override fun KotlinTypeMarker.asTypeArgument(): TypeArgumentMarker {
