@@ -9,7 +9,10 @@ import org.jetbrains.kotlin.backend.common.ir.isTopLevel
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.JsManglerIr
 import org.jetbrains.kotlin.ir.declarations.*
-import org.jetbrains.kotlin.ir.expressions.*
+import org.jetbrains.kotlin.ir.expressions.IrBreak
+import org.jetbrains.kotlin.ir.expressions.IrExpression
+import org.jetbrains.kotlin.ir.expressions.IrLoop
+import org.jetbrains.kotlin.ir.expressions.IrWhen
 import org.jetbrains.kotlin.ir.types.isUnit
 import org.jetbrains.kotlin.ir.util.fqNameWhenAvailable
 import org.jetbrains.kotlin.ir.util.isEffectivelyExternal
@@ -22,6 +25,7 @@ import org.jetbrains.kotlin.js.naming.isValidES5Identifier
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.utils.addToStdlib.ifNotEmpty
 import java.util.*
+import kotlin.collections.set
 import kotlin.math.abs
 
 // TODO remove direct usages of [mapToKey] from [NameTable] & co and move it to scripting & REPL infrastructure. Review usages.
@@ -178,41 +182,17 @@ class NameTables(
                         processNonTopLevelLocalDecl(declaration)
                         super.visitDeclaration(declaration)
                     }
-
-                    override fun visitDeclarationReference(expression: IrDeclarationReference) {
-                        val decl = expression.symbol.owner as IrDeclaration
-                        processNonTopLevelLocalDecl(decl)
-                        super.visitDeclarationReference(expression)
-                    }
                 })
                 if (declaration is IrScript) {
                     for (memberDecl in declaration.statements) {
                         if (memberDecl is IrDeclaration) {
                             processTopLevelLocalDecl(memberDecl)
                             if (memberDecl is IrClass) {
-                                classDeclaration += memberDecl
+                                processNonTopLevelLocalDecl(memberDecl)
                             }
                         }
                     }
                 }
-            }
-        }
-
-        for (declaration in classDeclaration) {
-            processNonTopLevelLocalDecl(declaration)
-        }
-
-        for (p in packages) {
-            for (declaration in p.declarations) {
-                processNonTopLevelLocalDecl(declaration)
-            }
-        }
-    }
-
-    private fun acceptExternalClass(declaration: IrClass) {
-        for (child in declaration.declarations) {
-            if (child is IrClass) {
-                acceptExternalClass(child)
             }
         }
     }
@@ -228,9 +208,7 @@ class NameTables(
 
     private fun processNonTopLevelLocalDecl(declaration: IrDeclaration) {
         if (declaration is IrClass) {
-            if (declaration.isEffectivelyExternal()) {
-                acceptExternalClass(declaration)
-            } else {
+            if (!declaration.isEffectivelyExternal()) {
                 acceptNonExternalClass(declaration)
             }
         }
@@ -299,6 +277,7 @@ class NameTables(
             declaration !is IrDeclarationWithName ->
                 return
 
+            // TODO: Handle JsQualifier
             declaration.isEffectivelyExternal() && (declaration.getJsModule() == null || declaration.isJsNonModule()) ->
                 globalNames.declareStableName(declaration, declaration.getJsNameOrKotlinName().identifier)
 
