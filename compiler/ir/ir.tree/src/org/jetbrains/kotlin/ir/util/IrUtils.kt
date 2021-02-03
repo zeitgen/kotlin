@@ -314,11 +314,11 @@ fun IrDeclaration.hasInterfaceParent() =
     parent.safeAs<IrClass>()?.isInterface == true
 
 
-fun IrExternalDeclaration.isEffectivelyExternal(): Boolean =
+fun IrPossiblyExternalDeclaration.isEffectivelyExternal(): Boolean =
     this.isExternal
 
 fun IrDeclaration.isEffectivelyExternal(): Boolean =
-    this is IrExternalDeclaration && this.isExternal
+    this is IrPossiblyExternalDeclaration && this.isExternal
 
 fun IrFunction.isExternalOrInheritedFromExternal(): Boolean {
     fun isExternalOrInheritedFromExternalImpl(f: IrSimpleFunction): Boolean =

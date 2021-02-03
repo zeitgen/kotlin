@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.ir.visitors.IrElementVisitor
 
 abstract class IrField :
     IrDeclarationBase(),
-    IrExternalDeclaration, IrDeclarationWithVisibility, IrDeclarationParent, IrMetadataSourceOwner {
+    IrPossiblyExternalDeclaration, IrDeclarationWithVisibility, IrDeclarationParent, IrMetadataSourceOwner {
 
     @ObsoleteDescriptorBasedAPI
     abstract override val descriptor: PropertyDescriptor

@@ -116,7 +116,7 @@ class MoveBodilessDeclarationsToSeparatePlaceLowering(private val context: JsIrB
 
 fun markExternalDeclarations(packageFragment: IrPackageFragment) {
     for (declaration in packageFragment.declarations) {
-        if (declaration is IrExternalDeclaration) {
+        if (declaration is IrPossiblyExternalDeclaration) {
             if (declaration.isExternal) {
                 markNestedExternalDeclarations(declaration)
             }
@@ -126,7 +126,7 @@ fun markExternalDeclarations(packageFragment: IrPackageFragment) {
 
 
 fun markNestedExternalDeclarations(declaration: IrDeclaration) {
-    if (declaration is IrExternalDeclaration) {
+    if (declaration is IrPossiblyExternalDeclaration) {
         declaration.isExternal = true
     }
     if (declaration is IrProperty) {

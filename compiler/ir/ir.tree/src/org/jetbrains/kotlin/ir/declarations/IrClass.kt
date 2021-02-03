@@ -29,7 +29,7 @@ import org.jetbrains.kotlin.ir.visitors.IrElementTransformer
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitor
 
 abstract class IrClass :
-    IrDeclarationBase(), IrExternalDeclaration, IrDeclarationWithVisibility,
+    IrDeclarationBase(), IrPossiblyExternalDeclaration, IrDeclarationWithVisibility,
     IrDeclarationContainer, IrTypeParametersContainer, IrAttributeContainer, IrMetadataSourceOwner {
 
     @ObsoleteDescriptorBasedAPI
