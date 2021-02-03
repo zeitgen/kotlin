@@ -195,7 +195,7 @@ abstract class BasicBoxTest(
                 val pirOutputFileName = module.outputFileName(pirOutputDir) + ".js"
                 val isMainModule = mainModuleName == module.name
 
-                logger.logFile("Output file", File(outputFileName))
+                logger.logFile("Output JS", File(outputFileName))
                 generateJavaScriptFile(
                     testFactory.tmpDir,
                     file.parent,
