@@ -24,7 +24,8 @@ class JsClassGenerator(private val irClass: IrClass, val context: JsGenerationCo
     private val className = context.getNameForClass(irClass)
     private val classNameRef = className.makeRef()
     private val baseClass: IrType? = irClass.superTypes.firstOrNull { !it.classifierOrFail.isInterface }
-    private val baseClassName by lazy {
+
+    private val baseClassName by lazy { // Lazy in case was not collected by namer during JsClassGenerator construction
         baseClass?.let {
             context.getNameForClass(baseClass.classifierOrFail.owner as IrClass)
         }
