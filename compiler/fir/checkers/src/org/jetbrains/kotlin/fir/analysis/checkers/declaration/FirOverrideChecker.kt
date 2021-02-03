@@ -289,7 +289,7 @@ object FirOverrideChecker : FirRegularClassChecker() {
         overriding: FirMemberDeclaration,
         overridden: FirMemberDeclaration
     ) {
-        overriding.source?.let { report(FirErrors.PROPERTY_TYPE_MISMATCH_ON_OVERRIDE.on(it, overriding, overridden)) }
+        //overriding.source?.let { report(FirErrors.PROPERTY_TYPE_MISMATCH_ON_OVERRIDE.on(it, overriding, overridden)) }
     }
 
     private fun DiagnosticReporter.reportTypeMismatchOnVariable(
