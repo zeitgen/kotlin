@@ -696,7 +696,7 @@ open class FirExpressionsResolveTransformer(transformer: FirBodyResolveTransform
                 if (typeRef != null) {
                     lhs.replaceTypeRef(
                         buildResolvedTypeRef { type = typeRef }.also {
-                            session.firLookupTracker?.recordLookup(it, getClassCall.source, null)
+                            session.firLookupTracker?.recordTypeResolve(it, getClassCall.source, null)
                         }
                     )
                     typeRef
