@@ -455,11 +455,10 @@ private class JvmInlineClassLowering(private val context: JvmBackendContext) : F
 
     override fun visitReturn(expression: IrReturn): IrExpression {
         expression.returnTargetSymbol.owner.safeAs<IrFunction>()?.let { target ->
-            context.inlineClassReplacements.getReplacementFunction(target)?.let {
-                return context.createIrBuilder(it.symbol, expression.startOffset, expression.endOffset).irReturn(
-                    expression.value.transform(this, null)
-                )
-            }
+            val replacementFunction = context.inlineClassReplacements.getReplacementFunction(target) ?: return super.visitReturn(expression)
+            return context.createIrBuilder(replacementFunction.symbol, expression.startOffset, expression.endOffset).irReturn(
+                expression.value.transform(this, null)
+            )
         }
         return super.visitReturn(expression)
     }
