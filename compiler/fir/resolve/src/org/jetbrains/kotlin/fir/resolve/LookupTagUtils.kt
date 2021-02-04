@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.fir.symbols.ConeClassLikeLookupTag
 import org.jetbrains.kotlin.fir.symbols.ConeClassifierLookupTag
 import org.jetbrains.kotlin.fir.symbols.ConeClassifierLookupTagWithFixedSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.*
+import org.jetbrains.kotlin.fir.types.ConeClassLikeErrorLookupTag
 
 fun ConeClassifierLookupTag.toSymbol(useSiteSession: FirSession): FirClassifierSymbol<*>? =
     when (this) {
@@ -28,6 +29,7 @@ fun ConeClassLikeLookupTag.toSymbol(useSiteSession: FirSession): FirClassLikeSym
     val firSymbolProvider = useSiteSession.firSymbolProvider
     (this as? ConeClassLikeLookupTagImpl)?.boundSymbol?.takeIf { it.key === useSiteSession }?.let { return it.value }
 
+    if (this is ConeClassLikeErrorLookupTag) return null
     return firSymbolProvider.getClassLikeSymbolByFqName(classId).also {
         (this as? ConeClassLikeLookupTagImpl)?.bindSymbolToLookupTag(useSiteSession, it)
     }
