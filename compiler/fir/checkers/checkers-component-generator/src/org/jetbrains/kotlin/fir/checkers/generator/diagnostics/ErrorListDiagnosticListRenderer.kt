@@ -113,7 +113,7 @@ object ErrorListDiagnosticListRenderer : DiagnosticListRenderer() {
         diagnosticList.diagnostics.forEach { diagnostic ->
             diagnostic.getAllTypeArguments().mapTo(this) { it.kClass.qualifiedName!! }
             if (!diagnostic.hasDefaultPositioningStrategy()) {
-                add(diagnostic.positioningStrategy.import)
+                add(PositioningStrategy.importToAdd)
             }
         }
     }
