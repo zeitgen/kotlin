@@ -99,7 +99,7 @@ FILE fqName:<root> fileName:/SafeLetWithReturn.kt
                     FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (it:kotlin.String) returnType:kotlin.Nothing
                       VALUE_PARAMETER name:it index:0 type:kotlin.String
                       BLOCK_BODY
-                        RETURN type=kotlin.Nothing from='local final fun <anonymous> (it: kotlin.String): kotlin.Nothing declared in <root>.<get-baz>'
+                        RETURN type=kotlin.Nothing from='public final fun <get-baz> (): kotlin.String declared in <root>'
                           GET_VAR 'it: kotlin.String declared in <root>.<get-baz>.<anonymous>' type=kotlin.String origin=null
         RETURN type=kotlin.Nothing from='public final fun <get-baz> (): kotlin.String declared in <root>'
           CONST String type=kotlin.String value=""
