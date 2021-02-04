@@ -8417,6 +8417,11 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
                 runTest("compiler/testData/codegen/box/coroutines/intrinsicSemantics/intercepted.kt");
             }
 
+            @TestMetadata("resultExceptionOrNullInLambda.kt")
+            public void testResultExceptionOrNullInLambda() throws Exception {
+                runTest("compiler/testData/codegen/box/coroutines/intrinsicSemantics/resultExceptionOrNullInLambda.kt");
+            }
+
             @TestMetadata("startCoroutine.kt")
             public void testStartCoroutine() throws Exception {
                 runTest("compiler/testData/codegen/box/coroutines/intrinsicSemantics/startCoroutine.kt");
@@ -17488,6 +17493,11 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
             @TestDataPath("$PROJECT_ROOT")
             @RunWith(JUnit3RunnerWithInners.class)
             public static class AllCompatibility extends AbstractLightAnalysisModeTest {
+                @TestMetadata("suspendFunction.kt")
+                public void ignoreSuspendFunction() throws Exception {
+                    runTest("compiler/testData/codegen/box/jvm8/defaults/allCompatibility/suspendFunction.kt");
+                }
+
                 private void runTest(String testDataFilePath) throws Exception {
                     KotlinTestUtils.runTest(this::doTest, TargetBackend.JVM, testDataFilePath);
                 }
@@ -17634,11 +17644,6 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
                 @TestMetadata("simpleFunction.kt")
                 public void testSimpleFunction() throws Exception {
                     runTest("compiler/testData/codegen/box/jvm8/defaults/allCompatibility/simpleFunction.kt");
-                }
-
-                @TestMetadata("suspendFunction.kt")
-                public void testSuspendFunction() throws Exception {
-                    runTest("compiler/testData/codegen/box/jvm8/defaults/allCompatibility/suspendFunction.kt");
                 }
 
                 @TestMetadata("compiler/testData/codegen/box/jvm8/defaults/allCompatibility/delegationBy")
