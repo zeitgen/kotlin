@@ -111,7 +111,7 @@ class FirCallCompletionResultsWriterTransformer(
         if (declaration !is FirErrorFunction) {
             result.replaceTypeArguments(typeArguments)
         }
-        session.firLookupTracker?.recordLookup(typeRef, qualifiedAccessExpression.source, null)
+        session.firLookupTracker?.recordTypeResolve(typeRef, qualifiedAccessExpression.source, null)
         return result
     }
 
