@@ -12282,6 +12282,11 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
         public void testNameHighlighter() throws Exception {
             runTest("compiler/testData/codegen/box/fir/NameHighlighter.kt");
         }
+
+        @TestMetadata("SafeLetWithReturn.kt")
+        public void testSafeLetWithReturn() throws Exception {
+            runTest("compiler/testData/codegen/box/fir/SafeLetWithReturn.kt");
+        }
     }
 
     @TestMetadata("compiler/testData/codegen/box/fullJdk")

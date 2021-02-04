@@ -343,6 +343,10 @@ class Fir2IrVisitor(
 
         return conversionScope.withSafeCallSubject(receiverVariable) {
             val afterNotNullCheck = safeCallExpression.regularQualifiedAccess.accept(this, data) as IrExpression
+            if (afterNotNullCheck.type.isNothing()) {
+                // Hacky. It's better to fix inference to have Nothing? instead of Nothing
+                afterNotNullCheck.type = afterNotNullCheck.type.makeNullable()
+            }
             components.createSafeCallConstruction(receiverVariable, variableSymbol, afterNotNullCheck)
         }
     }

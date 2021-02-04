@@ -839,6 +839,7 @@ open class FirDeclarationsResolveTransformer(transformer: FirBodyResolveTransfor
         }
         val lastStatement = body?.statements?.lastOrNull()
         val returnType = (body?.typeRef as? FirResolvedTypeRef) ?: return this
+        if (returnType.type is ConeTypeVariableType && lastStatement is FirSafeCallExpression) return this
         val returnNothing = returnType.isNothing || returnType.isUnit
         if (lastStatement is FirExpression && !returnNothing) {
             body?.transformChildren(

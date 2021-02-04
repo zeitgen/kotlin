@@ -14835,12 +14835,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
         }
 
         @Test
-            @TestMetadata("Fir2IrClassifierStorage.kt")
-            public void testFir2IrClassifierStorage() throws Exception {
-                runTest("compiler/testData/codegen/box/fir/Fir2IrClassifierStorage.kt");
-            }
+        @TestMetadata("Fir2IrClassifierStorage.kt")
+        public void testFir2IrClassifierStorage() throws Exception {
+            runTest("compiler/testData/codegen/box/fir/Fir2IrClassifierStorage.kt");
+        }
 
-            @Test
+        @Test
         @TestMetadata("IrBuiltIns.kt")
         public void testIrBuiltIns() throws Exception {
             runTest("compiler/testData/codegen/box/fir/IrBuiltIns.kt");
@@ -14850,6 +14850,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
         @TestMetadata("NameHighlighter.kt")
         public void testNameHighlighter() throws Exception {
             runTest("compiler/testData/codegen/box/fir/NameHighlighter.kt");
+        }
+
+        @Test
+        @TestMetadata("SafeLetWithReturn.kt")
+        public void testSafeLetWithReturn() throws Exception {
+            runTest("compiler/testData/codegen/box/fir/SafeLetWithReturn.kt");
         }
 
         @Test
