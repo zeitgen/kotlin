@@ -117,13 +117,20 @@ class IndexedParametersSubstitution(
     }
 }
 
+private fun areTypeArgumentsEqual(oldArguments: List<TypeProjection>, newArguments: List<TypeProjection>) =
+    oldArguments.size == newArguments.size && oldArguments.withIndex().all { (i, argument) -> newArguments[i] === argument }
+
 @JvmOverloads
 fun KotlinType.replace(
     newArguments: List<TypeProjection> = arguments,
     newAnnotations: Annotations = annotations,
     newArgumentsForUpperBound: List<TypeProjection> = newArguments
 ): KotlinType {
-    if ((newArguments.isEmpty() || newArguments === arguments) && newAnnotations === annotations) return this
+    val newArgumentsWereNotChanged = newArguments.isEmpty() || areTypeArgumentsEqual(newArguments, arguments)
+    val newArgumentsForUpperBoundWereNotChanged =
+        newArgumentsForUpperBound.isEmpty() || areTypeArgumentsEqual(newArgumentsForUpperBound, upperIfFlexible().arguments)
+
+    if (newArgumentsWereNotChanged && newArgumentsForUpperBoundWereNotChanged && newAnnotations === annotations) return this
 
     return when (val unwrapped = unwrap()) {
         is FlexibleType -> KotlinTypeFactory.flexibleType(
@@ -139,7 +146,9 @@ fun SimpleType.replace(
     newArguments: List<TypeProjection> = arguments,
     newAnnotations: Annotations = annotations
 ): SimpleType {
-    if (newArguments.isEmpty() && newAnnotations === annotations) return this
+    val newArgumentsWereNotChanged = newArguments.isEmpty() || areTypeArgumentsEqual(newArguments, arguments)
+
+    if (newArgumentsWereNotChanged && newAnnotations === annotations) return this
 
     if (newArguments.isEmpty()) {
         return replaceAnnotations(newAnnotations)
