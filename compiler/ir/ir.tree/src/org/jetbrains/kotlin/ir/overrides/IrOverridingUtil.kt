@@ -34,8 +34,8 @@ abstract class FakeOverrideBuilderStrategy {
         }
     }
 
-    protected abstract fun linkFunctionFakeOverride(declaration: IrFakeOverrideFunction)
-    protected abstract fun linkPropertyFakeOverride(declaration: IrFakeOverrideProperty)
+    protected abstract fun linkFunctionFakeOverride(fakeOverride: IrFakeOverrideFunction)
+    protected abstract fun linkPropertyFakeOverride(fakeOverride: IrFakeOverrideProperty)
 
     // TODO: need to make IrProperty carry overriddenSymbols.
     val propertyOverriddenSymbols: MutableMap<IrOverridableMember, List<IrSymbol>> = mutableMapOf()

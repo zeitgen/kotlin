@@ -456,23 +456,23 @@ val IrFunction.allParametersCount: Int
 // TODO: merge it with FakeOverrideBuilder.
 private class FakeOverrideBuilderForLowerings : FakeOverrideBuilderStrategy() {
 
-    override fun linkFunctionFakeOverride(declaration: IrFakeOverrideFunction) {
-        declaration.acquireSymbol(IrSimpleFunctionSymbolImpl())
+    override fun linkFunctionFakeOverride(fakeOverride: IrFakeOverrideFunction) {
+        fakeOverride.acquireSymbol(IrSimpleFunctionSymbolImpl())
     }
 
-    override fun linkPropertyFakeOverride(declaration: IrFakeOverrideProperty) {
+    override fun linkPropertyFakeOverride(fakeOverride: IrFakeOverrideProperty) {
         val propertySymbol = IrPropertySymbolImpl()
-        declaration.getter?.let { it.correspondingPropertySymbol = propertySymbol }
-        declaration.setter?.let { it.correspondingPropertySymbol = propertySymbol }
+        fakeOverride.getter?.let { it.correspondingPropertySymbol = propertySymbol }
+        fakeOverride.setter?.let { it.correspondingPropertySymbol = propertySymbol }
 
-        declaration.acquireSymbol(propertySymbol)
+        fakeOverride.acquireSymbol(propertySymbol)
 
-        declaration.getter?.let {
-            it.correspondingPropertySymbol = declaration.symbol
+        fakeOverride.getter?.let {
+            it.correspondingPropertySymbol = fakeOverride.symbol
             linkFunctionFakeOverride(it as? IrFakeOverrideFunction ?: error("Unexpected fake override getter: $it"))
         }
-        declaration.setter?.let {
-            it.correspondingPropertySymbol = declaration.symbol
+        fakeOverride.setter?.let {
+            it.correspondingPropertySymbol = fakeOverride.symbol
             linkFunctionFakeOverride(it as? IrFakeOverrideFunction ?: error("Unexpected fake override setter: $it"))
         }
     }

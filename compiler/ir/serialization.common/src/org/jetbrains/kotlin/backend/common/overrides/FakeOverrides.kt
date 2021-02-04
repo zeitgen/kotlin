@@ -99,12 +99,12 @@ class FakeOverrideBuilder(
         irOverridingUtil.buildFakeOverridesForClass(clazz)
     }
 
-    override fun linkFunctionFakeOverride(declaration: IrFakeOverrideFunction) {
-        val signature = composeSignature(declaration)
-        declareFunctionFakeOverride(declaration, signature)
+    override fun linkFunctionFakeOverride(fakeOverride: IrFakeOverrideFunction) {
+        val signature = composeSignature(fakeOverride)
+        declareFunctionFakeOverride(fakeOverride, signature)
     }
 
-    override fun linkPropertyFakeOverride(declaration: IrFakeOverrideProperty) {
+    override fun linkPropertyFakeOverride(fakeOverride: IrFakeOverrideProperty) {
         // To compute a signature for a property with type parameters,
         // we must have its accessor's correspondingProperty pointing to the property's symbol.
         // See IrMangleComputer.mangleTypeParameterReference() for details.
@@ -112,48 +112,50 @@ class FakeOverrideBuilder(
         // To break this loop we use temp symbol in correspondingProperty.
 
         val tempSymbol = IrPropertySymbolImpl().also {
-            it.bind(declaration as IrProperty)
+            it.bind(fakeOverride as IrProperty)
         }
-        declaration.getter?.let {
+        fakeOverride.getter?.let {
             it.correspondingPropertySymbol = tempSymbol
         }
-        declaration.setter?.let {
+        fakeOverride.setter?.let {
             it.correspondingPropertySymbol = tempSymbol
         }
 
-        val signature = composeSignature(declaration)
-        declarePropertyFakeOverride(declaration, signature)
+        val signature = composeSignature(fakeOverride)
+        declarePropertyFakeOverride(fakeOverride, signature)
 
-        declaration.getter?.let {
-            it.correspondingPropertySymbol = declaration.symbol
+        fakeOverride.getter?.let {
+            it.correspondingPropertySymbol = fakeOverride.symbol
             linkFunctionFakeOverride(it as? IrFakeOverrideFunction ?: error("Unexpected fake override getter: $it"))
         }
-        declaration.setter?.let {
-            it.correspondingPropertySymbol = declaration.symbol
+        fakeOverride.setter?.let {
+            it.correspondingPropertySymbol = fakeOverride.symbol
             linkFunctionFakeOverride(it as? IrFakeOverrideFunction ?: error("Unexpected fake override setter: $it"))
         }
     }
 
-    private fun composeSignature(declaration: IrDeclaration) =
-        signaturer.composeSignatureForDeclaration(declaration)
+    private fun IrFakeOverride.asDeclaration(): IrDeclaration = this as IrDeclaration
 
-    private fun declareFunctionFakeOverride(declaration: IrFakeOverrideFunction, signature: IdSignature) {
-        val parent = declaration.parentAsClass
+    private fun composeSignature(fakeOverride: IrFakeOverride) =
+        signaturer.composeSignatureForDeclaration(fakeOverride.asDeclaration())
+
+    private fun declareFunctionFakeOverride(fakeOverride: IrFakeOverrideFunction, signature: IdSignature) {
+        val parent = fakeOverride.asDeclaration().parentAsClass
         val symbol = linker.tryReferencingSimpleFunctionByLocalSignature(parent, signature)
             ?: symbolTable.referenceSimpleFunctionFromLinker(signature)
         symbolTable.declareSimpleFunction(signature, { symbol }) {
             assert(it === symbol)
-            declaration.acquireSymbol(it)
+            fakeOverride.acquireSymbol(it)
         }
     }
 
-    private fun declarePropertyFakeOverride(declaration: IrFakeOverrideProperty, signature: IdSignature) {
-        val parent = declaration.parentAsClass
+    private fun declarePropertyFakeOverride(fakeOverride: IrFakeOverrideProperty, signature: IdSignature) {
+        val parent = fakeOverride.asDeclaration().parentAsClass
         val symbol = linker.tryReferencingPropertyByLocalSignature(parent, signature)
             ?: symbolTable.referencePropertyFromLinker(signature)
         symbolTable.declareProperty(signature, { symbol }) {
             assert(it === symbol)
-            declaration.acquireSymbol(it)
+            fakeOverride.acquireSymbol(it)
         }
     }
 
