@@ -13,7 +13,7 @@ import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors
 import org.jetbrains.kotlin.fir.expressions.FirTryExpression
 import org.jetbrains.kotlin.fir.resolve.fullyExpandedType
 import org.jetbrains.kotlin.fir.symbols.StandardClassIds
-import org.jetbrains.kotlin.fir.typeCheckerContext
+import org.jetbrains.kotlin.fir.typeContext
 import org.jetbrains.kotlin.fir.types.ConeKotlinType
 import org.jetbrains.kotlin.fir.types.ConeTypeParameterType
 import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
@@ -50,5 +50,5 @@ object FirCatchParameterChecker : FirTryExpressionChecker() {
     }
 
     private fun ConeKotlinType.isThrowable(session: FirSession) =
-        throwable.isSupertypeOf(session.typeCheckerContext, this.fullyExpandedType(session))
+        throwable.isSupertypeOf(session.typeContext, this.fullyExpandedType(session))
 }

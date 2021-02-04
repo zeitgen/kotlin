@@ -1366,7 +1366,7 @@ class ExpressionCodegen(
         val reifiedTypeInliner = ReifiedTypeInliner(
             mappings,
             IrInlineIntrinsicsSupport(context, typeMapper),
-            IrTypeCheckerContext(context.irBuiltIns),
+            IrTypeSystemContextImpl(context.irBuiltIns),
             state.languageVersionSettings,
             state.unifiedNullChecks,
         )
