@@ -53,7 +53,6 @@ open class BuildKotlinToolingMetadataTask : DefaultTask() {
         return project.kotlinExtension.getKotlinToolingMetadata()
     }
 
-    @Suppress("unused") // Used by Gradle's UP-TO-DATE check
     @Input
     internal fun getKotlinToolingMetadataJson(): String = getKotlinToolingMetadata().toJsonString()
 
@@ -61,7 +60,7 @@ open class BuildKotlinToolingMetadataTask : DefaultTask() {
     internal fun createToolingMetadataFile() {
         val outputFile = outputFile.orNull ?: return
         outputFile.parentFile.mkdirs()
-        outputFile.writeText(getKotlinToolingMetadata().toJsonString())
+        outputFile.writeText(getKotlinToolingMetadataJson())
     }
 }
 
