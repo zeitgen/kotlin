@@ -85,6 +85,12 @@ class FakeOverrideBuilder(
         if (haveFakeOverrides.contains(clazz)) return
         if (!platformSpecificClassFilter.needToConstructFakeOverrides(clazz)) return
 
+
+        if (clazz.name.asString() == "Change") {
+            println("//")
+        }
+
+
         val superTypes = clazz.superTypes
 
         val superClasses = superTypes.map {
