@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.idea.frontend.api.fir.components
 
+import org.jetbrains.kotlin.fir.typeContext
 import org.jetbrains.kotlin.fir.types.ConeKotlinType
 import org.jetbrains.kotlin.fir.types.ConeTypeCheckerContext
 import org.jetbrains.kotlin.idea.frontend.api.fir.KtFirAnalysisSession
@@ -19,6 +20,6 @@ internal interface KtFirAnalysisSessionComponent {
     fun createTypeCheckerContext() = ConeTypeCheckerContext(
         isErrorTypeEqualsToAnything = true,
         isStubTypeEqualsToAnything = true,
-        analysisSession.firResolveState.rootModuleSession //TODO use correct session here
+        analysisSession.firResolveState.rootModuleSession.typeContext //TODO use correct session here
     )
 }
