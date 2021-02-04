@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.contracts.description.EventOccurrencesRange
 import org.jetbrains.kotlin.descriptors.Visibility
 import org.jetbrains.kotlin.fir.FirEffectiveVisibility
-import org.jetbrains.kotlin.fir.checkers.generator.diagnostics.Diagnostic
+import org.jetbrains.kotlin.fir.checkers.generator.diagnostics.DiagnosticData
 import org.jetbrains.kotlin.fir.checkers.generator.diagnostics.DiagnosticList
 import org.jetbrains.kotlin.fir.checkers.generator.diagnostics.DiagnosticParameter
 import org.jetbrains.kotlin.fir.declarations.FirCallableDeclaration
@@ -34,7 +34,7 @@ object HLDiagnosticConverter {
     fun convert(diagnosticList: DiagnosticList): HLDiagnosticList =
         HLDiagnosticList(diagnosticList.diagnostics.map(::convertDiagnostic))
 
-    private fun convertDiagnostic(diagnostic: Diagnostic): HLDiagnostic =
+    private fun convertDiagnostic(diagnostic: DiagnosticData): HLDiagnostic =
         HLDiagnostic(
             original = diagnostic,
             className = diagnostic.getHLDiagnosticClassName(),
@@ -55,13 +55,13 @@ object HLDiagnosticConverter {
         )
     }
 
-    private fun Diagnostic.getHLDiagnosticClassName() =
+    private fun DiagnosticData.getHLDiagnosticClassName() =
         name.split('_')
             .joinToString(separator = "") {
                 it.toLowerCase().capitalize()
             }
 
-    private fun Diagnostic.getHLDiagnosticImplClassName() =
+    private fun DiagnosticData.getHLDiagnosticImplClassName() =
         "${getHLDiagnosticClassName()}Impl"
 
 }
