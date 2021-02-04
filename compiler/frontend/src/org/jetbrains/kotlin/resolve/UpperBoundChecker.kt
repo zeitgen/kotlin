@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.diagnostics.DiagnosticFactory2
 import org.jetbrains.kotlin.diagnostics.DiagnosticFactory3
 import org.jetbrains.kotlin.diagnostics.Errors.UPPER_BOUND_VIOLATED
 import org.jetbrains.kotlin.diagnostics.Errors.UPPER_BOUND_VIOLATED_IN_TYPEALIAS_EXPANSION
+import org.jetbrains.kotlin.diagnostics.reportDiagnosticOnce
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtTypeReference
 import org.jetbrains.kotlin.psi.psiUtil.getElementTextWithContext
@@ -68,7 +69,7 @@ open class UpperBoundChecker(val languageVersionSettings: LanguageVersionSetting
     ) {
         if (typeParameterDescriptor.upperBounds.isEmpty()) return
 
-        val diagnosticsReporter = UpperBoundViolatedReporter(trace, argumentType, typeParameterDescriptor)
+        val diagnosticsReporter = UpperBoundViolatedReporter(trace, argumentType, typeParameterDescriptor = typeParameterDescriptor)
 
         for (bound in typeParameterDescriptor.upperBounds) {
             checkBound(bound, argumentType, argumentReference, substitutor, typeAliasUsageElement, diagnosticsReporter)
@@ -99,18 +100,18 @@ open class UpperBoundChecker(val languageVersionSettings: LanguageVersionSetting
 }
 
 class UpperBoundViolatedReporter(
-    val trace: BindingTrace,
-    val argumentType: KotlinType,
-    val typeParameterDescriptor: TypeParameterDescriptor? = null,
-    val baseDiagnostic: DiagnosticFactory2<KtTypeReference, KotlinType, KotlinType> = UPPER_BOUND_VIOLATED,
-    val diagnosticForTypeAliases: DiagnosticFactory3<KtElement, KotlinType, KotlinType, ClassifierDescriptor> = UPPER_BOUND_VIOLATED_IN_TYPEALIAS_EXPANSION
+    private val trace: BindingTrace,
+    private val argumentType: KotlinType,
+    private val baseDiagnostic: DiagnosticFactory2<KtTypeReference, KotlinType, KotlinType> = UPPER_BOUND_VIOLATED,
+    private val diagnosticForTypeAliases: DiagnosticFactory3<KtElement, KotlinType, KotlinType, ClassifierDescriptor> = UPPER_BOUND_VIOLATED_IN_TYPEALIAS_EXPANSION,
+    private val typeParameterDescriptor: TypeParameterDescriptor? = null
 ) {
     fun report(typeArgumentReference: KtTypeReference, substitutedBound: KotlinType) {
-        trace.report(baseDiagnostic.on(typeArgumentReference, substitutedBound, argumentType))
+        trace.reportDiagnosticOnce(baseDiagnostic.on(typeArgumentReference, substitutedBound, argumentType))
     }
 
     fun reportForTypeAliasExpansion(callElement: KtElement, substitutedBound: KotlinType) {
         if (typeParameterDescriptor == null) return
-        trace.report(diagnosticForTypeAliases.on(callElement, substitutedBound, argumentType, typeParameterDescriptor))
+        trace.reportDiagnosticOnce(diagnosticForTypeAliases.on(callElement, substitutedBound, argumentType, typeParameterDescriptor))
     }
 }

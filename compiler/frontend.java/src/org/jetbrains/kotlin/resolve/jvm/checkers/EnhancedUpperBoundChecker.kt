@@ -19,7 +19,11 @@ import org.jetbrains.kotlin.types.*
 
 // TODO: remove this checker after removing support LV < 1.6
 class EnhancedUpperBoundChecker(languageVersionSettings: LanguageVersionSettings) : UpperBoundChecker(languageVersionSettings) {
-    val isTypeEnhancementImprovementsEnabled = languageVersionSettings.supportsFeature(LanguageFeature.ImprovementsAroundTypeEnhancement)
+    private val isTypeEnhancementImprovementsEnabled =
+        languageVersionSettings.supportsFeature(LanguageFeature.ImprovementsAroundTypeEnhancement)
+
+    private val warnBaseDiagnostic = UPPER_BOUND_VIOLATED_BASED_ON_JAVA_ANNOTATIONS
+    private val warnDiagnosticForTypeAliases = UPPER_BOUND_VIOLATED_IN_TYPEALIAS_EXPANSION_BASED_ON_JAVA_ANNOTATIONS
 
     override fun checkBounds(
         argumentReference: KtTypeReference?,
@@ -29,20 +33,36 @@ class EnhancedUpperBoundChecker(languageVersionSettings: LanguageVersionSettings
         trace: BindingTrace,
         typeAliasUsageElement: KtElement?
     ) {
+        checkBounds(
+            argumentReference, argumentType, typeParameterDescriptor, substitutor, trace, typeAliasUsageElement,
+            withOnlyEnhancedCheck = false
+        )
+    }
+
+    fun checkBounds(
+        argumentReference: KtTypeReference?,
+        argumentType: KotlinType,
+        typeParameterDescriptor: TypeParameterDescriptor,
+        substitutor: TypeSubstitutor,
+        trace: BindingTrace,
+        typeAliasUsageElement: KtElement?,
+        withOnlyEnhancedCheck: Boolean = false
+    ) {
         if (typeParameterDescriptor.upperBounds.isEmpty()) return
 
-        val diagnosticsReporter = UpperBoundViolatedReporter(trace, argumentType, typeParameterDescriptor)
+        val diagnosticsReporter = UpperBoundViolatedReporter(trace, argumentType, typeParameterDescriptor = typeParameterDescriptor)
         val diagnosticsReporterForWarnings = UpperBoundViolatedReporter(
-            trace, argumentType, typeParameterDescriptor,
-            baseDiagnostic = UPPER_BOUND_VIOLATED_BASED_ON_JAVA_ANNOTATIONS,
-            diagnosticForTypeAliases = UPPER_BOUND_VIOLATED_IN_TYPEALIAS_EXPANSION_BASED_ON_JAVA_ANNOTATIONS
+            trace, argumentType, warnBaseDiagnostic, warnDiagnosticForTypeAliases, typeParameterDescriptor
         )
 
         for (bound in typeParameterDescriptor.upperBounds) {
-            val isCheckPassed = checkBound(bound, argumentType, argumentReference, substitutor, typeAliasUsageElement, diagnosticsReporter)
+            if (!withOnlyEnhancedCheck) {
+                val isBaseCheckPassed =
+                    checkBound(bound, argumentType, argumentReference, substitutor, typeAliasUsageElement, diagnosticsReporter)
 
-            // The error is already reported, it's unnecessary to do more checks
-            if (!isCheckPassed) continue
+                // The error is already reported, it's unnecessary to do more checks
+                if (!isBaseCheckPassed) continue
+            }
 
             // If improvements are enabled, then type parameter's upper bounds will already enhanced, and the error will reported inside the first check
             if (isTypeEnhancementImprovementsEnabled) continue

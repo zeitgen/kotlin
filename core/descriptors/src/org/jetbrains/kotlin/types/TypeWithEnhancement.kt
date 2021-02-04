@@ -98,6 +98,8 @@ private fun List<TypeProjection>.enhanceTypeArguments(depth: Int) =
         val enhancedArgumentType = if (argumentType is TypeWithEnhancement) argumentType.enhancement else argumentType
         val enhancedDeeplyArgumentType = enhancedArgumentType.getEnhancementDeeply(depth + 1)
 
+        if (argumentType === enhancedDeeplyArgumentType) return@map argument
+
         argument.replaceType(enhancedDeeplyArgumentType)
     }
 

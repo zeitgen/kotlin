@@ -61,7 +61,6 @@ object JvmPlatformConfigurator : PlatformConfiguratorBase(
     ),
 
     additionalTypeCheckers = listOf(
-        JavaNullabilityChecker(),
         RuntimeAssertionsTypeChecker,
         JavaGenericVarianceViolationTypeChecker,
         JavaTypeAccessibilityChecker(),
@@ -96,6 +95,7 @@ object JvmPlatformConfigurator : PlatformConfiguratorBase(
     declarationReturnTypeSanitizer = JvmDeclarationReturnTypeSanitizer
 ) {
     override fun configureModuleComponents(container: StorageComponentContainer) {
+        container.useImpl<JavaNullabilityChecker>()
         container.useImpl<JvmStaticChecker>()
         container.useImpl<EnhancedUpperBoundChecker>()
         container.useImpl<JvmReflectionAPICallChecker>()
