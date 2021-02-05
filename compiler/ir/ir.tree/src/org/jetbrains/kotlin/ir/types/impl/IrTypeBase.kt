@@ -74,6 +74,8 @@ class ReturnTypeIsNotInitializedException(function: IrFunction) : IllegalStateEx
     "Return type is not initialized for function '${function.name}'"
 )
 
+
+// Please note this type is not denotable which means it could only exist inside type system
 class IrCapturedType(
     val captureStatus: CaptureStatus,
     val lowerType: IrType?,
