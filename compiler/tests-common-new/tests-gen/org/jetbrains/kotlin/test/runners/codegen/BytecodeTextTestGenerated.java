@@ -2274,6 +2274,22 @@ public class BytecodeTextTestGenerated extends AbstractBytecodeTextTest {
     }
 
     @Nested
+    @TestMetadata("compiler/testData/codegen/bytecodeText/fir")
+    @TestDataPath("$PROJECT_ROOT")
+    public class Fir {
+        @Test
+        public void testAllFilesPresentInFir() throws Exception {
+            KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/bytecodeText/fir"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM, true);
+        }
+
+        @Test
+        @TestMetadata("SuperHashCode.kt")
+        public void testSuperHashCode() throws Exception {
+            runTest("compiler/testData/codegen/bytecodeText/fir/SuperHashCode.kt");
+        }
+    }
+
+    @Nested
     @TestMetadata("compiler/testData/codegen/bytecodeText/forLoop")
     @TestDataPath("$PROJECT_ROOT")
     public class ForLoop {
