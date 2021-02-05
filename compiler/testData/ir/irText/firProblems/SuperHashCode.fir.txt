@@ -53,7 +53,8 @@ FILE fqName:<root> fileName:/SuperHashCode.kt
                   BRANCH
                     if: CONST Boolean type=kotlin.Boolean value=true
                     then: CALL 'public open fun hashCode (): kotlin.Int declared in kotlin.Any' type=kotlin.Int origin=null
-                      $this: GET_VAR 'val tmp_1: <root>.Point? [val] declared in <root>.DelegatePoint.hashCode' type=<root>.Point? origin=null
+                      $this: TYPE_OP type=kotlin.Any origin=IMPLICIT_CAST typeOperand=kotlin.Any
+                        GET_VAR 'val tmp_1: <root>.Point? [val] declared in <root>.DelegatePoint.hashCode' type=<root>.Point? origin=null
             WHEN type=kotlin.Int origin=ELVIS
               BRANCH
                 if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ

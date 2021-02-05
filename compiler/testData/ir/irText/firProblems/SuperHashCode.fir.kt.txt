@@ -19,7 +19,7 @@ class DelegatePoint : Point {
         val tmp0_safe_receiver: Point? = <this>.<get-original>()
         when {
           EQEQ(arg0 = tmp0_safe_receiver, arg1 = null) -> null
-          else -> tmp0_safe_receiver.hashCode()
+          else -> tmp0_safe_receiver /*as Any */.hashCode()
         }
       }
       when {
