@@ -47,24 +47,24 @@ class IrLazyClass(
 
     override var annotations: List<IrConstructorCall> by createLazyAnnotations()
 
+    override val factory: IrFactory
+        get() = stubGenerator.symbolTable.irFactory
+
     override var thisReceiver: IrValueParameter? by lazyVar {
         typeTranslator.buildWithScope(this) {
-            descriptor.thisAsReceiverParameter.generateReceiverParameterStub().apply { parent = this@IrLazyClass }
+            generateReceiverParameterStub(descriptor.thisAsReceiverParameter).apply { parent = this@IrLazyClass }
         }
     }
-
 
     override val declarations: MutableList<IrDeclaration> by lazyVar {
         ArrayList<IrDeclaration>().also {
             typeTranslator.buildWithScope(this) {
-                generateChildStubs(descriptor.constructors, it)
-                generateMemberStubs(descriptor.defaultType.memberScope, it)
-                generateMemberStubs(descriptor.staticScope, it)
+                stubGenerator.generateChildStubs(descriptor.constructors, it)
+                stubGenerator.generateChildStubs(descriptor.defaultType.memberScope.getContributedDescriptors(), it)
+                stubGenerator.generateChildStubs(descriptor.staticScope.getContributedDescriptors(), it)
             }
-        }.also {
-            it.forEach {
-                it.parent = this //initialize parent for non lazy cases
-            }
+        }.onEach {
+            it.parent = this //initialize parent for non lazy cases
         }
     }
 
@@ -77,9 +77,7 @@ class IrLazyClass(
     override var superTypes: List<IrType> by lazyVar {
         typeTranslator.buildWithScope(this) {
             // TODO get rid of code duplication, see ClassGenerator#generateClass
-            descriptor.typeConstructor.supertypes.mapNotNullTo(arrayListOf()) {
-                it.toIrType()
-            }
+            descriptor.typeConstructor.supertypes.mapNotNullTo(arrayListOf(), typeTranslator::translateType)
         }
     }
 

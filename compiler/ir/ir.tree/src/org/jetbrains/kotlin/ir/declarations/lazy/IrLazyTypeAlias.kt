@@ -5,8 +5,8 @@
 
 package org.jetbrains.kotlin.ir.declarations.lazy
 
-import org.jetbrains.kotlin.descriptors.TypeAliasDescriptor
 import org.jetbrains.kotlin.descriptors.DescriptorVisibility
+import org.jetbrains.kotlin.descriptors.TypeAliasDescriptor
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
@@ -37,6 +37,9 @@ class IrLazyTypeAlias(
 
     override var annotations: List<IrConstructorCall> by createLazyAnnotations()
 
+    override val factory: IrFactory
+        get() = stubGenerator.symbolTable.irFactory
+
     override var typeParameters: List<IrTypeParameter> by lazyVar {
         descriptor.declaredTypeParameters.mapTo(arrayListOf()) {
             stubGenerator.generateOrGetTypeParameterStub(it)
@@ -46,7 +49,7 @@ class IrLazyTypeAlias(
     override var expandedType: IrType by lazyVar {
         withInitialIr {
             typeTranslator.buildWithScope(this) {
-                descriptor.expandedType.toIrType()
+                typeTranslator.translateType(descriptor.expandedType)
             }
         }
     }
