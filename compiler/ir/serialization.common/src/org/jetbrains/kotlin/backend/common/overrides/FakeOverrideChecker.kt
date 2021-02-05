@@ -46,14 +46,14 @@ class FakeOverrideChecker(
 
         val irFakeOverrides = clazz.declarations
             .filterIsInstance<IrOverridableMember>()
-            .filter { it.isFakeOverride }
+            .filter { (it as IrDeclaration).isFakeOverride }
 
         irFakeOverrides.forEach {
             checkOverriddenSymbols(it)
         }
 
         val irSignatures = irFakeOverrides
-            .map { with(irMangler) { it.signatureString }}
+            .map { with(irMangler) { (it as IrDeclaration).signatureString }}
             .sorted()
 
         // We can't have equality here because dependency libraries could have

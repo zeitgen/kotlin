@@ -68,7 +68,7 @@ fun Collection<IrOverridableMember>.collectAndFilterRealOverrides(
     fun collectRealOverrides(member: IrOverridableMember) {
         if (!visited.add(member) || filter(member)) return
 
-        if (member.isReal && !toSkip(member)) {
+        if ((member as IrDeclaration).isReal && !toSkip(member)) {
             realOverrides += member
         } else {
             overriddenSymbols(member).forEach { collectRealOverrides(it.owner as IrOverridableMember) }

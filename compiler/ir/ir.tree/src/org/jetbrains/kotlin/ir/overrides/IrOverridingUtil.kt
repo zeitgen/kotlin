@@ -208,7 +208,9 @@ class IrOverridingUtil(
 
         val addedFakeOverrides = mutableListOf<IrOverridableMember>()
         createAndBindFakeOverrides(current, notOverridden, addedFakeOverrides)
-        current.declarations.addAll(addedFakeOverrides)
+
+        @Suppress("UNCHECKED_CAST")
+        current.declarations.addAll(addedFakeOverrides as List<IrDeclaration>)
     }
 
     private fun extractAndBindOverridesForMember(
@@ -325,7 +327,7 @@ class IrOverridingUtil(
         member: IrOverridableMember,
         result: MutableSet<IrOverridableMember>
     ) {
-        if (member.isReal) {
+        if ((member as IrDeclaration).isReal) {
             result.add(member)
         } else {
             check(member.overriddenSymbols.isNotEmpty()) { "No overridden descriptors found for (fake override) $member" }

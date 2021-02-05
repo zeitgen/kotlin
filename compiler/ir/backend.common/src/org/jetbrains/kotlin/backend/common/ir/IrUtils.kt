@@ -481,7 +481,7 @@ private class FakeOverrideBuilderForLowerings : FakeOverrideBuilderStrategy() {
 fun IrClass.addFakeOverrides(irBuiltIns: IrBuiltIns, implementedMembers: List<IrOverridableMember> = emptyList()) {
     IrOverridingUtil(irBuiltIns, FakeOverrideBuilderForLowerings())
         .buildFakeOverridesForClassUsingOverriddenSymbols(this, implementedMembers)
-        .forEach { addChild(it) }
+        .forEach { addChild(it as IrDeclaration) }
 }
 
 fun IrFactory.createStaticFunctionWithReceivers(

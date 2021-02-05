@@ -54,7 +54,7 @@ interface IrDeclarationWithVisibility : IrParentOwner {
     var visibility: DescriptorVisibility
 }
 
-interface IrDeclarationWithName : IrDeclaration {
+interface IrDeclarationWithName : IrParentOwner, IrAnnotationContainer {
     val name: Name
 }
 
