@@ -12292,6 +12292,11 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
         public void testSafeLetWithReturn() throws Exception {
             runTest("compiler/testData/codegen/box/fir/SafeLetWithReturn.kt");
         }
+
+        @TestMetadata("SuperHashCode.kt")
+        public void testSuperHashCode() throws Exception {
+            runTest("compiler/testData/codegen/box/fir/SuperHashCode.kt");
+        }
     }
 
     @TestMetadata("compiler/testData/codegen/box/fullJdk")

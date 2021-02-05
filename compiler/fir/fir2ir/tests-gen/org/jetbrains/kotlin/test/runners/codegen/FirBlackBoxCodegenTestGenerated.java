@@ -14865,6 +14865,12 @@ public class FirBlackBoxCodegenTestGenerated extends AbstractFirBlackBoxCodegenT
         }
 
         @Test
+        @TestMetadata("SuperHashCode.kt")
+        public void testSuperHashCode() throws Exception {
+            runTest("compiler/testData/codegen/box/fir/SuperHashCode.kt");
+        }
+
+        @Test
         @TestMetadata("SuspendExtension.kt")
         public void testSuspendExtension() throws Exception {
             runTest("compiler/testData/codegen/box/fir/SuspendExtension.kt");
