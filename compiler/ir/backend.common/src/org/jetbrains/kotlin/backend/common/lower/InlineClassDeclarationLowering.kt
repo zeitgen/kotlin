@@ -179,7 +179,7 @@ class InlineClassLowering(val context: CommonBackendContext) {
                                 return expression
                             }
 
-                            override fun visitDeclaration(declaration: IrDeclarationBase): IrStatement {
+                            override fun visitDeclaration(declaration: IrDeclaration): IrStatement {
                                 declaration.transformChildrenVoid(this)
                                 if (declaration.parent == irConstructor)
                                     declaration.parent = staticMethod
@@ -216,7 +216,7 @@ class InlineClassLowering(val context: CommonBackendContext) {
                 statements.addAll((functionBody as IrBlockBody).statements)
 
                 transformChildrenVoid(object : IrElementTransformerVoid() {
-                    override fun visitDeclaration(declaration: IrDeclarationBase): IrStatement {
+                    override fun visitDeclaration(declaration: IrDeclaration): IrStatement {
                         declaration.transformChildrenVoid(this)
                         if (declaration.parent == function)
                             declaration.parent = staticMethod

@@ -333,7 +333,7 @@ class RenderIrElementVisitor(private val normalizeNames: Boolean = false) : IrEl
     override fun visitElement(element: IrElement, data: Nothing?): String =
         "?ELEMENT? ${element::class.java.simpleName} $element"
 
-    override fun visitDeclaration(declaration: IrDeclarationBase, data: Nothing?): String =
+    override fun visitDeclaration(declaration: IrDeclaration, data: Nothing?): String =
         "?DECLARATION? ${declaration::class.java.simpleName} $declaration"
 
     override fun visitModuleFragment(declaration: IrModuleFragment, data: Nothing?): String =

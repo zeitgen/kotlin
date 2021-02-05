@@ -48,8 +48,6 @@ abstract class IrDeclaration : IrElementBase(), IrStatement, IrSymbolOwner, IrPa
     abstract val factory: IrFactory
 }
 
-abstract class IrDeclarationBase : IrDeclaration()
-
 interface IrDeclarationWithVisibility : IrParentOwner {
     var visibility: DescriptorVisibility
 }

@@ -23,7 +23,7 @@ import org.jetbrains.kotlin.ir.visitors.IrElementTransformer
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitor
 
 abstract class IrProperty :
-    IrDeclarationBase(), IrPossiblyExternalDeclaration, IrOverridableMember, IrMetadataSourceOwner, IrAttributeContainer, IrMemberWithContainerSource {
+    IrDeclaration(), IrPossiblyExternalDeclaration, IrOverridableMember, IrMetadataSourceOwner, IrAttributeContainer, IrMemberWithContainerSource {
     @ObsoleteDescriptorBasedAPI
     abstract override val descriptor: PropertyDescriptor
     abstract override val symbol: IrPropertySymbol

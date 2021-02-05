@@ -13,7 +13,7 @@ import org.jetbrains.kotlin.ir.types.IrType
 //TODO: make IrScript as IrPackageFragment, because script is used as a file, not as a class
 //NOTE: declarations and statements stored separately
 abstract class IrScript :
-    IrDeclarationBase(), IrDeclarationWithName,
+    IrDeclaration(), IrDeclarationWithName,
     IrDeclarationParent, IrStatementContainer {
 
     abstract override val symbol: IrScriptSymbol

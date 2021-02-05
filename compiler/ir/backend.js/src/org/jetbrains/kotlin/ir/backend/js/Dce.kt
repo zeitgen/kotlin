@@ -187,7 +187,7 @@ fun usefulDeclarations(roots: Iterable<IrDeclaration>, context: JsIrBackendConte
                         // Skip
                     }
 
-                    override fun visitDeclaration(declaration: IrDeclarationBase) {
+                    override fun visitDeclaration(declaration: IrDeclaration) {
                         if (declaration !== it) declaration.enqueue(it, "roots' nested declaration")
 
                         super.visitDeclaration(declaration)
