@@ -5,6 +5,8 @@
 
 package org.jetbrains.kotlin.descriptors.commonizer.utils
 
+import kotlinx.metadata.ClassName
+import kotlinx.metadata.KmAnnotation
 import org.jetbrains.kotlin.builtins.StandardNames
 import org.jetbrains.kotlin.descriptors.PackageFragmentDescriptor
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationDescriptor
@@ -15,6 +17,7 @@ import org.jetbrains.kotlin.serialization.konan.impl.ForwardDeclarationsFqNames
 
 internal val DEPRECATED_ANNOTATION_FQN: FqName = FqName(Deprecated::class.java.name).intern()
 internal val DEPRECATED_ANNOTATION_CLASS_ID: ClassId = internedClassId(DEPRECATED_ANNOTATION_FQN)
+internal val DEPRECATED_ANNOTATION_FULL_NAME: ClassName = DEPRECATED_ANNOTATION_CLASS_ID.asString()
 
 internal val ANY_CLASS_ID: ClassId = internedClassId(StandardNames.FqNames.any.toSafe().intern())
 private val NOTHING_CLASS_ID: ClassId = internedClassId(StandardNames.FqNames.nothing.toSafe().intern())
@@ -41,6 +44,12 @@ private val OBJC_INTEROP_CALLABLE_ANNOTATIONS = listOf(
     "ObjCMethod",
     "ObjCConstructor",
     "ObjCFactory"
+)
+
+private val OBJC_INTEROP_CALLABLE_ANNOTATION_CLASS_IDS = listOf(
+    "kotlinx/cinterop/ObjCMethod",
+    "kotlinx/cinterop/ObjCConstructor",
+    "kotlinx/cinterop/ObjCFactory"
 )
 
 internal val DEFAULT_CONSTRUCTOR_NAME = Name.identifier("<init>").intern()
@@ -77,3 +86,6 @@ internal val AnnotationDescriptor.isObjCInteropCallableAnnotation: Boolean
         return classifier.name.asString() in OBJC_INTEROP_CALLABLE_ANNOTATIONS
                 && (classifier.containingDeclaration as? PackageFragmentDescriptor)?.fqName?.asString() == CINTEROP_PACKAGE
     }
+
+internal val KmAnnotation.isObjCInteropCallableAnnotation: Boolean
+    get() = className in OBJC_INTEROP_CALLABLE_ANNOTATION_CLASS_IDS

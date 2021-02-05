@@ -5,14 +5,19 @@
 
 package org.jetbrains.kotlin.descriptors.commonizer.cir.factory
 
+import kotlinx.metadata.Flag
+import kotlinx.metadata.KmClass
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.ClassKind
-import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.DescriptorVisibility
+import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.commonizer.cir.CirAnnotation
 import org.jetbrains.kotlin.descriptors.commonizer.cir.CirClass
 import org.jetbrains.kotlin.descriptors.commonizer.cir.CirTypeParameter
 import org.jetbrains.kotlin.descriptors.commonizer.cir.impl.CirClassImpl
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.decodeClassKind
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.decodeModality
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.decodeVisibility
 import org.jetbrains.kotlin.descriptors.commonizer.utils.compactMap
 import org.jetbrains.kotlin.descriptors.commonizer.utils.intern
 import org.jetbrains.kotlin.name.Name
@@ -34,6 +39,23 @@ object CirClassFactory {
         isExternal = source.isExternal
     ).apply {
         setSupertypes(source.typeConstructor.supertypes.compactMap { CirTypeFactory.create(it) })
+    }
+
+    fun create(name: Name, source: KmClass): CirClass = create(
+        annotations = emptyList(), // TODO: implement
+        name = name,
+        typeParameters = emptyList(), // TODO: implement
+        visibility = decodeVisibility(source.flags),
+        modality = decodeModality(source.flags),
+        kind = decodeClassKind(source.flags),
+        companion = source.companionObject?.let { Name.identifier(it) }?.intern(),
+        isCompanion = Flag.Class.IS_COMPANION_OBJECT(source.flags),
+        isData = Flag.Class.IS_DATA(source.flags),
+        isInline = Flag.Class.IS_INLINE(source.flags),
+        isInner = Flag.Class.IS_INNER(source.flags),
+        isExternal = Flag.Class.IS_EXTERNAL(source.flags)
+    ).apply {
+        setSupertypes(emptyList()) // TODO: implement
     }
 
     @Suppress("NOTHING_TO_INLINE")

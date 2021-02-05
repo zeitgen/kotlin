@@ -5,9 +5,14 @@
 
 package org.jetbrains.kotlin.descriptors.commonizer.cir.factory
 
+import kotlinx.metadata.Flag
+import kotlinx.metadata.KmFunction
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.descriptors.commonizer.cir.*
 import org.jetbrains.kotlin.descriptors.commonizer.cir.impl.CirFunctionImpl
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.decodeCallableKind
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.decodeModality
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.decodeVisibility
 import org.jetbrains.kotlin.descriptors.commonizer.utils.compactMap
 import org.jetbrains.kotlin.descriptors.commonizer.utils.intern
 import org.jetbrains.kotlin.name.Name
@@ -25,6 +30,21 @@ object CirFunctionFactory {
         extensionReceiver = source.extensionReceiverParameter?.let(CirExtensionReceiverFactory::create),
         returnType = CirTypeFactory.create(source.returnType!!),
         kind = source.kind,
+        modifiers = CirFunctionModifiersFactory.create(source),
+    )
+
+    fun create(source: KmFunction, containingClass: CirContainingClass?): CirFunction = create(
+        annotations = emptyList(), // TODO: implement
+        name = Name.identifier(source.name).intern(),
+        typeParameters = emptyList(), // TODO: implement
+        visibility = decodeVisibility(source.flags),
+        modality = decodeModality(source.flags),
+        containingClass = containingClass,
+        valueParameters = emptyList(), // TODO: implement
+        hasStableParameterNames = !Flag.Function.HAS_NON_STABLE_PARAMETER_NAMES(source.flags),
+        extensionReceiver = null, // TODO: implement
+        returnType = CirTypeFactory.StandardTypes.ANY, // TODO: implement
+        kind = decodeCallableKind(source.flags),
         modifiers = CirFunctionModifiersFactory.create(source),
     )
 

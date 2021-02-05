@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.descriptors.commonizer.utils
 
+import kotlinx.metadata.KmType
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.ClassifierDescriptor
 import org.jetbrains.kotlin.descriptors.ClassifierDescriptorWithTypeParameters
@@ -36,6 +37,9 @@ internal val ClassifierDescriptorWithTypeParameters.internedClassId: ClassId
         is ClassDescriptor -> internedClassId(owner.internedClassId, name.intern())
         else -> error("Unexpected containing declaration type for $this: ${owner::class}, $owner")
     }
+
+internal val KmType.signature: CirTypeSignature
+    get() = "" // TODO: implement
 
 internal val KotlinType.signature: CirTypeSignature
     get() {

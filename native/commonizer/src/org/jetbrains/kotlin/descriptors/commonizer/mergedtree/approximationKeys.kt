@@ -5,6 +5,8 @@
 
 package org.jetbrains.kotlin.descriptors.commonizer.mergedtree
 
+import kotlinx.metadata.*
+import kotlinx.metadata.klib.annotations
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.descriptors.commonizer.cir.CirTypeSignature
 import org.jetbrains.kotlin.descriptors.commonizer.core.Commonizer
@@ -22,6 +24,11 @@ data class PropertyApproximationKey(
         property.name.intern(),
         property.extensionReceiverParameter?.type?.signature
     )
+
+    constructor(property: KmProperty) : this(
+        Name.identifier(property.name).intern(),
+        property.receiverParameterType?.signature
+    )
 }
 
 /** Used for approximation of [SimpleFunctionDescriptor]s before running concrete [Commonizer]s */
@@ -36,6 +43,13 @@ data class FunctionApproximationKey(
         function.valueParameters.toTypeSignatures(),
         additionalValueParameterNamesHash(function),
         function.extensionReceiverParameter?.type?.signature
+    )
+
+    constructor(function: KmFunction) : this(
+        Name.identifier(function.name).intern(),
+        function.valueParameters.toTypeSignatures(),
+        additionalValueParameterNamesHash(function.annotations, function.valueParameters),
+        function.receiverParameterType?.signature
     )
 
     override fun equals(other: Any?): Boolean {
@@ -64,6 +78,11 @@ data class ConstructorApproximationKey(
         additionalValueParameterNamesHash(constructor)
     )
 
+    constructor(constructor: KmConstructor) : this(
+        constructor.valueParameters.toTypeSignatures(),
+        additionalValueParameterNamesHash(constructor.annotations, constructor.valueParameters)
+    )
+
     override fun equals(other: Any?): Boolean {
         if (other !is ConstructorApproximationKey)
             return false
@@ -76,9 +95,14 @@ data class ConstructorApproximationKey(
         .appendHashCode(additionalValueParametersNamesHash)
 }
 
+@JvmName("toTypeSignaturesDescriptors")
 @Suppress("NOTHING_TO_INLINE")
 private inline fun List<ValueParameterDescriptor>.toTypeSignatures(): Array<CirTypeSignature> =
     Array(size) { index -> this[index].type.signature }
+
+@Suppress("NOTHING_TO_INLINE")
+private inline fun List<KmValueParameter>.toTypeSignatures(): Array<CirTypeSignature> =
+    Array(size) { index -> this[index].type?.signature.orEmpty() }
 
 private fun additionalValueParameterNamesHash(callable: FunctionDescriptor): Int {
     // TODO: add more precise checks when more languages than C & ObjC are supported
@@ -86,4 +110,12 @@ private fun additionalValueParameterNamesHash(callable: FunctionDescriptor): Int
         return 0 // do not calculate hash for non-ObjC callables
 
     return callable.valueParameters.fold(0) { acc, next -> acc.appendHashCode(next.name) }
+}
+
+private fun additionalValueParameterNamesHash(annotations: List<KmAnnotation>, valueParameters: List<KmValueParameter>): Int {
+    // TODO: add more precise checks when more languages than C & ObjC are supported
+    if (annotations.none { it.isObjCInteropCallableAnnotation })
+        return 0 // do not calculate hash for non-ObjC callables
+
+    return valueParameters.fold(0) { acc, next -> acc.appendHashCode(next.name) }
 }

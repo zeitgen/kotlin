@@ -5,10 +5,12 @@
 
 package org.jetbrains.kotlin.descriptors.commonizer.cir.factory
 
+import kotlinx.metadata.KmTypeAlias
 import org.jetbrains.kotlin.descriptors.TypeAliasDescriptor
 import org.jetbrains.kotlin.descriptors.DescriptorVisibility
 import org.jetbrains.kotlin.descriptors.commonizer.cir.*
 import org.jetbrains.kotlin.descriptors.commonizer.cir.impl.CirTypeAliasImpl
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.decodeVisibility
 import org.jetbrains.kotlin.descriptors.commonizer.utils.compactMap
 import org.jetbrains.kotlin.descriptors.commonizer.utils.intern
 import org.jetbrains.kotlin.name.Name
@@ -21,6 +23,15 @@ object CirTypeAliasFactory {
         visibility = source.visibility,
         underlyingType = CirTypeFactory.create(source.underlyingType, useAbbreviation = true) as CirClassOrTypeAliasType,
         expandedType = CirTypeFactory.create(source.expandedType, useAbbreviation = false) as CirClassType
+    )
+
+    fun create(source: KmTypeAlias): CirTypeAlias = create(
+        annotations = emptyList(), // TODO: implement
+        name = Name.identifier(source.name).intern(),
+        typeParameters = emptyList(), // TODO: implement
+        visibility = decodeVisibility(source.flags),
+        underlyingType = CirTypeFactory.StandardTypes.ANY, // TODO: implement
+        expandedType = CirTypeFactory.StandardTypes.ANY, // TODO: implement
     )
 
     @Suppress("NOTHING_TO_INLINE")

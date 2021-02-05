@@ -5,11 +5,14 @@
 
 package org.jetbrains.kotlin.descriptors.commonizer.cir.factory
 
+import kotlinx.metadata.Flag
+import kotlinx.metadata.KmConstructor
 import org.jetbrains.kotlin.descriptors.CallableMemberDescriptor
 import org.jetbrains.kotlin.descriptors.ClassConstructorDescriptor
 import org.jetbrains.kotlin.descriptors.DescriptorVisibility
 import org.jetbrains.kotlin.descriptors.commonizer.cir.*
 import org.jetbrains.kotlin.descriptors.commonizer.cir.impl.CirClassConstructorImpl
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.decodeVisibility
 import org.jetbrains.kotlin.descriptors.commonizer.utils.compactMap
 import org.jetbrains.kotlin.descriptors.commonizer.utils.compactMapNotNull
 
@@ -32,6 +35,16 @@ object CirClassConstructorFactory {
             isPrimary = source.isPrimary
         )
     }
+
+    fun create(source: KmConstructor, containingClass: CirContainingClass): CirClassConstructor = create(
+        annotations = emptyList(), // TODO: implement
+        typeParameters = emptyList(), // TODO: implement
+        visibility = decodeVisibility(source.flags),
+        containingClass = containingClass,
+        valueParameters = emptyList(), // TODO: implement
+        hasStableParameterNames = !Flag.Constructor.HAS_NON_STABLE_PARAMETER_NAMES(source.flags),
+        isPrimary = !Flag.Constructor.IS_SECONDARY(source.flags)
+    )
 
     @Suppress("NOTHING_TO_INLINE")
     inline fun create(

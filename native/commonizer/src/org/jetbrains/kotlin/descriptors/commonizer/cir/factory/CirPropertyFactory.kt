@@ -5,12 +5,17 @@
 
 package org.jetbrains.kotlin.descriptors.commonizer.cir.factory
 
+import kotlinx.metadata.Flag
+import kotlinx.metadata.KmProperty
 import org.jetbrains.kotlin.descriptors.CallableMemberDescriptor
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.descriptors.DescriptorVisibility
 import org.jetbrains.kotlin.descriptors.commonizer.cir.*
 import org.jetbrains.kotlin.descriptors.commonizer.cir.impl.CirPropertyImpl
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.decodeCallableKind
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.decodeModality
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.decodeVisibility
 import org.jetbrains.kotlin.descriptors.commonizer.utils.checkConstantSupportedInCommonization
 import org.jetbrains.kotlin.descriptors.commonizer.utils.compactMap
 import org.jetbrains.kotlin.descriptors.commonizer.utils.intern
@@ -50,6 +55,28 @@ object CirPropertyFactory {
             compileTimeInitializer = source.compileTimeInitializer
         )
     }
+
+    fun create(source: KmProperty, containingClass: CirContainingClass?): CirProperty = create(
+        annotations = emptyList(), // TODO: implement
+        name = Name.identifier(source.name).intern(),
+        typeParameters = emptyList(), // TODO: implement
+        visibility = decodeVisibility(source.flags),
+        modality = decodeModality(source.flags),
+        containingClass = containingClass,
+        isExternal = Flag.Property.IS_EXTERNAL(source.flags),
+        extensionReceiver = null, // TODO: implement
+        returnType = CirTypeFactory.StandardTypes.ANY, // TODO: implement
+        kind = decodeCallableKind(source.flags),
+        isVar = Flag.Property.IS_VAR(source.flags),
+        isLateInit = Flag.Property.IS_LATEINIT(source.flags),
+        isConst = Flag.Property.IS_CONST(source.flags),
+        isDelegate = Flag.Property.IS_DELEGATED(source.flags),
+        getter = null, // TODO: implement
+        setter = null, // TODO: implement
+        backingFieldAnnotations = null, // TODO: implement
+        delegateFieldAnnotations = null, // TODO: implement
+        compileTimeInitializer = null // TODO: implement
+    )
 
     @Suppress("NOTHING_TO_INLINE")
     inline fun create(

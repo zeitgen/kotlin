@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.descriptors.commonizer.utils
 
+import kotlinx.metadata.ClassName
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
@@ -22,6 +23,12 @@ internal inline fun internedClassId(topLevelFqName: FqName): ClassId {
 internal fun internedClassId(packageFqName: FqName, classifierName: Name): ClassId {
     val relativeClassName = FqName.topLevel(classifierName).intern()
     return ClassId(packageFqName, relativeClassName, false).intern()
+}
+
+internal fun internedClassId(fullName: ClassName): ClassId {
+    val packageFqName = FqName(fullName.substringBeforeLast('/', missingDelimiterValue = "").replace('/', '.')).intern()
+    val classFqName = FqName(fullName.substringAfterLast('/')).intern()
+    return ClassId(packageFqName, classFqName, false).intern()
 }
 
 internal fun internedClassId(ownerClassId: ClassId, nestedClassName: Name): ClassId {
