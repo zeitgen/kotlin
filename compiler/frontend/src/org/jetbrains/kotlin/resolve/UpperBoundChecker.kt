@@ -69,7 +69,7 @@ open class UpperBoundChecker(val languageVersionSettings: LanguageVersionSetting
     ) {
         if (typeParameterDescriptor.upperBounds.isEmpty()) return
 
-        val diagnosticsReporter = UpperBoundViolatedReporter(trace, argumentType, typeParameterDescriptor = typeParameterDescriptor)
+        val diagnosticsReporter = UpperBoundViolatedReporter(trace, argumentType, typeParameterDescriptor)
 
         for (bound in typeParameterDescriptor.upperBounds) {
             checkBound(bound, argumentType, argumentReference, substitutor, typeAliasUsageElement, diagnosticsReporter)
@@ -102,16 +102,15 @@ open class UpperBoundChecker(val languageVersionSettings: LanguageVersionSetting
 class UpperBoundViolatedReporter(
     private val trace: BindingTrace,
     private val argumentType: KotlinType,
+    private val typeParameterDescriptor: TypeParameterDescriptor,
     private val baseDiagnostic: DiagnosticFactory2<KtTypeReference, KotlinType, KotlinType> = UPPER_BOUND_VIOLATED,
-    private val diagnosticForTypeAliases: DiagnosticFactory3<KtElement, KotlinType, KotlinType, ClassifierDescriptor> = UPPER_BOUND_VIOLATED_IN_TYPEALIAS_EXPANSION,
-    private val typeParameterDescriptor: TypeParameterDescriptor? = null
+    private val diagnosticForTypeAliases: DiagnosticFactory3<KtElement, KotlinType, KotlinType, ClassifierDescriptor> = UPPER_BOUND_VIOLATED_IN_TYPEALIAS_EXPANSION
 ) {
     fun report(typeArgumentReference: KtTypeReference, substitutedBound: KotlinType) {
         trace.reportDiagnosticOnce(baseDiagnostic.on(typeArgumentReference, substitutedBound, argumentType))
     }
 
     fun reportForTypeAliasExpansion(callElement: KtElement, substitutedBound: KotlinType) {
-        if (typeParameterDescriptor == null) return
         trace.reportDiagnosticOnce(diagnosticForTypeAliases.on(callElement, substitutedBound, argumentType, typeParameterDescriptor))
     }
 }

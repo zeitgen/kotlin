@@ -47,12 +47,11 @@ class WarningAwareUpperBoundChecker(languageVersionSettings: LanguageVersionSett
     ) {
         if (typeParameterDescriptor.upperBounds.isEmpty()) return
 
-        val diagnosticsReporter = UpperBoundViolatedReporter(trace, argumentType, typeParameterDescriptor = typeParameterDescriptor)
+        val diagnosticsReporter = UpperBoundViolatedReporter(trace, argumentType, typeParameterDescriptor)
         val diagnosticsReporterForWarnings = UpperBoundViolatedReporter(
-            trace, argumentType,
+            trace, argumentType, typeParameterDescriptor,
             baseDiagnostic = UPPER_BOUND_VIOLATED_BASED_ON_JAVA_ANNOTATIONS,
-            diagnosticForTypeAliases = UPPER_BOUND_VIOLATED_IN_TYPEALIAS_EXPANSION_BASED_ON_JAVA_ANNOTATIONS,
-            typeParameterDescriptor
+            diagnosticForTypeAliases = UPPER_BOUND_VIOLATED_IN_TYPEALIAS_EXPANSION_BASED_ON_JAVA_ANNOTATIONS
         )
 
         for (bound in typeParameterDescriptor.upperBounds) {
