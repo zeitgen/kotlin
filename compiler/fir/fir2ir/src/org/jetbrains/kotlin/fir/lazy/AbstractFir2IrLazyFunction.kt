@@ -34,6 +34,9 @@ abstract class AbstractFir2IrLazyFunction<F : FirMemberDeclaration>(
     override lateinit var typeParameters: List<IrTypeParameter>
     override lateinit var parent: IrDeclarationParent
 
+    override val factory: IrFactory
+        get() = irFactory
+
     override val isTailrec: Boolean
         get() = fir.isTailRec
 

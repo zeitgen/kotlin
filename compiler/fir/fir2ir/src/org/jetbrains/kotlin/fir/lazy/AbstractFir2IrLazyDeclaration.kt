@@ -15,32 +15,29 @@ import org.jetbrains.kotlin.ir.declarations.lazy.lazyVar
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import kotlin.properties.ReadWriteProperty
 
-interface AbstractFir2IrLazyDeclaration<F : FirMemberDeclaration, D : IrDeclaration> :
-    IrDeclaration, IrDeclarationParent, Fir2IrComponents {
-
+interface AbstractFir2IrLazyDeclaration<F : FirMemberDeclaration, D : IrDeclaration> : IrDeclarationParent, Fir2IrComponents {
     val fir: F
-    override val symbol: Fir2IrBindableSymbol<*, D>
 
-    override val factory: IrFactory
-        get() = irFactory
+    val symbol: Fir2IrBindableSymbol<*, D>
 
     var typeParameters: List<IrTypeParameter>
+}
 
-    fun prepareTypeParameters() {
-        typeParameters = fir.typeParameters.mapIndexedNotNull { index, typeParameter ->
-            if (typeParameter !is FirTypeParameter) return@mapIndexedNotNull null
-            classifierStorage.getIrTypeParameter(typeParameter, index).apply {
-                parent = this@AbstractFir2IrLazyDeclaration
-                if (superTypes.isEmpty()) {
-                    superTypes = typeParameter.bounds.map { it.toIrType(typeConverter) }
-                }
+internal fun <F : FirMemberDeclaration, D : IrDeclaration> AbstractFir2IrLazyDeclaration<F, D>.prepareTypeParameters() {
+    typeParameters = fir.typeParameters.mapIndexedNotNull { index, typeParameter ->
+        if (typeParameter !is FirTypeParameter) return@mapIndexedNotNull null
+        classifierStorage.getIrTypeParameter(typeParameter, index).apply {
+            parent = this@prepareTypeParameters
+            if (superTypes.isEmpty()) {
+                superTypes = typeParameter.bounds.map { it.toIrType(typeConverter) }
             }
         }
     }
+}
 
-    fun createLazyAnnotations(): ReadWriteProperty<Any?, List<IrConstructorCall>> = lazyVar {
-        fir.annotations.mapNotNull {
-            callGenerator.convertToIrConstructorCall(it) as? IrConstructorCall
-        }
+internal fun <F : FirMemberDeclaration, D : IrDeclaration> AbstractFir2IrLazyDeclaration<F, D>.createLazyAnnotations():
+        ReadWriteProperty<Any?, List<IrConstructorCall>> = lazyVar {
+    fir.annotations.mapNotNull {
+        callGenerator.convertToIrConstructorCall(it) as? IrConstructorCall
     }
 }
