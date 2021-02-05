@@ -88,7 +88,7 @@ fun KotlinType.getEnhancement(): KotlinType? = when (this) {
     else -> null
 }
 
-private fun List<TypeProjection>.enhanceTypeArguments(depth: Int) =
+private fun List<TypeProjection>.enhanceTypeArguments() =
     map { argument ->
         // TODO: think about star projections with enhancement (e.g. came from Java: Foo<@NotNull ?>)
         if (argument.isStarProjection) {
@@ -96,16 +96,16 @@ private fun List<TypeProjection>.enhanceTypeArguments(depth: Int) =
         }
         val argumentType = argument.type
         val enhancedArgumentType = if (argumentType is TypeWithEnhancement) argumentType.enhancement else argumentType
-        val enhancedDeeplyArgumentType = enhancedArgumentType.getEnhancementDeeply(depth + 1)
+        val enhancedDeeplyArgumentType = enhancedArgumentType.getEnhancementDeeplyInternal()
 
         if (argumentType === enhancedDeeplyArgumentType) return@map argument
 
         argument.replaceType(enhancedDeeplyArgumentType)
     }
 
-private fun KotlinType.getEnhancementDeeply(depth: Int): KotlinType {
-    val newArguments = arguments.enhanceTypeArguments(depth)
-    val newArgumentsForUpperBound = if (this is FlexibleType) upperBound.arguments.enhanceTypeArguments(depth) else newArguments
+private fun KotlinType.getEnhancementDeeplyInternal(): KotlinType {
+    val newArguments = arguments.enhanceTypeArguments()
+    val newArgumentsForUpperBound = if (this is FlexibleType) upperBound.arguments.enhanceTypeArguments() else newArguments
     val enhancedType = if (this is TypeWithEnhancement) enhancement else this
 
     return enhancedType.replace(
@@ -115,7 +115,7 @@ private fun KotlinType.getEnhancementDeeply(depth: Int): KotlinType {
 }
 
 fun KotlinType.getEnhancementDeeply(): KotlinType? {
-    val enhancedTypeWithArguments = getEnhancementDeeply(depth = 0)
+    val enhancedTypeWithArguments = getEnhancementDeeplyInternal()
 
     if (enhancedTypeWithArguments === this) return null
 

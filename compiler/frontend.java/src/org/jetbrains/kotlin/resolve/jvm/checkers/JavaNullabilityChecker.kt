@@ -41,7 +41,7 @@ import org.jetbrains.kotlin.types.model.KotlinTypeMarker
 import org.jetbrains.kotlin.types.typeUtil.contains
 import org.jetbrains.kotlin.types.typeUtil.makeNotNullable
 
-class JavaNullabilityChecker(val upperBoundChecker: EnhancedUpperBoundChecker) : AdditionalTypeChecker {
+class JavaNullabilityChecker(val upperBoundChecker: WarningAwareUpperBoundChecker) : AdditionalTypeChecker {
     override fun checkType(
         expression: KtExpression,
         expressionType: KotlinType,
@@ -49,7 +49,7 @@ class JavaNullabilityChecker(val upperBoundChecker: EnhancedUpperBoundChecker) :
         c: ResolutionContext<*>
     ) {
         if (expressionType is AbbreviatedType) {
-            checkBoundsOfExpandedTypeAlias(expressionType, expression, c.trace)
+            checkBoundsOfExpandedTypeAlias(expressionType.expandedType, expression, c.trace)
         }
 
         val dataFlowValue by lazy(LazyThreadSafetyMode.NONE) {
@@ -128,7 +128,7 @@ class JavaNullabilityChecker(val upperBoundChecker: EnhancedUpperBoundChecker) :
         for ((index, arg) in type.arguments.withIndex()) {
             upperBoundChecker.checkBounds(
                 null, arg.type, typeParameters[index], TypeSubstitutor.create(type), trace, expression,
-                withOnlyEnhancedCheck = true
+                withOnlyCheckForWarning = true
             )
         }
     }

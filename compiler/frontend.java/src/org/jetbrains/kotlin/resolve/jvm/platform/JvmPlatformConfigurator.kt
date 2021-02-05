@@ -97,7 +97,7 @@ object JvmPlatformConfigurator : PlatformConfiguratorBase(
     override fun configureModuleComponents(container: StorageComponentContainer) {
         container.useImpl<JavaNullabilityChecker>()
         container.useImpl<JvmStaticChecker>()
-        container.useImpl<EnhancedUpperBoundChecker>()
+        container.useImpl<WarningAwareUpperBoundChecker>()
         container.useImpl<JvmReflectionAPICallChecker>()
         container.useImpl<JavaSyntheticScopes>()
         container.useImpl<SamConversionResolverImpl>()
