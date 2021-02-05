@@ -11,6 +11,7 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileTree
 import org.gradle.api.file.RelativePath
 import org.gradle.api.logging.Logger
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.Optional
@@ -21,6 +22,7 @@ import org.jetbrains.kotlin.gradle.targets.native.cocoapods.MissingCocoapodsMess
 import org.jetbrains.kotlin.gradle.targets.native.cocoapods.MissingSpecReposMessage
 import org.jetbrains.kotlin.gradle.tasks.PodspecTask.Companion.retrievePods
 import org.jetbrains.kotlin.gradle.tasks.PodspecTask.Companion.retrieveSpecRepos
+import org.jetbrains.kotlin.gradle.utils.newProperty
 import org.jetbrains.kotlin.konan.target.Family
 import java.io.File
 import java.io.Reader
@@ -365,7 +367,7 @@ open class PodGenTask : DefaultTask() {
     }
 
     @get:InputFile
-    internal lateinit var podspec: Provider<File>
+    internal val podspec: Property<File> = project.newProperty()
 
     @get:Input
     internal lateinit var useLibraries: Provider<Boolean>
