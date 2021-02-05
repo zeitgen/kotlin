@@ -582,7 +582,7 @@ abstract class FirDataFlowAnalyzer<FLOW : Flow>(
                 syntheticElseNode.mergeIncomingFlow()
             }
         }
-        whenExitNode.mergeIncomingFlow(updateReceivers = true)
+        whenExitNode.mergeIncomingFlow()
     }
 
     // ----------------------------------- While Loop -----------------------------------
@@ -1152,7 +1152,7 @@ abstract class FirDataFlowAnalyzer<FLOW : Flow>(
         else
             node.previousNodes.mapNotNull { prev -> prev.takeIf { node.incomingEdges.getValue(it).kind.usedInDfa }?.flow }
         var flow = logicSystem.joinFlow(previousFlows)
-        if (updateReceivers) {
+        if (node.previousNodes.size > 1 || updateReceivers) {
             logicSystem.updateAllReceivers(flow)
         }
         if (shouldForkFlow) {
