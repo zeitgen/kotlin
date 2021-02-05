@@ -315,7 +315,6 @@ private fun CompilerConfiguration.updateWithRefinedConfigurations(
             ScriptCompilationConfiguration.compilerOptions
         ) ?: emptyList()
     }
-    updatedCompilerOptions += "-Xuse-old-backend"
     if (updatedCompilerOptions.isNotEmpty() &&
         updatedCompilerOptions != context.baseScriptCompilationConfiguration[ScriptCompilationConfiguration.compilerOptions]
     ) {
