@@ -17,7 +17,7 @@ fun bar(s: String?, t: String?): String {
     val tmp1_safe_receiver: String? = s
     when {
       EQEQ(arg0 = tmp1_safe_receiver, arg1 = null) -> null
-      else -> tmp1_safe_receiver.let<String, Nothing>(block = local fun <anonymous>(it: String): Nothing {
+      else -> tmp1_safe_receiver.let<String, Nothing?>(block = local fun <anonymous>(it: String): Nothing? {
         { // BLOCK
           val tmp2_safe_receiver: String? = t
           when {
