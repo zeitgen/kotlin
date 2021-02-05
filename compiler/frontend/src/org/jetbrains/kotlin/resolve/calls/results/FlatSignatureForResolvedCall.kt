@@ -17,8 +17,6 @@
 package org.jetbrains.kotlin.resolve.calls.results
 
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
-import org.jetbrains.kotlin.config.LanguageFeature
-import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.psi.ValueArgument
 import org.jetbrains.kotlin.resolve.DescriptorToSourceUtils
@@ -61,7 +59,6 @@ fun createOverloadingConflictResolver(
     platformOverloadsSpecificityComparator: PlatformOverloadsSpecificityComparator,
     cancellationChecker: CancellationChecker,
     kotlinTypeRefiner: KotlinTypeRefiner,
-    languageVersionSettings: LanguageVersionSettings
 ) = OverloadingConflictResolver(
     builtIns,
     module,
@@ -69,11 +66,7 @@ fun createOverloadingConflictResolver(
     platformOverloadsSpecificityComparator,
     cancellationChecker,
     MutableResolvedCall<*>::getResultingDescriptor,
-    {
-        ConstraintSystemBuilderImpl.forSpecificity(
-            approximateContravariantCapturedTypesProperly = languageVersionSettings.supportsFeature(LanguageFeature.ApproximateContravariantCapturedTypeProperly),
-        )
-    },
+    ConstraintSystemBuilderImpl.Companion::forSpecificity,
     MutableResolvedCall<*>::createFlatSignature,
     { (it as? VariableAsFunctionResolvedCallImpl)?.variableCall },
     { DescriptorToSourceUtils.descriptorToDeclaration(it) != null },

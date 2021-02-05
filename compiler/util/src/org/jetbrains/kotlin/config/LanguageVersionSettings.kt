@@ -162,8 +162,6 @@ enum class LanguageFeature(
      */
     ImprovementsAroundTypeEnhancement(KOTLIN_1_6),
 
-    ApproximateContravariantCapturedTypeProperly(KOTLIN_1_6),
-
     // Temporarily disabled, see KT-27084/KT-22379
     SoundSmartcastFromLoopConditionForLoopAssignedVariables(sinceVersion = null, kind = BUG_FIX),
 

@@ -48,10 +48,7 @@ import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import java.util.*
 
-open class ConstraintSystemBuilderImpl(
-    private val approximateContravariantCapturedTypesProperly: Boolean,
-    private val mode: Mode = ConstraintSystemBuilderImpl.Mode.INFERENCE
-) : ConstraintSystem.Builder {
+open class ConstraintSystemBuilderImpl(private val mode: Mode = ConstraintSystemBuilderImpl.Mode.INFERENCE) : ConstraintSystem.Builder {
     enum class Mode {
         INFERENCE,
         SPECIFICITY
@@ -429,33 +426,29 @@ open class ConstraintSystemBuilderImpl(
     }
 
     override fun build(): ConstraintSystem {
-        return ConstraintSystemImpl(
-            allTypeParameterBounds, usedInBounds, errors, initialConstraints,
-            typeVariableSubstitutors, approximateContravariantCapturedTypesProperly
-        )
+        return ConstraintSystemImpl(allTypeParameterBounds, usedInBounds, errors, initialConstraints, typeVariableSubstitutors)
     }
 
     companion object {
-        fun forSpecificity(approximateContravariantCapturedTypesProperly: Boolean): SimpleConstraintSystem =
-            object : ConstraintSystemBuilderImpl(approximateContravariantCapturedTypesProperly, Mode.SPECIFICITY), SimpleConstraintSystem {
-                override val context: TypeSystemInferenceExtensionContext
-                    get() = SimpleClassicTypeSystemContext
-                var counter = 0
+        fun forSpecificity(): SimpleConstraintSystem = object : ConstraintSystemBuilderImpl(Mode.SPECIFICITY), SimpleConstraintSystem {
+            override val context: TypeSystemInferenceExtensionContext
+                get() = SimpleClassicTypeSystemContext
+            var counter = 0
 
-                override fun registerTypeVariables(typeParameters: Collection<TypeParameterMarker>) =
-                    registerTypeVariables(CallHandle.NONE, typeParameters.cast())
+            override fun registerTypeVariables(typeParameters: Collection<TypeParameterMarker>) =
+                registerTypeVariables(CallHandle.NONE, typeParameters.cast())
 
-                override fun addSubtypeConstraint(subType: KotlinTypeMarker, superType: KotlinTypeMarker) {
-                    requireOrDescribe(subType is UnwrappedType, subType)
-                    requireOrDescribe(superType is UnwrappedType, superType)
-                    addSubtypeConstraint(subType, superType, ConstraintPositionKind.VALUE_PARAMETER_POSITION.position(counter++))
-                }
-
-                override fun hasContradiction(): Boolean {
-                    fixVariables()
-                    return build().status.hasContradiction()
-                }
+            override fun addSubtypeConstraint(subType: KotlinTypeMarker, superType: KotlinTypeMarker) {
+                requireOrDescribe(subType is UnwrappedType, subType)
+                requireOrDescribe(superType is UnwrappedType, superType)
+                addSubtypeConstraint(subType, superType, ConstraintPositionKind.VALUE_PARAMETER_POSITION.position(counter++))
             }
+
+            override fun hasContradiction(): Boolean {
+                fixVariables()
+                return build().status.hasContradiction()
+            }
+        }
     }
 }
 

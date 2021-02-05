@@ -37,8 +37,7 @@ internal class ConstraintSystemImpl(
     private val usedInBounds: Map<TypeVariable, MutableList<TypeBounds.Bound>>,
     private val errors: List<ConstraintError>,
     private val initialConstraints: List<ConstraintSystemBuilderImpl.Constraint>,
-    private val typeVariableSubstitutors: Map<CallHandle, TypeSubstitutor>,
-    private val approximateContravariantCapturedTypesProperly: Boolean
+    private val typeVariableSubstitutors: Map<CallHandle, TypeSubstitutor>
 ) : ConstraintSystem {
     private val localTypeParameterBounds: Map<TypeVariable, TypeBoundsImpl>
         get() = allTypeParameterBounds.filterNot { it.key.isExternal }
@@ -147,18 +146,13 @@ internal class ConstraintSystemImpl(
             SubstitutionWithCapturedTypeApproximation(
                 SubstitutionFilteringInternalResolveAnnotations(
                     TypeConstructorSubstitution.createByConstructorsMap(parameterToInferredValueMap)
-                ),
-                approximateContravariantCapturedTypesProperly
+                )
             )
         )
     }
 
-    private class SubstitutionWithCapturedTypeApproximation(
-        substitution: TypeSubstitution,
-        val approximateContravariantCapturedTypesProperly: Boolean
-    ) : DelegatedTypeSubstitution(substitution) {
+    private class SubstitutionWithCapturedTypeApproximation(substitution: TypeSubstitution) : DelegatedTypeSubstitution(substitution) {
         override fun approximateCapturedTypes() = true
-        override fun approximateContravariantCapturedTypes() = approximateContravariantCapturedTypesProperly
     }
 
     private fun satisfyInitialConstraints(): Boolean {
@@ -180,7 +174,7 @@ internal class ConstraintSystemImpl(
     }
 
     override fun toBuilder(filterConstraintPosition: (ConstraintPosition) -> Boolean): ConstraintSystem.Builder {
-        val result = ConstraintSystemBuilderImpl(approximateContravariantCapturedTypesProperly)
+        val result = ConstraintSystemBuilderImpl()
         for ((typeParameter, typeBounds) in allTypeParameterBounds) {
             result.allTypeParameterBounds.put(typeParameter, typeBounds.filter(filterConstraintPosition))
         }

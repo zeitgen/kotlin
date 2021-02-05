@@ -71,8 +71,8 @@ class TypeTemplate(
     override fun refine(kotlinTypeRefiner: KotlinTypeRefiner) = this
 }
 
-class CoroutineInferenceData(approximateContravariantCapturedTypesProperly: Boolean) {
-    private val csBuilder = ConstraintSystemBuilderImpl(approximateContravariantCapturedTypesProperly)
+class CoroutineInferenceData {
+    private val csBuilder = ConstraintSystemBuilderImpl()
     private val typeTemplates = HashMap<TypeVariable, TypeTemplate>()
     private var hereIsBadCall = false
 
@@ -153,9 +153,7 @@ class CoroutineInferenceSupport(
 
         val lambdaReceiverType = lambdaExpectedType.getReceiverTypeFromFunctionType() ?: return
 
-        val inferenceData = CoroutineInferenceData(
-            approximateContravariantCapturedTypesProperly = languageVersionSettings.supportsFeature(LanguageFeature.ApproximateContravariantCapturedTypeProperly)
-        )
+        val inferenceData = CoroutineInferenceData()
 
         val constraintSystem = csBuilder.build()
         val newSubstitution = object : DelegatedTypeSubstitution(constraintSystem.currentSubstitutor.substitution) {

@@ -16,8 +16,6 @@
 
 package org.jetbrains.kotlin.resolve
 
-import org.jetbrains.kotlin.config.LanguageFeature
-import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.resolve.calls.inference.ConstraintSystemBuilderImpl
 import org.jetbrains.kotlin.resolve.calls.results.*
@@ -32,10 +30,7 @@ object OverloadabilitySpecificityCallbacks : SpecificityComparisonCallbacks {
         false
 }
 
-class OverloadChecker(
-    val specificityComparator: TypeSpecificityComparator,
-    val languageVersionSettings: LanguageVersionSettings
-) {
+class OverloadChecker(val specificityComparator: TypeSpecificityComparator) {
     /**
      * Does not check names.
      */
@@ -65,12 +60,9 @@ class OverloadChecker(
         val aSignature = FlatSignature.createFromCallableDescriptor(a)
         val bSignature = FlatSignature.createFromCallableDescriptor(b)
 
-        val approximateContravariantCapturedTypesProperly =
-            languageVersionSettings.supportsFeature(LanguageFeature.ApproximateContravariantCapturedTypeProperly)
-
-        val aIsNotLessSpecificThanB = ConstraintSystemBuilderImpl.forSpecificity(approximateContravariantCapturedTypesProperly)
+        val aIsNotLessSpecificThanB = ConstraintSystemBuilderImpl.forSpecificity()
             .isSignatureNotLessSpecific(aSignature, bSignature, OverloadabilitySpecificityCallbacks, specificityComparator)
-        val bIsNotLessSpecificThanA = ConstraintSystemBuilderImpl.forSpecificity(approximateContravariantCapturedTypesProperly)
+        val bIsNotLessSpecificThanA = ConstraintSystemBuilderImpl.forSpecificity()
             .isSignatureNotLessSpecific(bSignature, aSignature, OverloadabilitySpecificityCallbacks, specificityComparator)
 
         return !(aIsNotLessSpecificThanB && bIsNotLessSpecificThanA)

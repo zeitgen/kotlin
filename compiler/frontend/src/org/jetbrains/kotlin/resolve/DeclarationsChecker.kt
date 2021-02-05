@@ -79,7 +79,7 @@ class DeclarationsChecker(
 
     private val exposedChecker = ExposedVisibilityChecker(trace)
 
-    private val shadowedExtensionChecker = ShadowedExtensionChecker(typeSpecificityComparator, trace, languageVersionSettings)
+    private val shadowedExtensionChecker = ShadowedExtensionChecker(typeSpecificityComparator, trace)
 
     fun process(bodiesResolveContext: BodiesResolveContext) {
         for (file in bodiesResolveContext.files) {
