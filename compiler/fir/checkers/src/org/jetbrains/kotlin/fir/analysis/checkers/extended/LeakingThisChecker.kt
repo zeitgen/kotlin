@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.fir.analysis.checkers.resolvedPropertySymbol
 import org.jetbrains.kotlin.fir.analysis.diagnostics.DiagnosticReporter
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.LEAKING_THIS
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.MAY_BE_NOT_INITIALIZED
+import org.jetbrains.kotlin.fir.analysis.diagnostics.reportOn
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.declarations.impl.FirDefaultPropertyGetter
 import org.jetbrains.kotlin.fir.expressions.toResolvedCallableSymbol
@@ -44,7 +45,7 @@ object LeakingThisChecker : FirClassChecker() {
         val copiedGraph = originalGraph.copy()
 
         val data = InterproceduralCollector(properties, functions).collect(copiedGraph)
-        GraphReporterVisitor(data, properties, reporter, functions).reportForGraph(copiedGraph)
+        GraphReporterVisitor(data, properties, reporter, functions, context).reportForGraph(copiedGraph)
     }
 
     private class InterproceduralCollector(
@@ -130,7 +131,8 @@ object LeakingThisChecker : FirClassChecker() {
         val data: Map<CFGNode<*>, PathAwarePropertyUsageInfo>,
         val globalProperties: HashSet<FirPropertySymbol>,
         val reporter: DiagnosticReporter,
-        val functionsWhitelist: HashSet<FirNamedFunctionSymbol>
+        val functionsWhitelist: HashSet<FirNamedFunctionSymbol>,
+        val context: CheckerContext
     ) : InterproceduralVisitorVoid() {
         private val reported = mutableSetOf<FirSourceElement>()
 
@@ -149,7 +151,7 @@ object LeakingThisChecker : FirClassChecker() {
             val functionCallableSymbol = node.fir.toResolvedCallableSymbol() ?: return
 
             if (isReportNeeds(node)) {
-                reporter.report(source, LEAKING_THIS, functionCallableSymbol)
+                reporter.reportOn(source, LEAKING_THIS, functionCallableSymbol, context)
                 reported.add(source)
             }
         }
@@ -168,7 +170,7 @@ object LeakingThisChecker : FirClassChecker() {
             val getterEnterNode = node.followingNodes.find { (it.fir as? FirPropertyAccessor)?.isGetter == true }
             if (getterEnterNode != null && node.owner.declaration is FirAnonymousInitializer) {
                 if (isReportNeeds(getterEnterNode)) {
-                    reporter.report(source, LEAKING_THIS, variableFir.symbol)
+                    reporter.reportOn(source, LEAKING_THIS, variableFir.symbol, context)
                     reported.add(source)
                 }
             }
@@ -177,7 +179,7 @@ object LeakingThisChecker : FirClassChecker() {
             if (variableSymbol !in globalProperties) return
 
             if (dataForNode?.isAlwaysInitialized != true && shouldToReport(variableSymbol, node)) {
-                reporter.report(source, MAY_BE_NOT_INITIALIZED, variableSymbol)
+                reporter.reportOn(source, MAY_BE_NOT_INITIALIZED, variableSymbol, context)
                 reported.add(source)
             }
         }
