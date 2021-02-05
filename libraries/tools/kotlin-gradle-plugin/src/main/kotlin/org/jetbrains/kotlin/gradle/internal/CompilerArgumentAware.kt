@@ -25,13 +25,24 @@ interface CompilerArgumentAware<T : CommonToolArguments> {
     val serializedCompilerArguments: List<String>
         get() = ArgumentUtils.convertArgumentsToStringList(prepareCompilerArguments())
 
+    val fullSerializedCompilerArguments: List<String>
+        get() = ArgumentUtils.convertArgumentsToStringListWithDefaults(prepareCompilerArguments())
+
     val serializedCompilerArgumentsIgnoreClasspathIssues: List<String>
         get() = ArgumentUtils.convertArgumentsToStringList(prepareCompilerArguments(ignoreClasspathResolutionErrors = true))
+
+    val fullSerializedCompilerArgumentsIgnoreClasspathIssues: List<String>
+        get() = ArgumentUtils.convertArgumentsToStringListWithDefaults(prepareCompilerArguments(ignoreClasspathResolutionErrors = true))
 
     val defaultSerializedCompilerArguments: List<String>
         get() = createCompilerArgs()
             .also { setupCompilerArgs(it, defaultsOnly = true) }
             .let(ArgumentUtils::convertArgumentsToStringList)
+
+    val fullDefaultSerializedCompilerArguments: List<String>
+        get() = createCompilerArgs()
+            .also { setupCompilerArgs(it, defaultsOnly = true) }
+            .let(ArgumentUtils::convertArgumentsToStringListWithDefaults)
 
     val filteredArgumentsMap: Map<String, String>
         get() = CompilerArgumentsGradleInput.createInputsMap(prepareCompilerArguments())
@@ -49,12 +60,24 @@ interface CompilerArgumentAwareWithInput<T : CommonToolArguments> : CompilerArgu
         get() = super.serializedCompilerArguments
 
     @get:Internal
+    override val fullSerializedCompilerArguments: List<String>
+        get() = super.fullSerializedCompilerArguments
+
+    @get:Internal
     override val defaultSerializedCompilerArguments: List<String>
         get() = super.defaultSerializedCompilerArguments
 
     @get:Internal
+    override val fullDefaultSerializedCompilerArguments: List<String>
+        get() = super.fullDefaultSerializedCompilerArguments
+
+    @get:Internal
     override val serializedCompilerArgumentsIgnoreClasspathIssues: List<String>
         get() = super.serializedCompilerArgumentsIgnoreClasspathIssues
+
+    @get:Internal
+    override val fullSerializedCompilerArgumentsIgnoreClasspathIssues: List<String>
+        get() = super.fullSerializedCompilerArgumentsIgnoreClasspathIssues
 
     @get:Input
     override val filteredArgumentsMap: Map<String, String>

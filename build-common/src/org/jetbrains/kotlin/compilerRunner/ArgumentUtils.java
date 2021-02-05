@@ -44,9 +44,22 @@ public class ArgumentUtils {
     @NotNull
     public static List<String> convertArgumentsToStringList(@NotNull CommonToolArguments arguments)
             throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        return convertArgumentsRespectingDefaults(arguments, true);
+    }
+
+    @NotNull
+    public static List<String> convertArgumentsToStringListWithDefaults(@NotNull CommonToolArguments arguments)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        return convertArgumentsRespectingDefaults(arguments, false);
+    }
+
+    @NotNull
+    private static List<String> convertArgumentsRespectingDefaults(@NotNull CommonToolArguments arguments, @NotNull Boolean skipDefaults)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException {
         List<String> result = new ArrayList<>();
         Class<? extends CommonToolArguments> argumentsClass = arguments.getClass();
-        convertArgumentsToStringList(arguments, argumentsClass.newInstance(), JvmClassMappingKt.getKotlinClass(argumentsClass), result);
+        convertArgumentsToStringList(arguments, argumentsClass.newInstance(), JvmClassMappingKt.getKotlinClass(argumentsClass), result,
+                                     skipDefaults);
         result.addAll(arguments.getFreeArgs());
         result.addAll(CollectionsKt.map(arguments.getInternalArguments(), InternalArgument::getStringRepresentation));
         return result;
@@ -57,7 +70,8 @@ public class ArgumentUtils {
             @NotNull CommonToolArguments arguments,
             @NotNull CommonToolArguments defaultArguments,
             @NotNull KClass<?> clazz,
-            @NotNull List<String> result
+            @NotNull List<String> result,
+            @NotNull Boolean ignoreDefaults
     ) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         for (KProperty1 property : KClasses.getMemberProperties(clazz)) {
             Argument argument = findInstance(property.getAnnotations(), Argument.class);
@@ -68,7 +82,7 @@ public class ArgumentUtils {
             Object value = property.get(arguments);
             Object defaultValue = property.get(defaultArguments);
 
-            if (value == null || Objects.equals(value, defaultValue)) continue;
+            if (value == null || (ignoreDefaults && Objects.equals(value, defaultValue))) continue;
 
             Type propertyJavaType = ReflectJvmMapping.getJavaType(property.getReturnType());
 
