@@ -16,8 +16,8 @@
 
 package org.jetbrains.kotlin.ir.declarations.persistent
 
-import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.descriptors.DescriptorVisibility
+import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.declarations.persistent.carriers.Carrier
@@ -48,6 +48,9 @@ internal class PersistentIrField(
         symbol.bind(this)
     }
 
+    override val factory: IrFactory
+        get() = PersistentIrFactory
+
     override var lastModified: Int = stageController.currentStage
     override var loweredUpTo: Int = stageController.currentStage
     override var values: Array<Carrier>? = null
@@ -61,6 +64,24 @@ internal class PersistentIrField(
     @ObsoleteDescriptorBasedAPI
     override val descriptor: PropertyDescriptor
         get() = symbol.descriptor
+
+    override var parent: IrDeclarationParent
+        get() = super.parent
+        set(value) {
+            super.parent = value
+        }
+
+    override var origin: IrDeclarationOrigin
+        get() = super.origin
+        set(value) {
+            super.origin = value
+        }
+
+    override var annotations: List<IrConstructorCall>
+        get() = super.annotations
+        set(value) {
+            super.annotations = value
+        }
 
     override var initializerField: IrExpressionBody? = null
 

@@ -52,6 +52,9 @@ internal class PersistentIrConstructor(
         symbol.bind(this)
     }
 
+    override val factory: IrFactory
+        get() = PersistentIrFactory
+
     override var lastModified: Int = stageController.currentStage
     override var loweredUpTo: Int = stageController.currentStage
     override var values: Array<Carrier>? = null
@@ -61,6 +64,24 @@ internal class PersistentIrConstructor(
     override var originField: IrDeclarationOrigin = origin
     override var removedOn: Int = Int.MAX_VALUE
     override var annotationsField: List<IrConstructorCall> = emptyList()
+
+    override var parent: IrDeclarationParent
+        get() = super.parent
+        set(value) {
+            super.parent = value
+        }
+
+    override var origin: IrDeclarationOrigin
+        get() = super.origin
+        set(value) {
+            super.origin = value
+        }
+
+    override var annotations: List<IrConstructorCall>
+        get() = super.annotations
+        set(value) {
+            super.annotations = value
+        }
 
     override var returnTypeFieldField: IrType = returnType
 

@@ -24,14 +24,11 @@ import org.jetbrains.kotlin.ir.declarations.persistent.carriers.DeclarationCarri
 import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 
-interface PersistentIrDeclarationBase<T : DeclarationCarrier> : PersistentIrElementBase<T>, IrDeclaration, DeclarationCarrier {
+interface PersistentIrDeclarationBase<T : DeclarationCarrier> : PersistentIrElementBase<T>, DeclarationCarrier {
     var removedOn: Int
 
-    override val factory: IrFactory
-        get() = PersistentIrFactory
-
     // TODO reduce boilerplate
-    override var parent: IrDeclarationParent
+    var parent: IrDeclarationParent
         get() = getCarrier().parentField ?: throw UninitializedPropertyAccessException("Parent not initialized: $this")
         set(p) {
             if (getCarrier().parentField !== p) {
@@ -39,7 +36,7 @@ interface PersistentIrDeclarationBase<T : DeclarationCarrier> : PersistentIrElem
             }
         }
 
-    override var origin: IrDeclarationOrigin
+    var origin: IrDeclarationOrigin
         get() = getCarrier().originField
         set(p) {
             if (getCarrier().originField !== p) {
@@ -47,7 +44,7 @@ interface PersistentIrDeclarationBase<T : DeclarationCarrier> : PersistentIrElem
             }
         }
 
-    override var annotations: List<IrConstructorCall>
+    var annotations: List<IrConstructorCall>
         get() = getCarrier().annotationsField
         set(v) {
             if (getCarrier().annotationsField !== v) {
@@ -57,7 +54,7 @@ interface PersistentIrDeclarationBase<T : DeclarationCarrier> : PersistentIrElem
 
     override fun ensureLowered() {
         if (stageController.currentStage > loweredUpTo) {
-            stageController.lazyLower(this)
+            stageController.lazyLower(this as IrDeclaration)
         }
     }
 }

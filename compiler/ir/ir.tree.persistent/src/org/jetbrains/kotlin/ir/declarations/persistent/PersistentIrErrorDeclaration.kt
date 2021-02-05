@@ -18,12 +18,9 @@ package org.jetbrains.kotlin.ir.declarations.persistent
 
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
-import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
-import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
-import org.jetbrains.kotlin.ir.declarations.IrErrorDeclaration
+import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.declarations.persistent.carriers.Carrier
 import org.jetbrains.kotlin.ir.declarations.persistent.carriers.ErrorCarrier
-import org.jetbrains.kotlin.ir.declarations.stageController
 import org.jetbrains.kotlin.ir.descriptors.toIrBasedDescriptor
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 
@@ -33,6 +30,9 @@ internal class PersistentIrErrorDeclaration(
     override val endOffset: Int,
     private val _descriptor: DeclarationDescriptor?
 ) : PersistentIrDeclarationBase<ErrorCarrier>, IrErrorDeclaration(), ErrorCarrier {
+    override val factory: IrFactory
+        get() = PersistentIrFactory
+
     override val descriptor: DeclarationDescriptor
         get() = _descriptor ?: this.toIrBasedDescriptor()
 
@@ -45,4 +45,22 @@ internal class PersistentIrErrorDeclaration(
     override var originField: IrDeclarationOrigin = IrDeclarationOrigin.DEFINED
     override var removedOn: Int = Int.MAX_VALUE
     override var annotationsField: List<IrConstructorCall> = emptyList()
+
+    override var parent: IrDeclarationParent
+        get() = super.parent
+        set(value) {
+            super.parent = value
+        }
+
+    override var origin: IrDeclarationOrigin
+        get() = super.origin
+        set(value) {
+            super.origin = value
+        }
+
+    override var annotations: List<IrConstructorCall>
+        get() = super.annotations
+        set(value) {
+            super.annotations = value
+        }
 }
