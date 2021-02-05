@@ -48,10 +48,12 @@ public class ResolutionResultsHandler {
             @NotNull TypeSpecificityComparator specificityComparator,
             @NotNull PlatformOverloadsSpecificityComparator platformOverloadsSpecificityComparator,
             @NotNull CancellationChecker cancellationChecker,
-            @NotNull KotlinTypeRefiner kotlinTypeRefiner
+            @NotNull KotlinTypeRefiner kotlinTypeRefiner,
+            @NotNull LanguageVersionSettings languageVersionSettings
     ) {
         overloadingConflictResolver = FlatSignatureForResolvedCallKt.createOverloadingConflictResolver(
-                builtIns, module, specificityComparator, platformOverloadsSpecificityComparator, cancellationChecker, kotlinTypeRefiner
+                builtIns, module, specificityComparator, platformOverloadsSpecificityComparator,
+                cancellationChecker, kotlinTypeRefiner, languageVersionSettings
         );
     }
 

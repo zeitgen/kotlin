@@ -16,6 +16,8 @@
 
 package org.jetbrains.kotlin.resolve
 
+import org.jetbrains.kotlin.config.LanguageFeature
+import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.diagnostics.DiagnosticSink
 import org.jetbrains.kotlin.diagnostics.Errors
@@ -29,7 +31,11 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.varargParameterPosition
 import org.jetbrains.kotlin.types.isError
 import org.jetbrains.kotlin.util.OperatorNameConventions
 
-class ShadowedExtensionChecker(val typeSpecificityComparator: TypeSpecificityComparator, val trace: DiagnosticSink) {
+class ShadowedExtensionChecker(
+    val typeSpecificityComparator: TypeSpecificityComparator,
+    val trace: DiagnosticSink,
+    private val languageVersionSettings: LanguageVersionSettings,
+) {
     fun checkDeclaration(declaration: KtDeclaration, descriptor: DeclarationDescriptor) {
         if (declaration.name == null) return
         if (descriptor !is CallableMemberDescriptor) return
@@ -118,7 +124,9 @@ class ShadowedExtensionChecker(val typeSpecificityComparator: TypeSpecificityCom
         extensionSignature: FlatSignature<FunctionDescriptor>,
         memberSignature: FlatSignature<FunctionDescriptor>
     ): Boolean =
-        ConstraintSystemBuilderImpl.forSpecificity().isSignatureNotLessSpecific(
+        ConstraintSystemBuilderImpl.forSpecificity(
+            approximateContravariantCapturedTypesProperly = languageVersionSettings.supportsFeature(LanguageFeature.ApproximateContravariantCapturedTypeProperly)
+        ).isSignatureNotLessSpecific(
             extensionSignature,
             memberSignature,
             OverloadabilitySpecificityCallbacks,

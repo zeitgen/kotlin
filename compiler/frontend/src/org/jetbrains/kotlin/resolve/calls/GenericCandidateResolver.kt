@@ -62,7 +62,9 @@ class GenericCandidateResolver(
         val candidateCall = context.candidateCall
         val candidate = candidateCall.candidateDescriptor
 
-        val builder = ConstraintSystemBuilderImpl()
+        val builder = ConstraintSystemBuilderImpl(
+            approximateContravariantCapturedTypesProperly = languageVersionSettings.supportsFeature(LanguageFeature.ApproximateContravariantCapturedTypeProperly)
+        )
         builder.registerTypeVariables(candidateCall.call.toHandle(), candidate.typeParameters)
 
         val substituteDontCare = makeConstantSubstitutor(candidate.typeParameters, DONT_CARE)
@@ -289,8 +291,10 @@ class GenericCandidateResolver(
 
         val possibleTypes = context.dataFlowInfo.getCollectedTypes(dataFlowValue, context.languageVersionSettings)
         if (possibleTypes.isEmpty()) return type
+        val approximateCapTypesProperly =
+            languageVersionSettings.supportsFeature(LanguageFeature.ApproximateContravariantCapturedTypeProperly)
 
-        return TypeIntersector.intersectTypes(possibleTypes + type)
+        return TypeIntersector.intersectTypes(possibleTypes + type, approximateCapTypesProperly)
     }
 
     fun <D : CallableDescriptor> completeTypeInferenceDependentOnFunctionArgumentsForCall(context: CallCandidateResolutionContext<D>) {

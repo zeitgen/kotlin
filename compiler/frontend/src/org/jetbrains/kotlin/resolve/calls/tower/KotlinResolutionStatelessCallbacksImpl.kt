@@ -18,6 +18,7 @@ package org.jetbrains.kotlin.resolve.calls.tower
 
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
 import org.jetbrains.kotlin.config.AnalysisFlags
+import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
@@ -112,6 +113,8 @@ class KotlinResolutionStatelessCallbacksImpl(
         return if (languageVersionSettings.getFlag(AnalysisFlags.constraintSystemForOverloadResolution).forNewInference())
             SimpleConstraintSystemImpl(constraintInjector, builtIns)
         else
-            ConstraintSystemBuilderImpl.forSpecificity()
+            ConstraintSystemBuilderImpl.forSpecificity(
+                approximateContravariantCapturedTypesProperly = languageVersionSettings.supportsFeature(LanguageFeature.ApproximateContravariantCapturedTypeProperly)
+            )
     }
 }
