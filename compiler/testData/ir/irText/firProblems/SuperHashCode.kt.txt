@@ -1,0 +1,32 @@
+interface Point {
+
+}
+
+class DelegatePoint : Point {
+  constructor(original: Point?) /* primary */ {
+    super/*Any*/()
+    /* <init>() */
+
+  }
+
+  val original: Point?
+    field = original
+    get
+
+  override fun hashCode(): Int {
+    return { // BLOCK
+      val tmp1_elvis_lhs: Int? = { // BLOCK
+        val tmp0_safe_receiver: Point? = <this>.<get-original>()
+        when {
+          EQEQ(arg0 = tmp0_safe_receiver, arg1 = null) -> null
+          else -> tmp0_safe_receiver.hashCode()
+        }
+      }
+      when {
+        EQEQ(arg0 = tmp1_elvis_lhs, arg1 = null) -> super.hashCode()
+        else -> tmp1_elvis_lhs
+      }
+    }
+  }
+
+}

@@ -2213,6 +2213,12 @@ public class Fir2IrTextTestGenerated extends AbstractFir2IrTextTest {
         }
 
         @Test
+        @TestMetadata("SuperHashCode.kt")
+        public void testSuperHashCode() throws Exception {
+            runTest("compiler/testData/ir/irText/firProblems/SuperHashCode.kt");
+        }
+
+        @Test
         @TestMetadata("SyntheticSetterType.kt")
         public void testSyntheticSetterType() throws Exception {
             runTest("compiler/testData/ir/irText/firProblems/SyntheticSetterType.kt");
