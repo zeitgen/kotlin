@@ -124,7 +124,10 @@ abstract class PersistentLogicSystem(context: ConeInferenceContext) : LogicSyste
         mergeOperation: (Collection<TypeStatement>) -> MutableTypeStatement?,
     ): PersistentFlow {
         if (flows.isEmpty()) return createEmptyFlow()
-        flows.singleOrNull()?.let { return it }
+        flows.singleOrNull()?.let {
+            updateAllReceivers(it)
+            return it
+        }
 
         val aliasedVariablesThatDontChangeAlias = computeAliasesThatDontChange(flows)
 
