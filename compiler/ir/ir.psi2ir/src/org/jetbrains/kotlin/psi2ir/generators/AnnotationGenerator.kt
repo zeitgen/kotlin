@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.psi2ir.generators
 
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitorVoid
 import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
@@ -14,7 +15,7 @@ class AnnotationGenerator(context: GeneratorContext) : IrElementVisitorVoid {
     private val typeTranslator = context.typeTranslator
     private val constantValueGenerator = context.constantValueGenerator
 
-    override fun visitElement(element: IrElement) {
+    override fun visitElement(element: IrElementBase) {
         element.acceptChildrenVoid(this)
     }
 

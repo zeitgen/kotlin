@@ -17,6 +17,7 @@
 package org.jetbrains.kotlin.backend.common
 
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.expressions.IrStatementContainer
@@ -70,7 +71,7 @@ fun ClassLoweringPass.runOnFilePostfix(irFile: IrFile) {
 private class ClassLoweringVisitor(
     private val loweringPass: ClassLoweringPass
 ) : IrElementVisitorVoid {
-    override fun visitElement(element: IrElement) {
+    override fun visitElement(element: IrElementBase) {
         element.acceptChildrenVoid(this)
     }
 
@@ -87,7 +88,7 @@ fun ScriptLoweringPass.runOnFilePostfix(irFile: IrFile) {
 private class ScriptLoweringVisitor(
     private val loweringPass: ScriptLoweringPass
 ) : IrElementVisitorVoid {
-    override fun visitElement(element: IrElement) {
+    override fun visitElement(element: IrElementBase) {
         element.acceptChildrenVoid(this)
     }
 
@@ -105,7 +106,7 @@ fun DeclarationContainerLoweringPass.runOnFilePostfix(irFile: IrFile) {
 private class DeclarationContainerLoweringVisitor(
     private val loweringPass: DeclarationContainerLoweringPass
 ) : IrElementVisitorVoid {
-    override fun visitElement(element: IrElement) {
+    override fun visitElement(element: IrElementBase) {
         element.acceptChildrenVoid(this)
     }
 
@@ -131,7 +132,7 @@ private class BodyLoweringVisitor(
     private val withLocalDeclarations: Boolean,
     private val allowDeclarationModification: Boolean,
 ) : IrElementVisitor<Unit, IrDeclaration?> {
-    override fun visitElement(element: IrElement, data: IrDeclaration?) {
+    override fun visitElement(element: IrElementBase, data: IrDeclaration?) {
         element.acceptChildren(this, data)
     }
 
@@ -183,7 +184,7 @@ interface DeclarationTransformer : FileLoweringPass {
     }
 
     private class Visitor(private val transformer: DeclarationTransformer) : IrElementVisitorVoid {
-        override fun visitElement(element: IrElement) {
+        override fun visitElement(element: IrElementBase) {
             element.acceptChildrenVoid(this)
         }
 

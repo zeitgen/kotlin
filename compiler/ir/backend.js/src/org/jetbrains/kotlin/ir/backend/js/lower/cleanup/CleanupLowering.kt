@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.ir.backend.js.lower.cleanup
 
 import org.jetbrains.kotlin.backend.common.BodyLoweringPass
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.util.isPure
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
@@ -30,7 +31,7 @@ class CleanupLowering : BodyLoweringPass {
 }
 
 private class BlockRemover : IrElementVisitorVoid {
-    override fun visitElement(element: IrElement) {
+    override fun visitElement(element: IrElementBase) {
         element.acceptChildrenVoid(this)
     }
 
@@ -84,7 +85,7 @@ private class CodeCleaner : IrElementVisitorVoid {
         var hasFakeNothingCalls = false
 
         acceptVoid(object : IrElementVisitorVoid {
-            override fun visitElement(element: IrElement) {
+            override fun visitElement(element: IrElementBase) {
                 element.acceptChildrenVoid(this)
             }
 
@@ -97,7 +98,7 @@ private class CodeCleaner : IrElementVisitorVoid {
         return !hasFakeNothingCalls
     }
 
-    override fun visitElement(element: IrElement) {
+    override fun visitElement(element: IrElementBase) {
         element.acceptChildrenVoid(this)
     }
 

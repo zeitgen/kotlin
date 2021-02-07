@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.backend.common.ir.*
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.builders.declarations.buildClass
 import org.jetbrains.kotlin.ir.builders.declarations.buildConstructor
@@ -63,7 +64,7 @@ abstract class AbstractSuspendFunctionsLowering<C : CommonBackendContext>(val co
     private fun buildCoroutines(irFile: IrFile) {
         irFile.transformDeclarationsFlat(::tryTransformSuspendFunction)
         irFile.acceptVoid(object : IrElementVisitorVoid {
-            override fun visitElement(element: IrElement) {
+            override fun visitElement(element: IrElementBase) {
                 element.acceptChildrenVoid(this)
             }
 
@@ -88,7 +89,7 @@ abstract class AbstractSuspendFunctionsLowering<C : CommonBackendContext>(val co
 
     private fun markSuspendLambdas(irElement: IrElement) {
         irElement.acceptChildrenVoid(object : IrElementVisitorVoid {
-            override fun visitElement(element: IrElement) {
+            override fun visitElement(element: IrElementBase) {
                 element.acceptChildrenVoid(this)
             }
 
@@ -163,7 +164,7 @@ abstract class AbstractSuspendFunctionsLowering<C : CommonBackendContext>(val co
 
         var numberOfSuspendCalls = 0
         body.acceptVoid(object : IrElementVisitorVoid {
-            override fun visitElement(element: IrElement) {
+            override fun visitElement(element: IrElementBase) {
                 element.acceptChildrenVoid(this)
             }
 
@@ -590,7 +591,7 @@ abstract class AbstractSuspendFunctionsLowering<C : CommonBackendContext>(val co
 
         protected val scopeStack = mutableListOf<MutableSet<IrVariable>>(mutableSetOf())
 
-        override fun visitElement(element: IrElement) {
+        override fun visitElement(element: IrElementBase) {
             element.acceptChildrenVoid(this)
         }
 

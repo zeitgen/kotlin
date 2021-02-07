@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.backend.common.serialization.mangle
 
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrErrorDeclaration
 import org.jetbrains.kotlin.ir.util.KotlinMangler
@@ -17,7 +18,7 @@ class ManglerChecker(vararg _manglers: KotlinMangler<IrDeclaration>) : IrElement
 
     private val manglers = _manglers.toList()
 
-    override fun visitElement(element: IrElement) {
+    override fun visitElement(element: IrElementBase) {
         element.acceptChildrenVoid(this)
     }
 

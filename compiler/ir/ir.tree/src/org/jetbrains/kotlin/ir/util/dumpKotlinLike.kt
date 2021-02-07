@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.ir.util
 import com.intellij.openapi.util.text.StringUtil
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
@@ -123,7 +124,7 @@ private class KotlinLikeDumper(val p: Printer, val options: KotlinLikeDumpOption
         typeArg.printTypeArgumentWithNoIndent()
     }
 
-    override fun visitElement(element: IrElement, data: IrDeclaration?) {
+    override fun visitElement(element: IrElementBase, data: IrDeclaration?) {
         val e = "/* ERROR: unsupported element type: " + element.javaClass.simpleName + " */"
         if (element is IrExpression) {
             // TODO move text to the message?

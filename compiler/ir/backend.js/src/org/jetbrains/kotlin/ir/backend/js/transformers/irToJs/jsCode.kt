@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.ir.backend.js.transformers.irToJs
 import com.google.gwt.dev.js.ThrowExceptionOnErrorReporter
 import com.google.gwt.dev.js.rhino.CodePosition
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.expressions.IrConst
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrStringConcatenation
@@ -28,7 +29,7 @@ fun translateJsCodeIntoStatementList(code: IrExpression): List<JsStatement> {
     fun foldString(expression: IrExpression): String {
         val builder = StringBuilder()
         expression.acceptVoid(object : IrElementVisitorVoid {
-            override fun visitElement(element: IrElement) =
+            override fun visitElement(element: IrElementBase) =
                 error("Parameter of js function must be compile time String constant, not ${element.render()}")
 
             override fun <T> visitConst(expression: IrConst<T>) {

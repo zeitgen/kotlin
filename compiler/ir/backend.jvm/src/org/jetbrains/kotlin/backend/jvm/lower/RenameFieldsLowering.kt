@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.backend.common.CommonBackendContext
 import org.jetbrains.kotlin.backend.common.FileLoweringPass
 import org.jetbrains.kotlin.backend.common.phaser.makeIrFilePhase
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.declarations.buildField
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
@@ -89,7 +90,7 @@ private class RenameFieldsLowering(val context: CommonBackendContext) : FileLowe
 private class FieldNameCollector : IrElementVisitorVoid {
     val nameToField = mutableMapOf<Pair<IrDeclarationParent, Name>, MutableList<IrField>>()
 
-    override fun visitElement(element: IrElement) {
+    override fun visitElement(element: IrElementBase) {
         element.acceptChildrenVoid(this)
     }
 

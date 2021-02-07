@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.builtins.isSuspendFunctionType
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.incremental.components.NoLookupLocation
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrField
@@ -101,7 +102,7 @@ internal class InsertImplicitCasts(
                 }
             }
 
-            override fun visitElement(element: IrElement) {
+            override fun visitElement(element: IrElementBase) {
                 element.acceptChildrenVoid(this)
             }
         })

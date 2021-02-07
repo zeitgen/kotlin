@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.psi2ir.generators
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.util.withScope
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitorVoid
@@ -19,7 +20,7 @@ class IrSyntheticDeclarationGenerator(context: GeneratorContext) : IrElementVisi
     private val descriptorGenerator = SyntheticDeclarationsGenerator(context)
     private val symbolTable = context.symbolTable
 
-    override fun visitElement(element: IrElement) {
+    override fun visitElement(element: IrElementBase) {
         element.acceptChildrenVoid(this)
     }
 

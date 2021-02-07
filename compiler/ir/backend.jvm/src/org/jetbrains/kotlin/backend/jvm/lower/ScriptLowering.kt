@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.*
@@ -324,7 +325,7 @@ private class ScriptToClassTransformer(
     private fun unexpectedElement(element: IrElement): Nothing =
         throw IllegalArgumentException("Unsupported element type: $element")
 
-    override fun visitElement(element: IrElement): IrElement = unexpectedElement(element)
+    override fun visitElement(element: IrElementBase): IrElement = unexpectedElement(element)
 
     override fun visitModuleFragment(declaration: IrModuleFragment): IrModuleFragment = unexpectedElement(declaration)
     override fun visitExternalPackageFragment(declaration: IrExternalPackageFragment) = unexpectedElement(declaration)

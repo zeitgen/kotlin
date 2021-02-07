@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.backend.common.phaser.makeIrFilePhase
 import org.jetbrains.kotlin.backend.jvm.JvmBackendContext
 import org.jetbrains.kotlin.codegen.JvmCodegenUtil
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrFunctionReference
 import org.jetbrains.kotlin.ir.expressions.IrPropertyReference
@@ -178,7 +179,7 @@ class InventNamesForLocalClasses(private val context: JvmBackendContext) : FileL
             declaration.acceptChildren(this, data.makeLocal())
         }
 
-        override fun visitElement(element: IrElement, data: Data) {
+        override fun visitElement(element: IrElementBase, data: Data) {
             element.acceptChildren(this, data)
         }
 

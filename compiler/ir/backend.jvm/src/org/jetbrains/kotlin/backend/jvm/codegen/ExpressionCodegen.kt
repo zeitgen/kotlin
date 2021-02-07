@@ -39,6 +39,7 @@ import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.diagnostics.Errors
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.descriptors.toIrBasedDescriptor
 import org.jetbrains.kotlin.ir.descriptors.toIrBasedKotlinType
@@ -854,7 +855,7 @@ class ExpressionCodegen(
     override fun visitExpressionBody(body: IrExpressionBody, data: BlockInfo) =
         body.expression.accept(this, data)
 
-    override fun visitElement(element: IrElement, data: BlockInfo) =
+    override fun visitElement(element: IrElementBase, data: BlockInfo) =
         throw AssertionError(
             "Unexpected IR element found during code generation. Either code generation for it " +
                     "is not implemented, or it should have been lowered:\n" +

@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.ir.backend.js
 
 import org.jetbrains.kotlin.backend.common.ir.isMemberOfOpenClass
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.backend.js.export.isExported
 import org.jetbrains.kotlin.ir.backend.js.utils.*
 import org.jetbrains.kotlin.ir.declarations.*
@@ -71,7 +72,7 @@ private fun removeUselessDeclarations(modules: Iterable<IrModuleFragment>, usefu
     modules.forEach { module ->
         module.files.forEach {
             it.acceptVoid(object : IrElementVisitorVoid {
-                override fun visitElement(element: IrElement) {
+                override fun visitElement(element: IrElementBase) {
                     element.acceptChildrenVoid(this)
                 }
 
@@ -179,7 +180,7 @@ fun usefulDeclarations(roots: Iterable<IrDeclaration>, context: JsIrBackendConte
         roots.forEach {
             it.acceptVoid(
                 object : IrElementVisitorVoid {
-                    override fun visitElement(element: IrElement) {
+                    override fun visitElement(element: IrElementBase) {
                         element.acceptChildrenVoid(this)
                     }
 
@@ -251,7 +252,7 @@ fun usefulDeclarations(roots: Iterable<IrDeclaration>, context: JsIrBackendConte
             }
 
             body?.acceptVoid(object : IrElementVisitorVoid {
-                override fun visitElement(element: IrElement) {
+                override fun visitElement(element: IrElementBase) {
                     element.acceptChildrenVoid(this)
                 }
 

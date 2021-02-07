@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.backend.common.serialization.mangle.publishedApiAnno
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.descriptors.DescriptorVisibility
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.util.constructedClass
@@ -37,7 +38,7 @@ abstract class IrExportCheckerVisitor : IrElementVisitor<Boolean, Nothing?>, Kot
 
     private fun DescriptorVisibility.isPubliclyVisible(): Boolean = isPublicAPI || this === DescriptorVisibilities.INTERNAL
 
-    override fun visitElement(element: IrElement, data: Nothing?): Boolean = error("Should bot reach here ${element.render()}")
+    override fun visitElement(element: IrElementBase, data: Nothing?): Boolean = error("Should bot reach here ${element.render()}")
 
     override fun visitDeclaration(declaration: IrDeclaration, data: Nothing?) = declaration.run { isExported(annotations, null) }
 

@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.backend.common.lower.SYNTHESIZED_INIT_BLOCK
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.extensions.AnnotationBasedExtension
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.declarations.buildConstructor
 import org.jetbrains.kotlin.ir.declarations.*
@@ -47,7 +48,7 @@ private class NoArgIrTransformer(
 ) : AnnotationBasedExtension, IrElementVisitorVoid {
     override fun getAnnotationFqNames(modifierListOwner: KtModifierListOwner?): List<String> = annotations
 
-    override fun visitElement(element: IrElement) {
+    override fun visitElement(element: IrElementBase) {
         element.acceptChildren(this, null)
     }
 

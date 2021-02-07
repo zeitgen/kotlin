@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.backend.jvm.ir.createJvmIrBuilder
 import org.jetbrains.kotlin.backend.jvm.ir.erasedUpperBound
 import org.jetbrains.kotlin.backend.jvm.ir.getSingleAbstractMethod
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
@@ -357,7 +358,7 @@ private class TypeOperatorLowering(private val context: JvmBackendContext) : Fil
         var startOffset = UNDEFINED_OFFSET
         var endOffset = UNDEFINED_OFFSET
         acceptVoid(object : IrElementVisitorVoid {
-            override fun visitElement(element: IrElement) {
+            override fun visitElement(element: IrElementBase) {
                 element.acceptChildrenVoid(this)
                 if (startOffset == UNDEFINED_OFFSET || element.startOffset != UNDEFINED_OFFSET && element.startOffset < startOffset)
                     startOffset = element.startOffset

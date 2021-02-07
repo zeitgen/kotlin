@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.backend.common.serialization.signature
 
 import org.jetbrains.kotlin.backend.common.serialization.DeclarationTable
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrElementBase
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.overrides.isOverridableFunction
 import org.jetbrains.kotlin.ir.overrides.isOverridableProperty
@@ -52,7 +53,7 @@ open class IdSignatureSerializer(val mangler: KotlinMangler.IrMangler) : IdSigna
             classFqnSegments.add(declaration.name.asString())
         }
 
-        override fun visitElement(element: IrElement) = error("Unexpected element ${element.render()}")
+        override fun visitElement(element: IrElementBase) = error("Unexpected element ${element.render()}")
 
         override fun visitPackageFragment(declaration: IrPackageFragment) {
             packageFqn = declaration.fqName
