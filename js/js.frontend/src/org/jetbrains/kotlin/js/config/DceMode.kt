@@ -23,15 +23,17 @@ enum class DceMode {
                 else -> error("Unknown DCE mode '$key'")
             }
         }
-
-
     }
+}
+
+fun DceMode.isNotRemoving(): Boolean {
+    return this != DceMode.REMOVAL_DECLARATION
 }
 
 fun DceMode.dceModeToArgumentOfUnreachableMethod(): Int {
     return when (this) {
         DceMode.LOGGING -> 0
         DceMode.THROWING_EXCEPTION -> 1
-        else -> error("Only logging and throwing exception allowed for unreachable method")
+        DceMode.REMOVAL_DECLARATION -> error("Only logging and throwing exception allowed for unreachable method")
     }
 }
