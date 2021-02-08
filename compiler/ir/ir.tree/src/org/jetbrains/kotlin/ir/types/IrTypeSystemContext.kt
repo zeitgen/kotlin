@@ -91,7 +91,9 @@ interface IrTypeSystemContext : TypeSystemContext, TypeSystemCommonSuperTypesCon
     override fun CapturedTypeMarker.typeConstructor(): CapturedTypeConstructorMarker =
         (this as IrCapturedType).constructor
 
-    override fun CapturedTypeMarker.isProjectionNotNull(): Boolean = true
+    // Note: `isProjectionNotNull` is used inside inference along with intersection types.
+    // IrTypes are not used in type inference and do not have intersection type so implemenation is default (false)
+    override fun CapturedTypeMarker.isProjectionNotNull(): Boolean = false
 
     override fun CapturedTypeMarker.captureStatus(): CaptureStatus =
         (this as IrCapturedType).captureStatus
