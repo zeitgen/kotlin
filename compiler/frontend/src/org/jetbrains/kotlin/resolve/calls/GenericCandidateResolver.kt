@@ -347,7 +347,14 @@ class GenericCandidateResolver(
         }
         val resultingSystem = constraintSystem.build()
         resolvedCall.setConstraintSystem(resultingSystem)
-        resolvedCall.setResultingSubstitutor(resultingSystem.resultingSubstitutor)
+        val approximateContravariantCapturedTypeProperly =
+            languageVersionSettings.supportsFeature(LanguageFeature.ApproximateContravariantCapturedTypeProperly)
+        val resultingSubstitutor =
+            if (approximateContravariantCapturedTypeProperly) {
+                resultingSystem.resultingSubstitutorWithProperCapTypesApproximation
+            } else resultingSystem.resultingSubstitutor
+
+        resolvedCall.setResultingSubstitutor(resultingSubstitutor)
     }
 
     // See KT-5385

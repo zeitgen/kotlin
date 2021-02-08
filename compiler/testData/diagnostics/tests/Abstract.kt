@@ -1,61 +1,62 @@
-// FILE: b.kt
-package MyPackage
-    //properties
-    <!MUST_BE_INITIALIZED!>val a: Int<!>
-    val a1: Int = 1
-    <!MUST_BE_INITIALIZED!><!WRONG_MODIFIER_TARGET!>abstract<!> val a2: Int<!>
-    <!WRONG_MODIFIER_TARGET!>abstract<!> val a3: Int = 1
+// !LANGUAGE: +ApproximateContravariantCapturedTypeProperly
 
-    <!MUST_BE_INITIALIZED!>var b: Int<!>                private set
-    var b1: Int = 0;                         private set
-    <!MUST_BE_INITIALIZED!><!WRONG_MODIFIER_TARGET!>abstract<!> var b2: Int<!>      private set
-    <!WRONG_MODIFIER_TARGET!>abstract<!> var b3: Int = 0; private set
-
-    <!MUST_BE_INITIALIZED!>var c: Int<!>                set(v: Int) { field = v }
-    var c1: Int = 0;                         set(v: Int) { field = v }
-    <!MUST_BE_INITIALIZED!><!WRONG_MODIFIER_TARGET!>abstract<!> var c2: Int<!>      set(v: Int) { field = v }
-    <!WRONG_MODIFIER_TARGET!>abstract<!> var c3: Int = 0; set(v: Int) { field = v }
-
-    val e: Int                               get() = a
-    val e1: Int = <!PROPERTY_INITIALIZER_NO_BACKING_FIELD!>0<!>;          get() = a
-    <!WRONG_MODIFIER_TARGET!>abstract<!> val e2: Int      get() = a
-    <!WRONG_MODIFIER_TARGET!>abstract<!> val e3: Int = <!PROPERTY_INITIALIZER_NO_BACKING_FIELD!>0<!>; get() = a
-
-    //methods
-    <!NON_MEMBER_FUNCTION_NO_BODY!>fun f()<!>
-    fun g() {}
-    <!WRONG_MODIFIER_TARGET!>abstract<!> fun h()
-    <!WRONG_MODIFIER_TARGET!>abstract<!> fun j() {}
-
-    //property accessors
-    var i: Int                       <!WRONG_MODIFIER_TARGET!>abstract<!> get  <!WRONG_MODIFIER_TARGET!>abstract<!> set
-    var i1: Int = <!PROPERTY_INITIALIZER_NO_BACKING_FIELD!>0<!>;  <!WRONG_MODIFIER_TARGET!>abstract<!> get  <!WRONG_MODIFIER_TARGET!>abstract<!> set
-
-    var j: Int                       get() = i;    <!WRONG_MODIFIER_TARGET!>abstract<!> set
-    var j1: Int = <!PROPERTY_INITIALIZER_NO_BACKING_FIELD!>0<!>;  get() = i;    <!WRONG_MODIFIER_TARGET!>abstract<!> set
-
-    <!MUST_BE_INITIALIZED!>var k: Int<!>        <!WRONG_MODIFIER_TARGET!>abstract<!> set
-    var k1: Int = 0;                 <!WRONG_MODIFIER_TARGET!>abstract<!> set
-
-    var l: Int                       <!WRONG_MODIFIER_TARGET!>abstract<!> get  <!WRONG_MODIFIER_TARGET!>abstract<!> set
-    var l1: Int = <!PROPERTY_INITIALIZER_NO_BACKING_FIELD!>0<!>;  <!WRONG_MODIFIER_TARGET!>abstract<!> get  <!WRONG_MODIFIER_TARGET!>abstract<!> set
-
-    var n: Int                       <!WRONG_MODIFIER_TARGET!>abstract<!> get <!WRONG_MODIFIER_TARGET!>abstract<!> set(<!UNUSED_PARAMETER!>v<!>: Int) {}
-
-// FILE: c.kt
-//creating an instance
-abstract class B1(
-    val i: Int,
-    val s: String
-) {
+class Foo<T : Number>(var x: T) {
+    fun setX1(y: T): T {
+        this.x = y
+        return y
+    }
 }
 
-class B2() : B1(1, "r") {}
-
-abstract class B3(<!UNUSED_PARAMETER!>i<!>: Int) {
+fun <T : Number> Foo<T>.setX(): T {
+    return this.x
 }
 
-fun foo(<!UNUSED_PARAMETER!>c<!>: B3) {
-    val <!UNUSED_VARIABLE!>a<!> = <!CREATING_AN_INSTANCE_OF_ABSTRACT_CLASS!>B3(1)<!>
-    val <!UNUSED_VARIABLE!>b<!> = <!CREATING_AN_INSTANCE_OF_ABSTRACT_CLASS!>B1(2, "s")<!>
+class Foo2<T>(var x: T) {
+    fun setX1(y: T): T {
+        this.x = y
+        return y
+    }
+}
+
+fun <T> Foo2<T>.setX(y: T): T {
+    this.x = y
+    return y
+}
+
+fun Float.bar() {}
+
+fun test1() {
+    val fooSetRef = <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.reflect.KFunction2<Foo<*>, kotlin.Nothing, kotlin.Number>")!>Foo<*>::<!TYPE_MISMATCH("")!>setX<!><!>
+    val foo = Foo<Float>(1f)
+
+    fooSetRef.invoke(foo, <!CONSTANT_EXPECTED_TYPE_MISMATCH!>1<!>)
+
+    foo.x.bar()
+}
+
+fun test2() {
+    val fooSetRef = <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.reflect.KFunction2<Foo<*>, kotlin.Nothing, kotlin.Number>")!>Foo<*>::setX1<!>
+    val foo = Foo<Float>(1f)
+
+    fooSetRef.invoke(foo, <!CONSTANT_EXPECTED_TYPE_MISMATCH!>1<!>)
+
+    foo.x.bar()
+}
+
+fun test3() {
+    val fooSetRef = <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.reflect.KFunction2<Foo<*>, kotlin.Nothing, kotlin.Number>")!>Foo2<*>::<!TYPE_MISMATCH("")!>setX<!><!>
+    val foo = Foo2<Int>(1)
+
+    fooSetRef.invoke(foo, "")
+
+    foo.x.bar()
+}
+
+fun test4() {
+    val fooSetRef = <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.reflect.KFunction2<Foo2<*>, kotlin.Nothing, kotlin.Any?>")!>Foo2<*>::setX1<!>
+    val foo = Foo2<Int>(1)
+
+    fooSetRef.invoke(foo, <!TYPE_MISMATCH!>""<!>)
+
+    foo.x.<!UNRESOLVED_REFERENCE_WRONG_RECEIVER!>bar<!>()
 }

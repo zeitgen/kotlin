@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.resolve.calls
 import org.jetbrains.kotlin.builtins.getReturnTypeFromFunctionType
 import org.jetbrains.kotlin.builtins.getValueParameterTypesFromFunctionType
 import org.jetbrains.kotlin.builtins.isFunctionOrSuspendFunctionType
+import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.contracts.EffectSystem
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
@@ -38,7 +39,6 @@ import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.makeNullableTypeIfSaf
 import org.jetbrains.kotlin.resolve.calls.results.OverloadResolutionResultsImpl
 import org.jetbrains.kotlin.resolve.calls.results.ResolutionStatus
 import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowInfo
-import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowValueFactory
 import org.jetbrains.kotlin.resolve.calls.tasks.TracingStrategy
 import org.jetbrains.kotlin.resolve.checkers.MissingDependencySupertypeChecker
 import org.jetbrains.kotlin.resolve.constants.CompileTimeConstant
@@ -59,9 +59,11 @@ class CallCompleter(
     private val moduleDescriptor: ModuleDescriptor,
     private val deprecationResolver: DeprecationResolver,
     private val effectSystem: EffectSystem,
-    private val dataFlowValueFactory: DataFlowValueFactory,
     private val missingSupertypesResolver: MissingSupertypesResolver
 ) {
+    private val approximateContravariantCapturedTypeProperly =
+        effectSystem.languageVersionSettings.supportsFeature(LanguageFeature.ApproximateContravariantCapturedTypeProperly)
+
     fun <D : CallableDescriptor> completeCall(
         context: BasicCallResolutionContext,
         results: OverloadResolutionResultsImpl<D>,
@@ -157,7 +159,7 @@ class CallCompleter(
             return
         }
 
-        resolvedCall.completeConstraintSystem(context.expectedType, context.trace)
+        resolvedCall.completeConstraintSystem(context.expectedType, context.trace, approximateContravariantCapturedTypeProperly)
 
         completeArguments(context, results)
 
@@ -168,7 +170,8 @@ class CallCompleter(
 
     private fun <D : CallableDescriptor> MutableResolvedCall<D>.completeConstraintSystem(
         expectedType: KotlinType,
-        trace: BindingTrace
+        trace: BindingTrace,
+        approximateContravariantCapturedTypeProperly: Boolean
     ) {
         val returnType = candidateDescriptor.returnType
 
@@ -248,7 +251,11 @@ class CallCompleter(
         val system = builder.build()
         setConstraintSystem(system)
 
-        setResultingSubstitutor(system.resultingSubstitutor)
+        val resultingSubstitutor = if (approximateContravariantCapturedTypeProperly) {
+            system.resultingSubstitutorWithProperCapTypesApproximation
+        } else system.resultingSubstitutor
+
+        setResultingSubstitutor(resultingSubstitutor)
     }
 
     private fun <D : CallableDescriptor> MutableResolvedCall<D>.updateResolutionStatusFromConstraintSystem(
@@ -351,11 +358,9 @@ class CallCompleter(
         if (results != null && results.isSingleResult) {
             val resolvedCall = results.resultingCall
             if (!convertedConst) {
-                updatedType =
-                        if (resolvedCall.hasInferredReturnType())
-                            resolvedCall.makeNullableTypeIfSafeReceiver(resolvedCall.resultingDescriptor?.returnType, context)
-                        else
-                            null
+                updatedType = if (resolvedCall.hasInferredReturnType()) {
+                    resolvedCall.makeNullableTypeIfSafeReceiver(resolvedCall.resultingDescriptor?.returnType, context)
+                } else null
             }
         }
 
