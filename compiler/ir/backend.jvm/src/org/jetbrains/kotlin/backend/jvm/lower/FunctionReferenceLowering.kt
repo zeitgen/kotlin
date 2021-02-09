@@ -42,7 +42,7 @@ internal class FunctionReferenceLowering(private val context: JvmBackendContext)
     // function reference classes needed.
     private val ignoredFunctionReferences = mutableSetOf<IrCallableReference<*>>()
 
-    private val inlineLambdaToValueParameter = HashMap<IrFunction, IrValueParameter>()
+    private val crossinlineLambdas = HashSet<IrSimpleFunction>()
 
     private val IrFunctionReference.isIgnored: Boolean
         get() = (!type.isFunctionOrKFunction() && !isSuspendFunctionReference()) || ignoredFunctionReferences.contains(this)
@@ -64,7 +64,10 @@ internal class FunctionReferenceLowering(private val context: JvmBackendContext)
                     scope: IrDeclaration
                 ) {
                     ignoredFunctionReferences.add(argument)
-                    inlineLambdaToValueParameter[argument.symbol.owner] = parameter
+                    val argumentFun = argument.symbol.owner
+                    if (parameter.isCrossinline && argumentFun is IrSimpleFunction) {
+                        crossinlineLambdas.add(argumentFun)
+                    }
                 }
             },
             null
@@ -91,7 +94,7 @@ internal class FunctionReferenceLowering(private val context: JvmBackendContext)
 
         if (shouldGenerateIndyLambdas) {
             val lambdaMetafactoryArguments =
-                LambdaMatafactoryArgumentsBuilder(context, inlineLambdaToValueParameter)
+                LambdaMatafactoryArgumentsBuilder(context, crossinlineLambdas)
                     .getLambdaMetafactoryArgumentsOrNull(reference, reference.type, true)
             if (lambdaMetafactoryArguments != null) {
                 return wrapLambdaReferenceWithIndySamConversion(expression, reference, lambdaMetafactoryArguments)
@@ -146,7 +149,7 @@ internal class FunctionReferenceLowering(private val context: JvmBackendContext)
 
         if (shouldGenerateIndySamConversions) {
             val lambdaMetafactoryArguments =
-                LambdaMatafactoryArgumentsBuilder(context, inlineLambdaToValueParameter)
+                LambdaMatafactoryArgumentsBuilder(context, crossinlineLambdas)
                     .getLambdaMetafactoryArgumentsOrNull(reference, samSuperType, false)
             if (lambdaMetafactoryArguments != null) {
                 return wrapSamConversionArgumentWithIndySamConversion(expression, lambdaMetafactoryArguments)

@@ -30,10 +30,9 @@ class LambdaMetafactoryArguments(
     val extraOverriddenMethods: List<IrSimpleFunction>
 )
 
-// TODO This is rather tightly coupled with FunctionReferenceLowering because of crossinline lambdas.
 class LambdaMatafactoryArgumentsBuilder(
     private val context: JvmBackendContext,
-    private val inlineLambdaToValueParameter: Map<IrFunction, IrValueParameter>
+    private val crossinlineLambdas: Set<IrSimpleFunction>
 ) {
     /**
      * @see java.lang.invoke.LambdaMetafactory
@@ -403,11 +402,8 @@ class LambdaMatafactoryArgumentsBuilder(
     private fun IrDeclarationParent.isInlineFunction() =
         this is IrSimpleFunction && isInline && origin != IrDeclarationOrigin.LOCAL_FUNCTION_FOR_LAMBDA
 
-    private fun IrDeclarationParent.isCrossinlineLambda(): Boolean {
-        val irFun = this as? IrSimpleFunction ?: return false
-        return origin == IrDeclarationOrigin.LOCAL_FUNCTION_FOR_LAMBDA &&
-                inlineLambdaToValueParameter[irFun]?.isCrossinline == true
-    }
+    private fun IrDeclarationParent.isCrossinlineLambda(): Boolean =
+        this is IrSimpleFunction && this in crossinlineLambdas
 
     private fun IrType.isJvmPrimitiveType() =
         isBoolean() || isChar() || isByte() || isShort() || isInt() || isLong() || isFloat() || isDouble()
