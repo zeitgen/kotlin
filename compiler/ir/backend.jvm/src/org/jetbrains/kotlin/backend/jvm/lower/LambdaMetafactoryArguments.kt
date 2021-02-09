@@ -137,7 +137,6 @@ class LambdaMatafactoryArgumentsBuilder(
         //      }
         //      val t = IFoo<Int> { println(it + 1) }
         // Here IFoo<T>::foo requires 'x' to be reference type (even though corresponding lambda accepts a primitive int).
-        // this
         //
         // Example 2 (no explicit override, boxing-unboxing conflict):
         //      fun interface IFooT<T> {
