@@ -173,6 +173,7 @@ private fun Printer.generateInterface(type: FqName, properties: List<KProperty1<
         for (property in properties) {
             println()
             generateDoc(property)
+            generateOptionDeprecation(property)
             generatePropertyDeclaration(property)
         }
     }
@@ -248,6 +249,12 @@ private fun Printer.generatePropertyDeclaration(property: KProperty1<*, *>, modi
     println("$modifiers var ${property.name}: $returnType")
 }
 
+private fun Printer.generateOptionDeprecation(property: KProperty1<*, *>) {
+    property.findAnnotation<DeprecatedOption>()
+        ?.let { DeprecatedOptionAnnotator.generateOptionAnnotation(it) }
+        ?.also { println(it) }
+}
+
 private fun Printer.generateDoc(property: KProperty1<*, *>) {
     val description = property.findAnnotation<Argument>()!!.description
     val possibleValues = property.gradleValues.possibleValues
@@ -304,3 +311,12 @@ private val KProperty1<*, *>.gradleReturnType: String
 
 private inline fun <reified T> KAnnotatedElement.findAnnotation(): T? =
         annotations.filterIsInstance<T>().firstOrNull()
+
+object DeprecatedOptionAnnotator {
+    fun generateOptionAnnotation(annotation: DeprecatedOption): String {
+        val message = annotation.message.takeIf { it.isNotEmpty() }?.let { "message = \"$it\"" }
+        val level = "level = DeprecationLevel.${annotation.level.name}"
+        val arguments = listOfNotNull(message, level).joinToString()
+        return "@Deprecated($arguments)"
+    }
+}

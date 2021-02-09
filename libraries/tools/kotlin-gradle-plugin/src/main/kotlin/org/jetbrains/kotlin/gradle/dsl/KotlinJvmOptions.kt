@@ -8,6 +8,7 @@ interface KotlinJvmOptions  : org.jetbrains.kotlin.gradle.dsl.KotlinCommonOption
      * Include Kotlin runtime into the resulting JAR
      * Default value: false
      */
+    @Deprecated(message = "Option is not intended for use when building with Gradle", level = DeprecationLevel.ERROR)
      var includeRuntime: kotlin.Boolean
 
     /**
