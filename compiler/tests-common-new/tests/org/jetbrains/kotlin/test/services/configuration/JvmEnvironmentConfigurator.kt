@@ -124,10 +124,6 @@ class JvmEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfig
             configuration.addJvmClasspathRoot(ForTestCompileRuntime.runtimeJarForTestsWithJdk8())
         }
 
-        if (JvmEnvironmentConfigurationDirectives.ANDROID_ANNOTATIONS in module.directives) {
-            configuration.addJvmClasspathRoot(ForTestCompileRuntime.androidAnnotationsForTests())
-        }
-
         if (LanguageSettingsDirectives.ENABLE_JVM_PREVIEW in module.directives) {
             configuration.put(JVMConfigurationKeys.ENABLE_JVM_PREVIEW, true)
         }
