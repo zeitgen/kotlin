@@ -41,7 +41,7 @@ class NativeDistributionCommonizer(
         // 1. load libraries
         val allLibraries = loadLibraries()
 
-        // 2. run commonization & write new libraries
+        // 2. run commonization
         commonizeAndSaveResults(allLibraries)
 
         logTotal()
@@ -127,20 +127,20 @@ class NativeDistributionCommonizer(
         val parameters = CommonizerParameters(statsCollector, ::logProgress).apply {
             val storageManager = LockBasedStorageManager("Commonized modules")
 
-            resultsConsumer = NativeDistributionResultsConsumer(
-                repository = repository,
-                originalLibraries = allLibraries,
-                destination = destination,
-                copyStdlib = copyStdlib,
-                copyEndorsedLibs = copyEndorsedLibs,
-                logProgress = ::logProgress
-            )
-            dependeeModulesProvider = NativeDistributionModulesProvider.forStandardLibrary(storageManager, allLibraries.stdlib)
+        resultsConsumer = NativeDistributionResultsConsumer(
+            repository = repository,
+            originalLibraries = allLibraries,
+            destination = destination,
+            copyStdlib = copyStdlib,
+            copyEndorsedLibs = copyEndorsedLibs,
+            logProgress = ::logProgress
+        )
+        dependeeModulesProvider = NativeDistributionModulesProvider.forStandardLibrary(storageManager, allLibraries.stdlib)
 
             allLibraries.librariesByTargets.forEach { (target, librariesToCommonize) ->
                 if (librariesToCommonize.libraries.isEmpty()) return@forEach
 
-                val modulesProvider = NativeDistributionModulesProvider.platformLibraries(storageManager, librariesToCommonize)
+            val modulesProvider = NativeDistributionModulesProvider.platformLibraries(storageManager, librariesToCommonize)
 
                 addTarget(
                     TargetProvider(
@@ -161,4 +161,5 @@ class NativeDistributionCommonizer(
         get() = repository.resolve(KONAN_DISTRIBUTION_KLIB_DIR)
             .resolve(KONAN_DISTRIBUTION_PLATFORM_LIBS_DIR)
             .resolve(name)
+
 }
