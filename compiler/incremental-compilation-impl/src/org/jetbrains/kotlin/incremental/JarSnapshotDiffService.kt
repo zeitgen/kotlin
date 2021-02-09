@@ -18,7 +18,7 @@ class JarSnapshotDiffService() {
         //Store list of changed lookups
         private val diffCache: MutableMap<Pair<JarSnapshot, JarSnapshot>, DirtyData> = mutableMapOf()
 
-        //TODO for test only
+        //TODO move out from Kotlin daemon
         fun compareJarsInternal(
             snapshotJar: JarSnapshot, newJar: JarSnapshot,
             caches: IncrementalCacheCommon

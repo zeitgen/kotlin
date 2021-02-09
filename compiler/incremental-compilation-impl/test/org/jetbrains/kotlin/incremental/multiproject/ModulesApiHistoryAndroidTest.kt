@@ -63,7 +63,8 @@ class ModulesApiHistoryAndroidTest {
             dirToModule = mapOf(appKotlinDestination to appEntry, libKotlinDestination to libEntry),
             nameToModules = mapOf("app" to setOf(appEntry), "lib" to setOf(libEntry)),
             jarToClassListFile = mapOf(),
-            jarToModule = mapOf()
+            jarToModule = mapOf(),
+            jarToJarSnapshot = mapOf()
         )
 
         androidHistory = ModulesApiHistoryAndroid(info)

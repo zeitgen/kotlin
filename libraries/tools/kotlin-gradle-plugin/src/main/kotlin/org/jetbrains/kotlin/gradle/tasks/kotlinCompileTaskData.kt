@@ -35,6 +35,11 @@ internal open class KotlinCompileTaskData(
         File(taskBuildDirectory, "jar-snapshot.bin")
     }
 
+    val jarSnapshotRelativePath: String by project.provider {
+        //TODO update to support any jar changes
+        "$taskName/jar-snapshot.bin"
+    }
+
     var javaOutputDir: File? = null
 
     companion object {

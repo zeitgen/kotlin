@@ -177,13 +177,17 @@ class IncrementalJvmCompilerRunner(
     //TODO can't use the same way as for build-history files because jar-snapshot for all dependencies should be stored into last-build
     // and not only changed one
     // (but possibly we dont need to read it all and may be it is possible to update only those who was changed)
-    override fun setupJarDependencies(args: K2JVMCompilerArguments, withSnapshot: Boolean): Map<String, JarSnapshot> {
+    override fun setupJarDependencies(args: K2JVMCompilerArguments, withSnapshot: Boolean, reporter: BuildReporter): Map<String, JarSnapshot> {
         //fill jarSnapshots
         if (!withSnapshot) return emptyMap()
         val jarSnapshots = HashMap<String, JarSnapshot>()
         args.classpathAsList
             .filter { it.extension.equals("jar", ignoreCase = true) }
-            .forEach { modulesApiHistory.jarSnapshot(it)?.let {file -> jarSnapshots[it.absolutePath] = JarSnapshot.read(file) }}
+            .forEach {
+                modulesApiHistory.jarSnapshot(it)?.let { file ->
+                    JarSnapshot.read(file, reporter)?.also { jarSnapshot -> jarSnapshots[it.absolutePath] = jarSnapshot }
+                }
+            }
         return jarSnapshots
     }
 

@@ -123,8 +123,10 @@ class ModulesApiHistoryJvm(modulesInfo: IncrementalModuleInfo) : ModulesApiHisto
     }
 
     override fun jarSnapshot(jar: File): File? {
+        //TODO update here to support any jar changes
         val jarSnapshot = modulesInfo.jarToModule[jar]?.jarSnapshot
-        return jarSnapshot ?: modulesInfo.jarToClassListFile[jar]?.parentFile?.resolve("jar-snapshot.bin")
+        //TODO relative way to get current jarSnapshot (for non project jar)
+        return jarSnapshot ?: modulesInfo.jarToJarSnapshot[jar]
     }
 }
 

@@ -92,7 +92,7 @@ abstract class IncrementalCompilerRunner<
 
         //TODO if jar-snapshot is corrupted unable to rebuild. Should roll back to withSnapshot = false?
         val classpathJarSnapshot = if (withSnapshot) {
-            setupJarDependencies(args, withSnapshot)
+            setupJarDependencies(args, withSnapshot, reporter)
         } else {
            emptyMap()
         }
@@ -122,8 +122,21 @@ abstract class IncrementalCompilerRunner<
 
             val exitCode = when (compilationMode) {
                 is CompilationMode.Incremental -> {
-                    val jarSnapshot = JarSnapshot.read(jarSnapshotFile)
-                    compileIncrementally(args, caches, allSourceFiles, compilationMode, messageCollector, withSnapshot, jarSnapshot, classpathJarSnapshot)
+                    val jarSnapshot = JarSnapshot.read(jarSnapshotFile, reporter)
+                    if (jarSnapshot != null) {
+                        compileIncrementally(
+                            args,
+                            caches,
+                            allSourceFiles,
+                            compilationMode,
+                            messageCollector,
+                            withSnapshot,
+                            jarSnapshot,
+                            classpathJarSnapshot
+                        )
+                    } else {
+                        rebuild(BuildAttribute.NO_JAR_SNAPSHOT)
+                    }
                 }
                 is CompilationMode.Rebuild -> {
                     rebuild(compilationMode.reason)
@@ -202,7 +215,7 @@ abstract class IncrementalCompilerRunner<
         classpathJarSnapshots: Map<String, JarSnapshot>
     ): CompilationMode
 
-    protected open fun setupJarDependencies(args: Args, withSnapshot: Boolean): Map<String, JarSnapshot> = mapOf()
+    protected open fun setupJarDependencies(args: Args, withSnapshot: Boolean, reporter: BuildReporter): Map<String, JarSnapshot> = mapOf()
 
     protected fun initDirtyFiles(dirtyFiles: DirtyFilesContainer, changedFiles: ChangedFiles.Known) {
         dirtyFiles.add(changedFiles.modified, "was modified since last time")
